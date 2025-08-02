@@ -1,0 +1,2 @@
+# Frontend components
+The basic component of a GKR circuit is a *layer*. Layers are defined as an MLE plus polynomial relationship which explicitly states how each evaluation of that MLE (over the boolean hypercube) is related to evaluations of MLEs within previous layers. 

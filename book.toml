@@ -1,0 +1,9 @@
+[book]
+authors = ["Ryan Cao"]
+language = "en"
+src = "src"
+title = "Remainder Documentation Test"
+
+# https://github.com/lzanini/mdbook-katex
+[preprocessor.katex]
+after = ["links"]
