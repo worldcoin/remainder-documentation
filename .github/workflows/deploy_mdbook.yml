@@ -7,6 +7,7 @@ on:
 jobs:
   deploy:
     permissions:
+      pages: write
       contents: write
     runs-on: ubuntu-latest
     steps:
@@ -20,5 +21,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GIT_HUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./book
