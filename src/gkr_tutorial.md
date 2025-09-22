@@ -17,7 +17,7 @@ Note that each of these definitions will be described in further detail in the s
 
 ## High-level Description
 
-GKR is an interactive protocol which was first introduced by [Goldwasser, Kalai, and Rothblum [2008]](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/12/2008-DelegatingComputation.pdf). It proves the statement that $C(y) = 0$, where $C$ is a [layered arithmetic circuit](#statement-encoding), and $y$ is the input to the circuit. 
+GKR is an interactive protocol which was first introduced by [Goldwasser, Kalai, and Rothblum [2008]](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/12/2008-DelegatingComputation.pdf). It proves the statement that $C(y) = 0$, where $C$ is a [layered arithmetic circuit](./statement_encoding.md), and $y$ is the input to the circuit. 
 
 At a high-level, it works by reducing the validity of the output of the circuit (say layer $d$, $\mathcal{L}_d(x_d) = 0$, for a circuit with depth $d$), to the previous layer of computation in the circuit, $\mathcal{L}_{d-1}.$ Eventually, these statements reduce to a claim an evaluation of the input as a polynomial. If the input $y$ is encoded as the coefficeints of a polynomial $f$, we are left to prove that $f(x_0) = r_0$. 
 

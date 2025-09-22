@@ -29,3 +29,5 @@ In other words, if we think of a physical representation of $C$, the _binary gat
 Let's look at the following layered arithmetic circuit with depth $d$ = 3:
 
 ![Diagram representing an example of a layered arithmetic circuit](./figures/arithmetic_circuit.jpg)
+
+In this case, $add(4, 0, 1) = 1$ and $mul(4, 0, 1) = 0$, but $mul(7, 4, 1) = 1,$ for example. Notice how the circuit naturally falls in "layers" based on the dependencies of nodes.  
