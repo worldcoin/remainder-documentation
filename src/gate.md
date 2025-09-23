@@ -67,7 +67,7 @@ For all other binary tuples we have that $\widetilde{\text{add}}(z, x, y) = 0$, 
 ## Mul Gate
 Multiplication gate is nearly identical to addition gate. For mul gate, we have the binary wiring indicator predicate:
 $$
-\text{mul}(z, x, y): \{0, 1\}^{s_i} \times \{0, 1\}^{s_j} \times \{0, 1\}^{s_k} \mapsto \{0, 1\} \quad \text{where} \quad \text{mul}(z, x, y) = \begin{cases} 1 & \text{if $\widetilde{V}_i(z) = \widetilde{V}_j(x) * \widetilde{V}_k(y)$}\\ 0 & \text{otherwise}\end{cases}
+\text{mul}(z, x, y): \{0, 1\}^{s_i} \times \{0, 1\}^{s_j} \times \{0, 1\}^{s_k} \mapsto \{0, 1\} \quad \text{where} \quad \text{mul}(z, x, y) = \begin{cases} 1 & \text{if $\widetilde{V}_i(z) = \widetilde{V}_j(x) \cdot \widetilde{V}_k(y)$}\\ 0 & \text{otherwise}\end{cases}
 $$
 Here, we have that $\text{mul}(z, x, y) = 1$ if and only if the the $z$'th value in the $i$'th layer equals the product of the $x$'th value in the $j$'th layer with the $y$'th value in the $k$'th layer. The MLE of $\text{mul}(z, x, y)$ is identical to that of $\text{add}$:
 $$
@@ -75,7 +75,7 @@ $$
 $$
 and the polynomial relationship is defined nearly identically to that of $\text{add}$ gate:
 $$
-\widetilde{V}_i(g) = \sum_{x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\text{mul}}(g, x, y) \cdot \bigg[\widetilde{V}_j(x) * \widetilde{V}_k(y)\bigg]
+\widetilde{V}_i(g) = \sum_{x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\text{mul}}(g, x, y) \cdot \bigg[\widetilde{V}_j(x) \cdot \widetilde{V}_k(y)\bigg]
 $$
 Assuming that $x$ gets bound to $u \in \mathbb{F}^{s_j}$ and $y$ gets bound to $v \in \mathbb{F}^{s_k}$ during sumcheck, a claim on this layer results in three total claims: one on $\widetilde{\text{mul}}(g, u, v)$ (which the verifier can check on its own), one on $\widetilde{V}_j(u)$, and one on $\widetilde{V}_k(v)$. 
 

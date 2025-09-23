@@ -55,28 +55,94 @@ This is the polynomial relationship between layer $i$ and layer $i + 1$ of a cir
 The prover starts with a claim
 
 $$
-\widetilde{V}_{i + 1}(g_1, ..., g_n) = c_{i + 1}
+\widetilde{V}_i(g_1, ..., g_n) = c_i
 $$
 
 for $g_1, ..., g_n, c \in \mathbb{F}$, and wishes to prove it to the verifier. It does so by running sumcheck on the RHS of the above equation, i.e.
 
 $$
-c \overset{?}{=} \sum_{b_1, ..., b_n} \widetilde{\text{eq}}(g_1, ..., g_n; b_1, ..., b_n) \cdot \widetilde{V}_i(b_1, ..., b_n)^2
+c \overset{?}{=} \sum_{b_1, ..., b_n} \widetilde{\text{eq}}(g_1, ..., g_n; b_1, ..., b_n) \cdot \widetilde{V}_{i + 1}(b_1, ..., b_n)^2
 $$
 
 Let $b_1, ..., b_n$ be bound to $r_1, ..., r_n \in \mathbb{F}$ during the rounds of sumcheck. Additionally, let $f_n(X_n)$ be the univariate polynomial the prover sends in the $n$'th round of sumcheck. The oracle query check is then
 
 $$
-f_n(r_n) \overset{?}{=} \widetilde{\text{eq}}(g_1, ..., g_n; r_1, ..., r_n) \cdot \widetilde{V}_i(r_1, ..., r_n)^2
+f_n(r_n) \overset{?}{=} \widetilde{\text{eq}}(g_1, ..., g_n; r_1, ..., r_n) \cdot \widetilde{V}_{i + 1}(r_1, ..., r_n)^2
 $$
 
-The verifier is able to compute $\widetilde{\text{eq}}(g_1, ..., g_n; r_1, ..., r_n)$ on its own in $O(n)$ time, but unless $\widetilde{V}_i$ is an MLE within the input layer of the GKR circuit, they will not be able to determine the value of $\widetilde{V}_i(r_1, ..., r_n)$. Instead, the prover sends over a new _claimed value_ $c_i \overset{?}{=} \widetilde{V}_i(r_1, ..., r_n)$, and the verifier checks that
+The verifier is able to compute $\widetilde{\text{eq}}(g_1, ..., g_n; r_1, ..., r_n)$ on its own in $O(n)$ time, but unless $\widetilde{V}_{i + 1}$ is an MLE within the input layer of the GKR circuit, they will not be able to determine the value of $\widetilde{V}_{i + 1}(r_1, ..., r_n)$. Instead, the prover sends over a new _claimed value_ $c_{i + 1} \overset{?}{=} \widetilde{V}_{i + 1}(r_1, ..., r_n)$, and the verifier checks that
 
 $$
-f_n(r_n) \overset{?}{=} \widetilde{\text{eq}}(g_1, ..., g_n; r_1, ..., r_n) \cdot c_i^2
+f_n(r_n) \overset{?}{=} \widetilde{\text{eq}}(g_1, ..., g_n; r_1, ..., r_n) \cdot c_{i + 1}^2
 $$
 
-The only thing left to check is whether $\widetilde{V}_i(r_1, ..., r_n) \overset{?}{=} c_i$. Notice, however, that this now a new claim on an MLE residing in layer $i$, and that we started with a claim on layer $i + 1$. In other words, we've _reduced_ the validity of a claim on layer $i + 1$ to that of a claim on layer $i$, which is the core idea behind GKR: start with claims on circuit output layers, and reduce those using sumcheck to claims on earlier layers of the circuit. Eventually all remaining claims will be those on circuit input layers, which can be directly checked via either a direct verifier MLE evaluation for public input layers, or a PCS evaluation proof for committed input layers. 
+The only thing left to check is whether $\widetilde{V}_{i + 1}(r_1, ..., r_n) \overset{?}{=} c_{i + 1}$. Notice, however, that this now a new claim on an MLE residing in layer $i + 1$, and that we started with a claim on layer $i$. In other words, we've _reduced_ the validity of a claim on layer $i + 1$ to that of a claim on layer $i$, which is the core idea behind GKR: start with claims on circuit output layers, and reduce those using sumcheck to claims on earlier layers of the circuit. Eventually all remaining claims will be those on circuit input layers, which can be directly checked via either a direct verifier MLE evaluation for public input layers, or a PCS evaluation proof for committed input layers. 
 
 ## Claim Aggregation
-In the above example, 
+In the above example, we reduced a _single_ claim on layer $i$ to claim(s) on MLEs residing in previous layers. What happens when there are multiple claims on the same layer, e.g.
+
+$$
+\widetilde{V}_i(g_1^{(1)}, ..., g_n^{(1)}) \overset{?}{=} c_i^{(1)} \\
+\widetilde{V}_i(g_1^{(2)}, ..., g_n^{(2)}) \overset{?}{=} c_i^{(2)} \\
+\vdots \\
+\widetilde{V}_i(g_1^{(m)}, ..., g_n^{(m)}) \overset{?}{=} c_i^{(m)} \\
+$$
+
+One method would be to simply run sumcheck twice, once for each of the above claims, and reduce to 2+ separate claims on MLEs residing in previous layers. This strategy, however, leads to an exponential number of claims in the depth of the circuit, which is undesirable. 
+
+Instead, Remainder implements two primary modes of _claim aggregation_, i.e. methods for using a single sumcheck to prove the validity of many claims on the same MLE.
+
+### RLC (Random Linear Combination) Claim Aggregation
+The idea behind RLC claim aggregation is precisely what it sounds like -- the prover proves that a random linear combination of the claimed values indeed equals the corresponding random linear combination of the summations on the RHS of e.g. (TODO @ryancao -- cite the equations please). The implementation of RLC claim aggregation within Remainder works for [structured layers](./regular_gkr.md) and [gate layers](./canonical_gkr.md), but not for [matrix multiplication layers](./matmult.md) or [input layers](./input_layers.md). We defer to the corresponding pages for more detailed explanations of the layerwise relationships, but review their form factors here and show how RLC claim aggregation can be done for each here.
+
+**Structured Layers**
+
+We start with structured layers, and use the same example relationship from above:
+
+$$
+\widetilde{V}_i(X_1, ..., X_n) = \sum_{b_1, ..., b_n} \widetilde{\text{eq}}(X_1, ..., X_n; b_1, ..., b_n) \cdot \widetilde{V}_{i + 1}(b_1, ..., b_n)^2
+$$
+
+For simplicity, we aggregate two claims rather than $m$ claims, but the methodology generalizes in a straightforward fashion. Our aggregated claim is constructed as follows:
+
+$$
+\text{Sample } \alpha \overset{\$}{\leftarrow} \mathbb{F} \\
+\text{Let } c_i^\star = c_i^{(1)} + \alpha \cdot c_i^{(2)}
+$$
+
+Similarly, we take an RLC of the summations and create a new summation to sumcheck over (we let $b = b_1, ..., b_n$ and $g^{(j)} = g_1^{(j)}, ..., g_n^{(j)}$ for concision):
+
+$$
+c^\star_i \overset{?}{=} \sum_{b_1, ..., b_n} \widetilde{\text{eq}}(g^{(1)}; b) \cdot \widetilde{V}_i(b) + \alpha \cdot \sum_{b_1, ..., b_n} \widetilde{\text{eq}}(g^{(2)}; b) \cdot \widetilde{V}_i(b) \\
+
+= \sum_{b_1, ..., b_n} \big[ \widetilde{\text{eq}}(g^{(1)}; b) + \alpha \cdot \widetilde{\text{eq}}(g^{(2)}; b) \big] \cdot \widetilde{V}_i(b)
+$$
+
+For structured layers, in other words, the prover and verifier simply take a random linear combination of the claims and perform sumcheck over a polynomial which is identical to the original layerwise relationship polynomial but with the $\widetilde{\text{eq}}$ term replaced with an RLC of $\widetilde{\text{eq}}$ terms in the same manner as the RLC of the original claims. 
+
+**Gate Layers**
+
+A similar idea applies to gate layers. We use [mul gate](./gate.md#mul-gate) as the example layerwise relationship here:
+
+$$
+\widetilde{V}_i(Z_1, ..., Z_{s_i}) = \sum_{x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\text{mul}}(Z, x, y) \cdot \bigg[\widetilde{V}_j(x) * \widetilde{V}_k(y)\bigg]
+$$
+
+Again, we aggregate just two claims for simplicity, although the idea generalizes very naturally to $m$ claims:
+
+$$
+\text{Sample } \alpha \overset{\$}{\leftarrow} \mathbb{F} \\
+\text{Let } c_i^\star = c_i^{(1)} + \alpha \cdot c_i^{(2)}
+$$
+
+The polynomial relationship to run sumcheck over is constructed using a similar idea as that of structured layers:
+
+$$
+c^\star_i \overset{?}{=} \sum_{x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\text{mul}}_{i, j, k}(g^{(1)}, x, y) \cdot \widetilde{V}_j(x) \cdot \widetilde{V}_k(y) + \\
+
+\alpha \cdot \sum_{x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\text{mul}}_{i, j, k}(g^{(2)}, x, y) \cdot \widetilde{V}_j(x) \cdot \widetilde{V}_k(y) \\
+
+= \sum_{x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \big[ \widetilde{\text{mul}}_{i, j, k}(g^{(1)}, x, y) + \alpha \cdot \widetilde{\text{mul}}_{i, j, k}(g^{(2)}, x, y) \big] \cdot \widetilde{V}_i(b)
+$$
+
+Rather than taking a linear combination of the $\widetilde{\text{eq}}$ polynomials, we instead take a linear combination of the $\widetilde{\text{mul}}_{i, j, k}$ polynomials. 
