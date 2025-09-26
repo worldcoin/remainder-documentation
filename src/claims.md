@@ -93,6 +93,8 @@ One method would be to simply run sumcheck twice, once for each of the above cla
 Instead, Remainder implements two primary modes of _claim aggregation_, i.e. methods for using a single sumcheck to prove the validity of many claims on the same MLE.
 
 ### RLC (Random Linear Combination) Claim Aggregation
+Additional reading: See [XZZ+19](https://eprint.iacr.org/2019/317.pdf), page 10 ("Combining two claims: random linear combination"). 
+
 The idea behind RLC claim aggregation is precisely what it sounds like -- the prover proves that a random linear combination of the claimed values indeed equals the corresponding random linear combination of the summations on the RHS of e.g. (TODO @ryancao -- cite the equations please). The implementation of RLC claim aggregation within Remainder works for [structured layers](./regular_gkr.md) and [gate layers](./canonical_gkr.md), but not for [matrix multiplication layers](./matmult.md) or [input layers](./input_layers.md). We defer to the corresponding pages for more detailed explanations of the layerwise relationships, but review their form factors here and show how RLC claim aggregation can be done for each here.
 
 **Structured Layers**
@@ -148,6 +150,8 @@ $$
 Rather than taking a linear combination of the $\widetilde{\text{eq}}$ polynomials, we instead take a linear combination of the $\widetilde{\text{mul}}_{i, j, k}$ polynomials. 
 
 ### Interpolative Claim Aggregation
+Additional reading: See [Tha13](https://eprint.iacr.org/2013/351.pdf), page 15 ("reducing to verification of a single point"), for another description of the protocol, and [Mod24](https://github.com/Modulus-Labs/Papers/blob/master/remainder-paper.pdf), page 15 (Section 3.4, "Claim aggregation"), for a thorough description + optimization. 
+
 Interpolative claim aggreation works by having the prover and verifier both compute an interpolating polynomial $\ell: \mathbb{F} \mapsto \mathbb{F}^n$, such that for the claims described earlier, i.e.
 
 $$
