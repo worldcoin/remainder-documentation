@@ -20,7 +20,7 @@ The logic is as follows: when $X_i = Y_i$, either both are zero (in which case $
 ## Structured Layerwise Relationship
 See [Tha13](https://eprint.iacr.org/2013/351.pdf), page 25 ("Theorem 1") for a more rigorous treatment. Note that Remainder does _not_ implement Theorem 1 in its entirety, and that many circuits which do fulfill the criteria of Theorem 1 are currently not expressible within Remainder's circuit frontend.
 
-Structured layerwise relationships can loosely be thought of as data relationships where the bits of the index of the "destination" value in the $i$'th layer are a (optionally subset) permutation of the bits of the index of the "source" value in the $j$'th layer for $j > i$. As a concrete example, we consider a layerwise relationship where the destination layer is half the size, and its values are the products of each adjacent pair of its source layer's values: Let $\widetilde{V}_i(X_1, X_2)$ represent the MLE of the destination layer, and let $\widetilde{V}_j(X_1, X_2, X_3)$ represent the MLE of the source layer. 
+Structured layerwise relationships can loosely be thought of as data relationships where the bits of the index of the "destination" value in the $i$'th layer are a (optionally subset) permutation of the bits of the index of the "source" value in the $j$'th layer for $j > i$. As a concrete example, we consider a layerwise relationship where the destination layer is half the size, and its values are the products of each adjacent pair of its source layer's values: Let $\widetilde{V}_i(Z_1, Z_2)$ represent the MLE of the destination layer, and let $\widetilde{V}_j(Z_1, Z_2, Z_3)$ represent the MLE of the source layer. 
 
 Let the evaluations of $\widetilde{V}_i$ over the hypercube be $[a, b, c, d, e, f, g, h]$. Then we wish to create a layerwise relationship such that the evaluations of $\widetilde{V}_j$ over the hypercube are $[ab, cd, ef, gh]$. We can actually write this as a simple rule in terms of the (integer) indices of $V_i$ as follows: 
 
@@ -37,7 +37,7 @@ $$
 where $z_1 z_2 0$ is the binary representation of $2 \cdot z_1 z_2$ and $z_1 z_2 1$ is the binary representation of $2 \cdot z_1 z_2 + 1$. This is in fact very close to the exact form-factor of the polynomial layerwise relationship which we should create between the layers -- we now consider the somewhat un-intuitive relationship
 
 $$
-V_i(Z_1, Z_2) = \sum_{b_1, b_2 \in \{0, 1\}^2} \widetilde{\text{eq}}(Z_1, Z_2; b_1, b_2) \cdot V_j(b_1, b_2, 0) \cdot V_j(b_1, b_2, 1)
+V_i(Z_1, Z_2) = \sum_{b_1, b_2 \in \{0, 1\}^2} \text{eq}(Z_1, Z_2; b_1, b_2) \cdot V_j(b_1, b_2, 0) \cdot V_j(b_1, b_2, 1)
 $$
 
 One way to read the above relationship is the following: for any (binary decomposition) $Z_1, Z_2$, the value of the $i$'th layer at the index represented by $Z_1, Z_2$ _should_ be $V_j(Z_1, Z_2, 0) \cdot V_j(Z_1, Z_2, 1)$. We are summing over all possible values of the hypercube above, $b_1, b_2 \in \{0, 1\}^2$, and for each value we check whether the current iterated hypercube value $b_1, b_2$ "equals" the argument $Z_1, Z_2$ value. If so, we contribute $V_j(b_1, b_2, 0) \cdot V_j(b_1, b_2, 1)$ to the sum and if not, we contribute zero to the sum. 
@@ -72,3 +72,30 @@ $$
 $$
 
 ## Structured "Selector" Variables
+Some relationships between layers are best expressed piece-wise. For example, let's say that we have a destination layer, $\widetilde{V}_i(Z_1, Z_2)$, and a source layer of the same size, $\widetilde{V}_j(Z_1, Z_2)$, where we'd like to square the first two evaluations but double the last two. 
+
+In other words, if $\widetilde{V}_j(Z_1, Z_2)$ has evaluations $[a, b, c, d]$ over the boolean hypercube, then $\widetilde{V}_i(Z_1, Z_2)$ should have evaluations $[a^2, b^2, 2c, 2d]$. If we follow our usual protocol for writing the layerwise relationship here, we would have something like the following for the "integer index" version of the relationship:
+
+$$
+V_i(z) = \begin{cases} V_j(z)^2 & \text{if z < 2} \\ 2 \cdot V_j(z) & \text{otherwise} \end{cases}
+$$
+
+We notice that in binary form, $z < 2$ whenever $z_1 = 0$ (and $z \geq 2$ when $z_1 = 1$). We can thus re-write the above as
+
+$$
+V_i(z_1, z_2) = (1 - z_1) \cdot V_j(0, z_2)^2 + z_1 \cdot 2 \cdot V_j(1, z_2)
+$$
+
+In other words, when $z_1 = 0$ the second summand on the RHS is zero, and the first summand is just $V_j(0, z_2) = V_j(z_1, z_2)$ since we already know that $z_1 = 0$, and vice versa for when $z_1 = 1$. Applying the third transformation rule from above and extending everything into its multilinear form, we get
+
+$$
+\widetilde{V}_i(Z_1, Z_2) = \sum_{b_1, b_2 \in \{0, 1\}^2} \widetilde{\text{eq}}(Z_1, Z_2; b_1, b_2) \cdot \big[(1 - b_1) \cdot V_j(0, b_2)^2 + b_1 \cdot 2 \cdot V_j(1, b_2)\big]
+$$
+
+However, _now_ the observation that $\widetilde{\text{eq}}$ should _only_ apply to variables which are nonlinear on the RHS is helpful here -- notice that although $b_2$ as a variable would be quadratic on the RHS, $b_1$ is linear and can thus be removed from the summation altogether and replaced directly with $Z_1$:
+
+$$
+\widetilde{V}_i(Z_1, Z_2) = \sum_{b_2 \in \{0, 1\}} \widetilde{\text{eq}}(Z_2; b_2) \cdot \big[(1 - Z_1) \cdot V_j(0, b_2)^2 + Z_1 \cdot 2 \cdot V_j(1, b_2)\big]
+$$
+
+This layerwise relationship form-factor is called a "selector" in Remainder terminology and in general refers to an in-circuit version of an "if/else" statement where MLEs representing the values of layers can be broken into power-of-two-sized pieces. 
