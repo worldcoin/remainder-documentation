@@ -98,4 +98,60 @@ $$
 \widetilde{V}_i(Z_1, Z_2) = \sum_{b_2 \in \{0, 1\}} \widetilde{\text{eq}}(Z_2; b_2) \cdot \big[(1 - Z_1) \cdot V_j(0, b_2)^2 + Z_1 \cdot 2 \cdot V_j(1, b_2)\big]
 $$
 
-This layerwise relationship form-factor is called a "selector" in Remainder terminology and in general refers to an in-circuit version of an "if/else" statement where MLEs representing the values of layers can be broken into power-of-two-sized pieces. 
+This layerwise relationship form-factor is called a "selector" in Remainder terminology and in general refers to an in-circuit version of an "if/else" statement where MLEs representing the values of layers can be broken into power-of-two-sized pieces.
+
+## Why Structured Circuits?
+Compared to [canonic GKR](./canonical_gkr.md), structured circuits are good for two reasons -- verifier runtime and circuit description size. Note that every layerwise relationship which can be expressed as a structured layer (using $\widetilde{\text{eq}}$) can be written as an equivalent series of $\widetilde{\text{add}}$ and $\widetilde{\text{mul}}$ gate layers. 
+
+To see why structured layers are good for circuit description size, we compare the following layer-wise relationships which describe the same circuit wiring pattern, but with different verifier cost and circuit description complexities (let $Z = Z_1, ..., Z_n$ and $b = b_1, ..., b_n$ for shorthand). Firstly, the structured version, which computes an element-wise product between each pair of evaluations:
+
+$$
+\widetilde{V}_i(Z_1, ..., Z_n) = \sum_{b_1, ..., b_n \in \{0, 1\}^n} \widetilde{\text{eq}}(Z; b) \cdot \widetilde{V}_j(b_1, ..., b_{n - 1}, 0) \cdot \widetilde{V}_j(b_1, ..., b_{n - 1}, 1)
+$$
+
+And secondly, the multiplication gate version:
+
+$$
+\widetilde{V}_i(Z_1, ..., Z_n) = \sum_{x \in \{0, 1\}^n, y \in \{0, 1\}^n} \widetilde{\text{mul}}(Z, x, y) \cdot \bigg[\widetilde{V}_j(x) \cdot \widetilde{V}_j(y)\bigg]
+$$
+
+We first consider the verifier runtime for both. Note that the sumcheck verifier performs $O(1)$ operations per round of sumcheck, plus the work necessary for the oracle query. In the structured relationship's case, there are $n$ rounds of sumcheck, and assuming that $b_1, ..., b_n$ get bound to $r_1, ..., r_n \in \mathbb{F}$, the oracle query which the verifier must evaluate is of the form
+
+$$
+f_n(r_n) \overset{?}{=} \widetilde{\text{eq}}(Z_1, ..., Z_n; r_1, ..., r_n) \cdot \widetilde{V}_j(r_1, ..., r_{n - 1}, 0) \cdot \widetilde{V}_j(r_1, ..., r_{n - 1}, 1)
+$$
+
+where $f_n$ is the $n$'th univariate polynomial which the prover sends during sumcheck. The prover sends the claimed values for both $\widetilde{V}_j(r_1, ..., r_{n - 1}, 0)$ and $\widetilde{V}_j(r_1, ..., r_{n - 1}, 1)$, and so the verifier doesn't do any work there. The verifier additionally evaluates $\widetilde{\text{eq}}(Z_1, ..., Z_n; r_1, ..., r_n)$ on its own, which it can do in $O(n)$ time.
+
+Next, we consider the verifier runtime for the multiplication gate case: let $x_1, ..., x_n$ be bound to $u_1, ..., u_n \in \mathbb{F}$ and let $y_1, ..., y_n$ be bound to $v_1, ..., v_n \in \mathbb{F}$ during sumcheck. The oracle query is then
+
+$$
+f_n(r_n) \overset{?}{=} \widetilde{\text{mul}}(Z_1, ..., Z_n, u_1, ..., u_n, v_1, ..., v_n) \cdot \bigg[\widetilde{V}_j(u_1, ..., u_n) \cdot \widetilde{V}_j(v_1, ..., v_n)\bigg]
+$$
+
+Similarly to the structured case, the prover sends claimed values for $\widetilde{V}_j(u_1, ..., u_n)$ and $\widetilde{V}_j(v_1, ..., v_n)$, and so the verifier doesn't have to do any work here. However, the verifier must also evaluate $\widetilde{\text{mul}}(Z_1, ..., Z_n, u_1, ..., u_n, v_1, ..., v_n)$ on its own. This requires time linear to the sparsity of the $\widetilde{\text{mul}}$ polynomial, i.e. $O(2^{n - 1})$ in this example, since there are $2^{n - 1}$ nonzero multiplication gates (one for each pair of values in layer $i + 1$). 
+
+A circuit description size comparison between the two can be seen in a very similar light. In particular, the representation of $\widetilde{\text{eq}}$ requires just $O(n)$ words to store (assuming each word can hold an $n$-bit value), as we simply enumerate the indices between the $Z_i$'s and the $b_i$'s. On the other hand, storing the sparse representation of $\widetilde{\text{mul}}$ required for linear-time proving requires storing all nonzero evaluations, i.e. $O(2^{n - 1})$ such indices in the above example (although one might argue that the representation is quite structured and can therefore be further compressed). 
+
+### A note on claims
+The above example (and other similar layerwise relationships) give us a further prover speedup through the structure of the claims which arise from the oracle query during sumcheck. In particular, the claims which the prover makes to the verifier in the structured case are as follows:
+
+$$
+\widetilde{V}_j(r_1, ..., r_{n - 1}, 0) \overset{?}{=} c_0 \\
+\widetilde{V}_j(r_1, ..., r_{n - 1}, 1) \overset{?}{=} c_1
+$$
+
+These claims can be aggregated with almost no additional cost to the prover and verifier, as the first $n - 1$ challenges are identical between the two and the last challenges are precisely a $0$ and a $1$. In particular, the verifier can simply sample $r^\star$ and have the prover instead show that
+
+$$
+\widetilde{V}_j(r_1, ..., r_{n - 1}, r^\star) = (1 - r^\star) \cdot c_0 + r^\star \cdot c_1
+$$
+
+On the other hand, the claims generated by the multiplication gate version of the layer above are in the form
+
+$$
+\widetilde{V}_j(u_1, ..., u_n) \overset{?}{=} c_u \\
+\widetilde{V}_j(v_1, ..., v_n) \overset{?}{=} c_v
+$$
+
+These claims have no challenges in common, and can only be aggregated through interpolative or RLC claim aggregation, both of which are significantly more expensive than the above method. (TODO(ryancao): Add links to those)
