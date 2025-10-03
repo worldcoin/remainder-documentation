@@ -11,6 +11,7 @@
         - [Canonical GKR](./canonical_gkr.md)
         - [Regular GKR](./regular_gkr.md)
     - [GKR Input Layer](./input_layers.md)
+    - [Hyrax Interactive Protocol](./hyrax.md)
 - [Frontend Tutorial](./frontend_basic_tutorial.md)
 - [Frontend Components](./frontend_components.md)
     - [Matmult Layer](./matmult.md)
