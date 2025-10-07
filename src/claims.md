@@ -88,7 +88,7 @@ $$
 \widetilde{V}_i(g_1^{(m)}, ..., g_n^{(m)}) \overset{?}{=} c_i^{(m)} \\
 $$
 
-One method would be to simply run sumcheck twice, once for each of the above claims, and reduce to 2+ separate claims on MLEs residing in previous layers. This strategy, however, leads to an exponential number of claims in the depth of the circuit, which is undesirable. 
+One method would be to simply run sumcheck $m$ times, once for each of the above claims, and reduce to $2m$+ separate claims on MLEs residing in previous layers. This strategy, however, leads to an exponential number of claims in the depth of the circuit, which is undesirable. 
 
 Instead, Remainder implements two primary modes of _claim aggregation_, i.e. methods for using a single sumcheck to prove the validity of many claims on the same MLE.
 
