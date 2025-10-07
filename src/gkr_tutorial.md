@@ -22,3 +22,5 @@ GKR is an interactive protocol which was first introduced by [Goldwasser, Kalai,
 At a high-level, it works by reducing the validity of the output of the circuit (say layer $d$, $\mathcal{L}_d(x_d) = 0$, for a circuit with depth $d$), to the previous layer of computation in the circuit, $\mathcal{L}_{d-1}.$ Eventually, these statements reduce to a claim an evaluation of the input as a polynomial. If the input $y$ is encoded as the coefficeints of a polynomial $f$, we are left to prove that $f(x_0) = r_0$. 
 
 The later sections unpack these reductions, showing how we can reduce the claim that $C(x) = 0$ to a polynomial evaluation at a random point.
+
+## Why GKR?

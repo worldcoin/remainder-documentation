@@ -1,10 +1,10 @@
 # Statement Encoding
 
-The GKR protocol specifically works with statements of the form $C(y) = 0$, where $C$ is a layered arithmetic circuit. Define a singular node containing $0$ to be the output layer, $\mathcal{L}_d$, and the nodes containing the input values $y_i$ to be the input layer, $\mathcal{L}_0$. 
+The GKR protocol specifically works with statements of the form $C(y) = 0$, where $C$ is a layered arithmetic circuit. Define a singular node containing $0$ to be the output layer, $\mathcal{L}_0$, and the nodes containing the input values $y_i$ to be the input layer, $\mathcal{L}_d$. 
 
-For any layer, the following invariant holds: if a node belongs in $\mathcal{L}_i$, then it must be the result of a binary operation involving nodes in layers $j, k$ such that $j < i, k < i$. It is possible that $j = k$, but not necessary. 
+For any layer, the following invariant holds: if a node belongs in $\mathcal{L}_i$, then it must be the result of a binary operation involving nodes in layers $j, k$ such that $j > i, k > i$. It is possible that $j = k$, but not necessary. 
 
-These binary operations are usually referred to as "gates:" in the following tutorial we will be focusing on two gates: $add$ gates, which are represented by the following function:
+These binary operations are usually referred to as "gates." In the following tutorial we will be focusing on two gates: $add$ gates, which are represented by the following function:
 
 $$
     add(z, x, y)= 
@@ -22,7 +22,7 @@ $$
 \end{cases}
 $$
 
-In other words, if we think of a physical representation of $C$, the _binary gates_ represent the "wires" of the circuit. They show how the values from nodes belonging in previous layers of the circuit can be used to compute the value of the node in a certain layer. In fact, for every node with label $z$ in layer $i \neq 0: \exists \quad\!\!\!\! x, y$ such that $add(z, x, y) = 1$ or $mul(z, x, y) = 1$ for $x, y$ as labels for nodes in layers $j, k < i$.
+In other words, if we think of a physical representation of $C$, the _binary gates_ represent the "wires" of the circuit. They show how the values from nodes belonging in previous layers of the circuit can be used to compute the value of the node in a certain layer. In fact, for every node with label $z$ in layer $i \neq 0: \exists \quad\!\!\!\! x, y$ such that $add(z, x, y) = 1$ or $mul(z, x, y) = 1$ for $x, y$ as labels for nodes in layers $j, k > i$.
 
 ### Example
 
