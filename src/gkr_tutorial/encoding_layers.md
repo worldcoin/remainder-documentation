@@ -6,13 +6,13 @@ At this point, we have all the puzzle pieces needed to describe the GKR protocol
 
 We start with an example layered arithmetic circuit. Throughout this tutorial, we will provide this concrete example while simultaneously providing the generic steps of GKR.
 
-![Diagram representing example circuit whose output we are going to verify](./figures/gkr_example_1.jpg)
+![Diagram representing example circuit whose output we are going to verify](../figures/gkr_example_1.jpg)
 
 Note some differences from the way this circuit is labeled as opposed to the example in the [statement encoding](./statement_encoding.md) section. Over here, we let the output be a nonzero value for the sake of the example (we explain how to transform any circuit with nonzero output to a circuit with zero output in a [future section](#note-transforming-a-circuit-to-have-zero-output)). Additionally, note that the gate labels start from $0$ in each layer, as opposed to the labels being unique throughout the entire circuit in the previous example. Because our gates $add_{i, j, k}$ and $mul_{i, j, k}$ are unique per triplet of layers $(i, j, k)$, we can start from $0$ in labeling the gates at the start of each layer. 
 
 In this example, $\mathcal{P}$ claims that the output of the following circuit is $45.$ Note that beyond the values in the input, and the actual structure of the circuit (what we refer to as the [circuit description](#circuit-description)), $\mathcal{V}$ does not need any more information to verify the output of the circuit by computation:
 
-![Diagram representing the information the verifier needs to verify the circuit](./figures/gkr_example_2.jpg)
+![Diagram representing the information the verifier needs to verify the circuit](../figures/gkr_example_2.jpg)
 
 This is because every node in every layer $\mathcal{L}_i$ with $i < d$ can be computed as the result of gates applied to nodes in previous layers. 
 
@@ -43,7 +43,7 @@ Another note we made when presenting the above diagram was that the only informa
 ### Example
 
 In the running example, let's fill in the layer $\mathcal{L}_2:$
-![Diagram with input and next layer filled in](./figures/gkr_example_3.jpg)
+![Diagram with input and next layer filled in](../figures/gkr_example_3.jpg)
 
 We were able to fill this in because: 
 $$
@@ -144,4 +144,16 @@ Note that there is an exponential blow-up of claims when reducing claims on one 
 
 ## Circuit Description
 
+Throughout this section, we refer to $\mathcal{V}$ using the description of the circuit in order to evaluate the gates or to understand the layerwise relationships on their own. The circuit description is something agreed upon beforehand with $\mathcal{P}$ and $\mathcal{V}$ and visible to both parties -- it is the "shape" of the circuit, which includes how many nodes each layer contains, the number of layers, and which gates connect nodes from layer to layer. 
+
+Therefore, the circuit description of our example circuit is this:
+
+![Example Circuit Description](../figures/gkr_example_4.jpg)
+
 ## Note: Transforming a Circuit to have Zero Output
+
+In Remainder, $\mathcal{V}$ expects circuits to have output $0$. This is because certain types of circuits (such as those resulting from [LogUp](./lookup.md)) require the output to specifically be $0$, and $\mathcal{V}$ needs to specifically verify this fact.
+
+If a circuit does not have output $0$, one way to transform this is to add the negative of the expected output to the input. The last layer of the circuit can be the sum of this expected output, and the actual output of the circuit. This results in a circuit with the output layer evaluating to $0$. We show this transformation applied to our example above:
+
+![Example Transforming to Zero Output](../figures/gkr_example_5.jpg)

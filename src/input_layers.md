@@ -1,2 +1,0 @@
-# GKR Input Layers
-Input layers are those which have no "source" relationship with any other layers, i.e. the evaluations within these layers are themselves "source" evaluations for the entire circuit. 
