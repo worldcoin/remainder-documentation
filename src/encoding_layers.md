@@ -64,7 +64,7 @@ $$
 \widetilde{V}_2(x_1, x_2) 
 &=& \widetilde{eq}(x_1, x_2; 0, 0)(\widetilde{V}_3(0, 1) + \widetilde{V}_3(1, 0)) \\
 &+& \widetilde{eq}(x_1, x_2; 0, 1)(\widetilde{V}_3(0, 0) \cdot \widetilde{V}_3(1, 0)) \\
-&+& \widetilde{eq}(x_1, x_2; 1, 0)(\widetilde{V}_3(0, 1) \cdot \widetilde{V}_3(1, 1)).
+&+& \widetilde{eq}(x_1, x_2; 1, 0)(\widetilde{V}_3(0, 1) \cdot \widetilde{V}_3(1, 1)) \\ 
 \end{align*}
 $$
 Note that in this definition, we still are linear in the variables $x_1, x_2.$
@@ -97,16 +97,50 @@ add_{i, j, k}(z, x', y')\big[\widetilde{V}_j(x') + \widetilde{V}_k(y')\big] \\
 + \quad\widetilde{eq}(x; z)mul_{i, j, k}(z, x', y')\big[\widetilde{V}_j(x') \cdot \widetilde{V}_k(y')\big] 
     \bigg).
 $$ 
-More detail and examples on these indicator gate functions are described in a [future section on Canonical GKR](./canonical_gkr.md).
+More detail and examples on transforming these indicator gate functions into MLEs are described in the [section on Canonical GKR](./canonical_gkr.md).
 
 ## Using the Equivalence between Layer Encodings
 
-Now, we have enough information to show how we can reduce claims on one layer to claims on the output of an MLE encoding a later layer.
+Now we have enough information to show how we can reduce claims on one layer to claims on the output of an MLE encoding a later layer.
 
 ### Example
 
+We start with the MLE encoding the output. $\mathcal{P}$ claims that the output of the circuit is $45$, i.e., $\widetilde{V}_0 = 45$. Then, at any random point $\mathcal{V}$ challenges $\mathcal{P}$ with, say $g$, because $\widetilde{V}_0$ is a constant function, an honest $\mathcal{P}$ claims that $\widetilde{V}_0(g) = 45$.
+
+Another way, as [expressed above](#encoding-layers-using-their-relationship-to-other-layers) to write $\widetilde{V}_0(g)$ is as:
+ 
+$$
+45 \overset{?}= \widetilde{V}_0(g) = 
+\sum_{z \in \{0, 1\}^{s_0}}\sum_{x' \in \{0, 1\}^{s_j}}\sum_{y' \in \{0, 1\}^{s_k}}
+\bigg( 
+\widetilde{eq}(g; z)
+add_{0, 1, 1}(z, x', y')\big[\widetilde{V}_1(x') + \widetilde{V}_1(y')\big] \\
++ \quad\widetilde{eq}(g; z)mul_{0, 1, 1}(z, x', y')\big[\widetilde{V}_1(x') \cdot \widetilde{V}_1(y')\big] 
+    \bigg).
+$$ 
+
+$\mathcal{P}$ and $\mathcal{V}$ engage in a [sumcheck protocol](./sumcheck.md) to verify this claim of the sum of a polynomial over the boolean hypercube. Recall that sumcheck requires binding the variables that the sum is over (in this case, $z, x', y'$), one by one, with random challenges.
+
+If we follow the sumcheck protocol as is, at the end, $\mathcal{V}$ wants to verify some claim:
+ 
+$$ 
+h_1 \overset{?}=  
+\widetilde{eq}(g; p)
+add_{0, 1, 1}(p, u, v)\big[\widetilde{V}_1(u) + \widetilde{V}_1(v)\big] 
++ \widetilde{eq}(g; p)mul_{0, 1, 1}(p, u, v)\big[\widetilde{V}_1(u) \cdot \widetilde{V}_1(v)\big].
+$$
+
+$\mathcal{V}$ knows the structure of the circuit, so they can compute $add_{0, 1, 1}(p, u, v), mul_{0, 1, 1}(p, u, v)$ on their own. Additionally, $\widetilde{eq}$ is publically computable, so $\mathcal{V}$ computes that on their own as well. Normally, sumcheck would require $\mathcal{V}$ make a query to an "oracle" to verify the claimed values $V_1(u) \overset{?}= h_2 $ and $\widetilde{V}_1(v) \overset{?} = h_3$. 
+
+However, instead we say that $\mathcal{P}$ "reduces" the claim that $\widetilde{V}_0(g) \overset{?}= 45$ to two claims on $\widetilde{V}_1: V_1(u) \overset{?}= h_2; \widetilde{V}_1(v) \overset{?} = h_3.$ 
+
+Similarly, $\widetilde{V}_1$ has a relationship to MLEs in later layers, so the sumcheck on $\widetilde{V}_1$ will reduce to claims on these MLEs, eventually propagating to claims on the [input layer](./input_layers.md).
 
 ### General
+
+In general, GKR works very similarly to the example above. We cover the case where $\mathcal{V}$ expects the output of the circuit to be $0$. $\mathcal{P}$ receives a challenge from $\mathcal{V}, g$ and claims that the MLE representing $\mathcal{L}_0$ still evaluates to $0$ over that random point. I.e., $\mathcal{P}$ claims that $\widetilde{V}_0(g) = 0.$ Using the encoding of $\widetilde{V}_0$ using later layers, $\mathcal{P}$ reduces its claim on the output of the circuit to evaluations of MLEs representing future layers.
+
+Note that there is an exponential blow-up of claims when reducing claims on one layer to the next. We describe a protocol to aggregate claims (and therefore achieve a one-to-one reduction) in the [claims section](./claims.md).
 
 ## Circuit Description
 
