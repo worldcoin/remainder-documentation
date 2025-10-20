@@ -17,3 +17,12 @@ Commitment schemes entail two phases:
 * **Evaluation Phase:** In the evaluation phase, $\mathcal{V}$ receives the commitment $c$ and verifies (the actual method of verifying depends on which commitment scheme is being used) whether $c$ is indeed the commitment to the correct message $m$.
 
 ## Pedersen Commitment Construction
+A Pedersen Commitment is one way of committing to a message, a construction used throughout the Hyrax interactive protocol. Pedersen commitments require a transparent set-up where both $\mathcal{P}$ and $\mathcal{V}$ agree on a generator $g \in \mathbb{G}$.
+
+### Single Message Commitment
+We commit to a message $m \in \mathbb{F}_p$ by simply computing $c = mg$. By the discrete log hardness assumption, it is hard to extract $m$ from $c$, and because $g$ is a generator, $c$ can only be generated from $m$.
+
+### Vector Pedersen Commitment
+We commit to a list of messages $m_1, \dots, m_n \in \mathbb{F}_p$ by first agreeing on $n$ generators $g_1, \dots, g_n$ and then computing $c = m_1g_1 + m_2g_2 + ... + m_ng_n$. This is what is normally referred to as a multi-scalar multiplication in elliptic-curve cryptography.
+
+We go over how $\mathcal{V}$ can verify that $c$ is indeed the commitment to a set of messages $m$ in future sections. Note that the size of both of these commitments is a single elliptic curve point, but the cost of computing these varies on the number of messages.
