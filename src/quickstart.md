@@ -48,7 +48,15 @@ builder.build().unwrap()
 This creates a `Circuit<Fr>` struct which contains the layered circuit description (see `GKRCircuitDescription`), the mapping between nodes and layers (see `CircuitMap`), and the state for circuit inputs which have been partially populated already. 
 
 ## Populating Circuit Inputs
-The next step to proving the correctness of the output of a GKR circuit is to provide the circuit with _all_ of its inputs (including hints for "verification" rather than "computation" circuits, e.g. the binary decomposition of a value; note that Remainder currently does not have features which assist with computing such "hint" values and these will have to be computed from scratch). In the case of our example circuit (see the function `tutorial_test()`), we have the following:
+First, we instantiate the circuit description which we created above (see the function `tutorial_test()`):
+```rust
+let base_circuit = build_circuit();
+let mut prover_circuit = base_circuit.clone();
+let verifier_circuit = base_circuit.clone();
+```
+Note that we additionally create prover and verifier "versions" of the circuit. The reason for this is that the prover will want to attach input data to the circuit, whereas the verifier will want to receive those inputs from the proof itself and will not independently attach inputs to the circuit this time around. We additionally note that in general, rather than generating the circuit description once and then cloning for the prover and verifier, we will usually generate the circuit description and serialize it, then distribute the description to both the proving and verifying party. The above emulates this but in code.
+
+The next step to proving the correctness of the output of a GKR circuit is to provide the circuit with _all_ of its inputs (including hints for "verification" rather than "computation" circuits, e.g. the binary decomposition of a value; note that Remainder currently does not have features which assist with computing such "hint" values and these will have to be manually computed outside of the main `prove()` function). In the case of our example circuit, we have the following:
 ```rust
 let lhs_data = vec![1, 2, 3, 4].into();
 let rhs_data = vec![5, 6, 7, 8].into();
@@ -63,9 +71,42 @@ circuit.set_input("RHS", rhs_data);
 circuit.set_input("Output", expected_output_data);
 ```
 
+## Generating a GKR proof
+
 We next "finalize" the circuit for proving, i.e. check that all declared input "shred"s have data associated to them, combine their data with respect to their declared input layer sources, and set up parameters for polynomial commitments to input layers, e.g. Ligero PCS.
 ```rust
 let provable_circuit = circuit.finalize().unwrap();
 ```
 
-Finally, we run the prover 
+Finally, we run the prover using the "runtime-optimized" configuration:
+```rust
+let (proof_config, proof_as_transcript) =
+    prove_circuit_with_runtime_optimized_config::<Fr, PoseidonSponge<Fr>>(&provable_circuit);
+```
+
+This function returns a `ProofConfig` and a `TranscriptReader<Fr, PoseidonSponge<Fr>>`. The former tells the verifier which configuration it should run in to verify the proof, and the latter _is_ a transcript representing the full GKR proof (see TODO Fiat-Shamir section for more details). 
+
+## Verifying the GKR proof
+To verify the proof, we first take the circuit description and prepare it for verification:
+```rust
+let (verifiable_circuit, verifier_predetermined_public_inputs) =
+    verifier_circuit.gen_verifiable_circuit().unwrap();
+```
+
+The `verifier_predetermined_public_inputs` should be an empty map here -- the tl;dr is that it just represents public inputs which are known beforehand to the verifier (e.g. lookup table values, public constants which do not vary between different circuit proving instances, etc.), but in this case all of our inputs are private. Finally, we verify:
+```rust
+verify_circuit_with_proof_config::<Fr, PoseidonSponge<Fr>>(
+    &verifiable_circuit,
+    verifier_predetermined_public_inputs,
+    &proof_config,
+    proof_as_transcript,
+);
+```
+
+This function uses the provided `proof_config` and executes the GKR verifier against the `verifiable_circuit`, i.e. the verifier-ready circuit description. The function crashes if the proof does not verify for any reason, although in this case it should pass. 
+
+Congratulations -- you have just
+- Created your first layered circuit description
+- Attached data to the circuit input layers
+- Proven the correctness of the circuit outputs against the inputs
+- Verified the resulting GKR proof
