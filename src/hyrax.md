@@ -36,3 +36,6 @@ Elliptic curve consists of points in a finite field satisfying the equation $y^2
 
 * **Point at Infinity:** Note that it is not possible to define the appropriate affine coordinate corresponding to a projective coordinate if $z = 0.$ This is exactly the point at infinity, represented by the point $(0, 1, 0)$.
 
+# Roadmap
+
+For the rest of this chapter, we will first cover the [Hyrax primitives](./hyrax/hyrax_primitives.md), which allows us to prove properties of different blinded Pedersen commitments, such as proving that two commitments which look different (are different group elements) commit to the same message without having to open the commitment, or that the prover knows the message used to produce a commitment without having to open the commitment. We then move on to more complex proofs over Pedersen commitments such as [Proof of Sumcheck](./hyrax/proof_of_sumcheck.md) and [Proof of Claim Aggregation](./hyrax/proof_of_claim_agg.md) which prove that the prover has properly executed sumcheck or claim aggregation. Finally, we show how the primitives and more intermediate protocols can be [put together](./hyrax/hyrax_putting_together.md) to produce a valid GKR proof which only consists of blinded Pedersen commitments.

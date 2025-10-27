@@ -8,7 +8,7 @@ Before explaining what Pedersen commitments are, we briefly provide background o
 
 ### Properties
 Commitment schemes are best described by the properties they satisfy. We informally define them below:
-* **Hiding:** This gives privacy to the party computing the commitment. I.e., given a commitment $c$, it is computationally difficult to extract the message $m$ it was computed from. In other words, the distribution of commitments that could be computed from a message $m_0$ is computationally indistinguishable from the distribution of commitments that could be computed from a message $m_1$.
+* **Hiding:** This gives privacy to the party computing the commitment. I.e., given a commitment $c$, it is computationally difficult to extract the message $m$ it was computed from. A stronger notion, the "statistical hiding" property, says that the distribution of commitments that could be computed from a message $m_0$ is computationally indistinguishable from the distribution of commitments that could be computed from a message $m_1$.
 * **Binding:** This property gives security to the party receiving the commitment. It states that once given a commitment $c$, the party who receives the commitment can be confident with up to negligible probability that the sender is tied to the message $c$ was computed from. In other words, the probability that $c$ is the commitment of two different messages $m_0 \neq m_1$ is very low.
 
 ### Protocol
@@ -24,5 +24,8 @@ We commit to a message $m \in \mathbb{F}_p$ by simply computing $c = mg$. By the
 
 ### Vector Pedersen Commitment
 We commit to a list of messages $m_1, \dots, m_n \in \mathbb{F}_p$ by first agreeing on $n$ generators $g_1, \dots, g_n$ and then computing $c = m_1g_1 + m_2g_2 + ... + m_ng_n$. This is what is normally referred to as a multi-scalar multiplication in elliptic-curve cryptography.
+
+### Blinded Pedersen Commitment
+In Remainder, we use blinded Pedersen commitments in order to guarantee statistical zero-knowledge (produce statistically hiding commitments as [explained above](#properties)). This involves the prover holding a random tape (usually instantiated by a cryptographic pseudo-random number generator), and the prover and verifier agreeing beforehand on a "blinding generator" $h$. The prover simply adds $h^r$, which $r$ sampled from the random tape to its original, either Pedersen scalar commitment or vector commitment, to produce a blinded commitment.
 
 We go over how $\mathcal{V}$ can verify that $c$ is indeed the commitment to a set of messages $m$ in future sections. Note that the size of both of these commitments is a single elliptic curve point, but the cost of computing these varies on the number of messages.
