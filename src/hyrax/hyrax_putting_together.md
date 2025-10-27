@@ -1,1 +1,12 @@
 # Putting it all Together
+
+So far, we've gone over the [Hyrax Primitives](./hyrax_primitives.md), and how these various primitives come together to prove more complex protocols, such as [Proof of Sumcheck](./proof_of_sumcheck.md) and [Claim Aggregation](./proof_of_claim_agg.md). Now we go over how to put all of these together to construct a Zero-Knowledge GKR proof using the Hyrax transformation. 
+
+1. For every GKR layer, $\mathcal{P}$ commits to its sumcheck messages at each round by committing to the coefficients of the univarate that makes up each round.
+2. At the end of sumcheck, $\mathcal{P}$ commits to the values it claims on "underlying" MLEs.
+3. If any of these values involved a product of MLEs, such as $\widetilde{V}_i(0, r_1, \dots, r_n) \cdot \widetilde{V}_i(1, r_1, \dots, r_n)$, then $\mathcal{P}$ commits to its claim for \widetilde{V}_i(0, r_1, \dots, r_n), as for example $v_A$, the claim for $\widetilde{V}_i(1, r_1, \dots, r_n)$ as $v_B$, and the product $\widetilde{V}_i(0, r_1, \dots, r_n) \cdot \widetilde{V}_i(1, r_1, \dots, r_n)$ as $v_0$. This is because $\mathcal{V}$ only needs $v_0$ to compute the evaluation $f(r_1, \dots, r_n)$, but: 
+4. $\mathcal{P}$ needs to prove to $\mathcal{V}$ that $v_0$ is a commitment to the product of the underlying messages in $v_A$ and $v_B$. Therefore $\mathcal{P}$ and $\mathcal{V}$ engage in the necessary [proofs of product](./hyrax_primitives.md/#proof-of-product) for this GKR layer over commitments on underlying MLEs.
+5. $\mathcal{P}$ and $\mathcal{V}$ engage in [proof of sumcheck](./proof_of_sumcheck.md) for this layer.
+6. For the next layer, if it is not the input layer, $\mathcal{P}$ and $\mathcal{V}$ engage in a [proof of claim aggregation](./proof_of_claim_agg.md) depending on the [type of claim aggregation](../gkr_tutorial/claims.md) used. They both have an aggregated claim (or RLC of claims) to do the next layer of sumcheck over, and repeat steps 1-6 until the input layer.
+
+At the input layer, $\mathcal{P}$ and $\mathcal{V}$ either produce $m$ separate input layer proofs, or must engage in interpolative claim aggregation because we do not have a future layer of sumcheck to reduce to. Finally, $\mathcal{P}$ ends up with a claim on the input to the circuit at a random point. We engage in an input layer proof using the [Hyrax PCS](../hyrax_pcs.md) to prove this final claim.

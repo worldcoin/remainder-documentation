@@ -31,15 +31,15 @@ $$
 \vec{\pi} =
 
 \begin{bmatrix}
-c_{0, 1} \\ 
-c_{0, 2} \\
+C_{a_{0, 1}} \\ 
+C_{a_{0, 2}} \\
 \vdots \\
-c_{0, d_0} \\
+C_{a_{0, d_0}} \\
 \vdots \\
-c_{n, 1} \\ 
-c_{n, 2} \\
+C_{a_{n, 1}} \\ 
+C_{a_{n, 2}} \\
 \vdots \\
-c_{n, d_n} 
+C_{a_{n, d_n}} 
 \end{bmatrix} 
 $$
 
@@ -49,7 +49,7 @@ $$
 M \cdot \vec{\pi} = 
 
 \begin{bmatrix}
-s_0 \\ 
+H \\ 
 0 \\
 \vdots \\
 0  \\ 
@@ -57,7 +57,7 @@ s_0 \\
 \end{bmatrix}
 $$
 
-Every non-specified entry in the matrix $M$ is $0$, and it has dimension $n \times (\sum_i{d_i} \cdot n)$. $\vec{\pi}$ has dimension $(\sum_i{d_i} \cdot n) \times 1$. Its product has dimension $n \times 1$. The sum $s_0$ represents $\mathcal{P}$'s original claim for the sumcheck expression -- the sum of the first univariate $g_0(0) + g_0(1)$ should be equal to the sum, which is what the first row of the matrix multiplied by $\vec{\pi}$ encodes. Note that we can do a [proof of dot product](./hyrax_primitives.md/#proof-of-dot-product) for each of the row of the matrix with $\vec{\pi}$ as the private vector, and each entry in the resultant vector as the claimed dot product.
+Every non-specified entry in the matrix $M$ is $0$, and it has dimension $(n+1) \times \sum_i{d_i}$. $\vec{\pi}$ has dimension $\sum_i{d_i} \times 1$. Its product has dimension $(n + 1) \times 1$. The sum $H$ represents $\mathcal{P}$'s original claim for the sumcheck expression -- the sum of the first univariate $g_0(0) + g_0(1)$ should be equal to the sum, which is what the first row of the matrix multiplied by $\vec{\pi}$ encodes. Note that we can do a [proof of dot product](./hyrax_primitives.md/#proof-of-dot-product) for each of the row of the matrix with $\vec{\pi}$ as the private vector, and each entry in the resultant vector as the claimed dot product.
 
 However, there is a small subtlety: every $d_i$ coefficients in $\vec{\pi}$ must be committed to before the challenge $r_i$ is sampled for sumcheck. Otherwise, $\mathcal{P}$ can modify the commitments to make false claims using its knowledge of $r_i.$ Therefore, $\vec{\pi}$ is committed to incrementally, and after each commitment $r_i$ is sampled. Finally, $\mathcal{V}$ and $\mathcal{P}$ engage in a proof of dot product for every row of the matrix $M$.
 
@@ -74,20 +74,22 @@ M =
 2 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
 -1 & -r_1 & -r_1^2 & 2 & 1 & 1 & 0 & 0 & 0 & 0 & 0\\
 0 & 0 & 0 & -1 & -r_2 & -r_2^2 & 2 & 1 & 1 & 0 & 0\\
-0 & 0 & 0 & 0 & 0 & 0 & -1 & -r_3 & -r_3^2 & \text{add}(g_1, g_2; r_1, r_2; r_3) & \text{add}(g_1, g_2; r_1, r_2; r_3)\\
+0 & 0 & 0 & 0 & 0 & 0 & -1 & -r_3 & -r_3^2 & \widetilde{\text{add}}(g_1, g_2; r_1, r_2; r_3) & \widetilde{\text{add}}(g_1, g_2; r_1, r_2; r_3)
 \end{bmatrix}
-\\
+$$
+
+$$
 \vec{\pi} =
 \begin{bmatrix}
-c_{0, 1} \\
-c_{0, 2} \\
-c_{0, 3} \\
-c_{1, 1} \\ 
-c_{1, 2} \\
-c_{1, 3} \\
-c_{2, 1} \\ 
-c_{2, 2} \\
-c_{2, 3} \\
+C_{a_{0, 1}} \\
+C_{a_{0, 2}} \\
+C_{a_{0, 3}} \\
+C_{a_{1, 1}} \\ 
+C_{a_{1, 2}} \\
+C_{a_{1, 3}} \\
+C_{a_{2, 1}} \\ 
+C_{a_{2, 2}} \\
+C_{a_{2, 3}} \\
 v_0 \\ 
 v_1
 \end{bmatrix}

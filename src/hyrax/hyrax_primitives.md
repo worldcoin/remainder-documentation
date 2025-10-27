@@ -14,7 +14,7 @@ In a Proof of Opening, $\mathcal{P}$ shows that given a commitment $C_0 = xg + r
 
 In a Proof of Equality, $\mathcal{P}$ convinces $\mathcal{V}$ that two commitments $C_0 = v_0g + s_0h$ and $C_1 = v_1g + s_1h$ commit to the same value. In other words $\mathcal{P}$ knows that $v_0 = v_1$, but $\mathcal{V}$ only sees the commitments, which are different group elements.
 
-1. $\mathcal{P} \to \mathcal{V}:$ $\mathcal{P}$ first uniformly samples a random value $r$ from $\mathbb{F}_p$. $mathcal{P}$ sends $\mathcal{V}$ $\alpha = rh$.
+1. $\mathcal{P} \to \mathcal{V}:$ $\mathcal{P}$ first uniformly samples a random value $r$ from $\mathbb{F}_p$. $\mathcal{P}$ sends $\mathcal{V}$ $\alpha = rh$.
 2. $\mathcal{V} \to \mathcal{P}:$ A random challenge $c$ from $\mathbb{F}_p$.
 3. $\mathcal{P} \to \mathcal{V}:$ $z = c \cdot (s_0 - s_1) + r$
 4. $\mathcal{V}$ checks: $zh \overset{?}= cC_0 - cC_1 + \alpha.$
