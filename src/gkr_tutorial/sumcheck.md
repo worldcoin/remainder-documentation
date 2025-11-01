@@ -21,7 +21,7 @@ Note that the sum we are trying to verify can be rewritten as such:
 $$H \overset{?}= \sum_{x_1 \in \{0, 1\}}\sum_{x_2 \in \{0, 1\}}\sum_{x_3 \in \{0, 1\}}\dots\sum_{x_n \in \{0, 1\}}f(x_1, \dots, x_n).$$
 Let's say $\mathcal{P}$ sends $\mathcal{V}$ the following univariate:
 $$g_1(X) \overset{?}= \sum_{x_2 \in \{0, 1\}}\sum_{x_3 \in \{0, 1\}}\dots\sum_{x_n \in \{0, 1\}}f(X, x_2, \dots, x_n).$$
-One way for $\mathcal{P}$ to communicate $g(X)$ to $\mathcal{V}$ the univariate $g(X)$ is to send $d + 1 = degree(g) + 1$ evaluations of $g(X)$. While $\mathcal{P}$ can alternatively send coefficients, we focus on this method of defining a univariate and assume $\mathcal{P}$ sends the evaluations $g(0), g(1), \dots, g(d)$ to $\mathcal{V}$.
+One way for $\mathcal{P}$ to communicate $g(X)$ to $\mathcal{V}$ the univariate $g(X)$ is to send $d + 1 = \deg(g) + 1$ evaluations of $g(X)$. While $\mathcal{P}$ can alternatively send coefficients, we focus on this method of defining a univariate and assume $\mathcal{P}$ sends the evaluations $g(0), g(1), \dots, g(d)$ to $\mathcal{V}$.
 
 $\mathcal{V}$ can verify whether $H$ is correct in relation to $g_1(X)$ by checking whether $H = g_1(0) + g_1(1).$ In other words, we have *reduced* the validity of claim that $H$ is the sum of the evaluations of $f$ over the $n$-dimensional boolean hypercube to the claim that $g_1(X)$ is the univariate polynomial over a smaller sum. 
 
