@@ -136,6 +136,8 @@ However, instead we say that $\mathcal{P}$ "reduces" the claim that $\widetilde{
 
 Similarly, $\widetilde{V}_1$ has a relationship to MLEs in later layers, so the sumcheck on $\widetilde{V}_1$ will reduce to claims on these MLEs, eventually propagating to claims on the [input layer](./input_layers.md).
 
+For another example of claim reduction for [structured GKR](./canonical_gkr.md), see [this section](./claims.md#claim-propagation).
+
 ### General
 
 In general, GKR works very similarly to the example above. We cover the case where $\mathcal{V}$ expects the output of the circuit to be $0$. $\mathcal{P}$ receives a challenge from $\mathcal{V}, g$ and claims that the MLE representing $\mathcal{L}_0$ still evaluates to $0$ over that random point. I.e., $\mathcal{P}$ claims that $\widetilde{V}_0(g) = 0.$ Using the encoding of $\widetilde{V}_0$ using later layers, $\mathcal{P}$ reduces its claim on the output of the circuit to evaluations of MLEs representing future layers.

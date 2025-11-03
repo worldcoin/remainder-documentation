@@ -10,6 +10,7 @@
         - [Claims](./gkr_tutorial/claims.md)
         - [Canonical GKR](./gkr_tutorial/canonical_gkr.md)
         - [Regular GKR](./gkr_tutorial/regular_gkr.md)
+        - [Matmult Layer](./gkr_tutorial/matmult_layer.md)
     - [GKR Input Layer](./gkr_tutorial/input_layers.md)
     - [Fiat Shamir](./gkr_tutorial/fiat_shamir.md)
     - [Proof/Transcript](./gkr_tutorial/proof.md)

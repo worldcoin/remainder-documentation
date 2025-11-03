@@ -6,7 +6,10 @@ The documentation is split into three primary parts:
 - [The second](./canonical_gkr.md) follows from the first and dives a tad deeper into the specific methodology of layerwise relationships, prover claims, etc. and explains the various concepts behind GKR in a loosely mathematical fashion. 
 - [The third](./frontend_basic_tutorial.md) also follows from the first and describes the same concepts as the second, but in less detail and complete with code examples. 
 
-In addition, we provide a concise "how-to" quickstart here. 
+In addition, we provide a concise "how-to" quickstart here. This quickstart covers the basics of using Remainder as a GKR proof system library, including the following:
+- Circuit description generation
+- Appending inputs to a circuit description
+- Proving and verifying
 
 ## Creating a Layered (GKR) Circuit
 See `remainder_frontend/tests/tutorial.rs` (TODO -- put link here) for code reference. To define a layered circuit, we must describe the circuit's inputs, intermediate layers and relationships between them, and output layers. We'll first take a look at the `build_circuit()` function. The first line is
@@ -19,7 +22,7 @@ The next line is
 ```rust
 let input_layer = builder.add_input_layer("Input Layer", LayerVisibility::Private);
 ```
-This adds an input _layer_ to the circuit. Note that an input _layer_ is one which gets all claims on it bundled together and is treated as a single polynomial (multilinear extension) when the prover decides how to divide the circuit inputs to commit to each one. We then have the following:
+This adds an input _layer_ to the circuit (see [input layer](./gkr_tutorial/input_layers.md) page for more details). Note that an input _layer_ is one which gets all claims on it bundled together and is treated as a single polynomial (multilinear extension) when the prover decides how to divide the circuit inputs to commit to each one. We then have the following:
 ```rust
 let lhs = builder.add_input_shred("LHS", 2, &input_layer);
 let rhs = builder.add_input_shred("RHS", 2, &input_layer);
@@ -31,6 +34,8 @@ We begin adding layers to the circuit:
 ```rust
 let multiplication_sector = builder.add_sector(lhs * rhs);
 ```
+Notice that even though `lhs` and `rhs` are input "shred"s from the same input _layer_, because we added them as separate "shred"s earlier, we can now use them as separate inputs to be element-wise multiplied against one another. In general, input _layers_ are treated as a single entity by the verifier, while input _shreds_ are treated as subsets of input layers which the prover can use as inputs to other layers within the circuit.
+
 This first layer is a "sector", which is the Remainder way of referring to [structured layerwise relationships](./regular_gkr.md). This simply means that with evaluations $[a, b, c, d]$ in `lhs` and $[e, f, g, h]$ in `rhs`, the resulting layer should hold the element-wise product of the evaluations in `lhs` and those in `rhs`, i.e. $[ae, bf, cg, dh]$. 
 
 We add another layer to the circuit:
@@ -39,13 +44,13 @@ let subtraction_sector = builder.add_sector(multiplication_sector - expected_out
 
 builder.set_output(&subtraction_sector);
 ```
-This layer is another element-wise operator, but where we element-wise subtract all of the values rather than multiply them. Here, we are semantically subtracting the `expected_output` from the earlier layer we created which was the element-wise product of the values in `lhs` and `rhs`. The resulting layer should be zero if the two are element-wise equal, and we thus call `builder.set_output()` on the resulting layer, which tells the circuit builder that this layer's values should be publicly revealed to the verifier (and that no future layer depends on the values). 
+This layer is another element-wise operator, but where we element-wise subtract all of the values rather than multiply them. Here, we are semantically subtracting the `expected_output` from the earlier layer we created which was the element-wise product of the values in `lhs` and `rhs` (see [this section](./gkr_tutorial/encoding_layers.md#note-transforming-a-circuit-to-have-zero-output) for more details). The resulting layer should be zero if the two are element-wise equal, and we thus call `builder.set_output()` on the resulting layer, which tells the circuit builder that this layer's values should be publicly revealed to the verifier (and that no future layer depends on the values). 
 
 Finally, we create the layered circuit from its components:
 ```rust
 builder.build().unwrap()
 ```
-This creates a `Circuit<Fr>` struct which contains the layered circuit description (see `GKRCircuitDescription`), the mapping between nodes and layers (see `CircuitMap`), and the state for circuit inputs which have been partially populated already. 
+This creates a `Circuit<Fr>` struct which contains the layered circuit description (see [`GKRCircuitDescription`](./gkr_tutorial/encoding_layers.md#circuit-description)), the mapping between nodes and layers (see `CircuitMap`), and the state for circuit inputs which have been partially populated already. 
 
 ## Populating Circuit Inputs
 First, we instantiate the circuit description which we created above (see the function `tutorial_test()`):
@@ -84,7 +89,7 @@ let (proof_config, proof_as_transcript) =
     prove_circuit_with_runtime_optimized_config::<Fr, PoseidonSponge<Fr>>(&provable_circuit);
 ```
 
-This function returns a `ProofConfig` and a `TranscriptReader<Fr, PoseidonSponge<Fr>>`. The former tells the verifier which configuration it should run in to verify the proof, and the latter _is_ a transcript representing the full GKR proof (see TODO Fiat-Shamir section for more details). 
+This function returns a `ProofConfig` and a `TranscriptReader<Fr, PoseidonSponge<Fr>>`. The former tells the verifier which configuration it should run in to verify the proof, and the latter _is_ a transcript representing the full GKR proof (see [Proof/Transcript](./gkr_tutorial/proof.md) section for more details). 
 
 ## Verifying the GKR proof
 To verify the proof, we first take the circuit description and prepare it for verification:

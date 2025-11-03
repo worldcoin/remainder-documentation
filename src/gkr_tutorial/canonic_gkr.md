@@ -13,11 +13,11 @@ We define three *types* of gate layers within Remainder, although they are all q
 - Similarly, let $\widetilde{V}_k(x) \in \mathbb{F}^{<2}[X_1, ..., X_{s_k}]$ be the MLE corresponding to values in (another) layer of the circuit which is a second "source" of the gate polynomial relationship. Note that $k > i$ always.
 
 ## Identity Gate
-Identity gates (which are secretly unlimited fan-in addition gates...) are defined in the following way:
+Identity gates are defined in the following way:
 $$
 \text{id}(z, x): \{0, 1\}^{s_i} \times \{0, 1\}^{s_j} \mapsto \{0, 1\} \quad \text{where} \quad \text{id}(z, x) = \begin{cases} 1 & \text{if $\widetilde{V}_i(z) = \widetilde{V}_j(x)$}\\ 0 & \text{otherwise}\end{cases}
 $$
-In other words, $\text{id}(z, x)$ is $1$ if and only if there is a gate from the $z$'th value in the $j$'th layer to the $x$'th value in the $i$'th layer. The MLE of the identity function above is defined as follows:
+In other words, $\text{id}(z, x)$ is $1$ if and only if there is a gate from the $z$'th value in the $j$'th layer to the $x$'th value in the $i$'th layer. These can be thought of as "routing" gates or "copy constraints", as they directly pass a value from one layer to another. The MLE of the identity function above is defined as follows:
 $$
 \widetilde{\text{id}}: \mathbb{F}^{<2}[Z_1, ..., Z_{s_i}, X_1, ..., X_{s_j}] \mapsto \mathbb{F} \quad \text{where} \quad \widetilde{\text{id}}(g, u) = \sum_{z \in \{0, 1\}^{s_i}, x \in \{0, 1\}^{s_j}} \widetilde{\text{eq}}(g, z) \cdot \widetilde{\text{eq}}(u, x) \cdot \text{id}(z, x)
 $$
@@ -52,7 +52,7 @@ and the polynomial relationship is defined very similarly to that of identity ga
 $$
 \widetilde{V}_i(g) = \sum_{x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\text{add}}(g, x, y) \cdot \bigg[\widetilde{V}_j(x) + \widetilde{V}_k(y)\bigg]
 $$
-Assuming that $x$ gets bound to $u \in \mathbb{F}^{s_j}$ and $y$ gets bound to $v \in \mathbb{F}^{s_k}$ during sumcheck, a claim on this layer results in three total claims: one on $\widetilde{\text{add}}(g, u, v)$ (which the verifier can check on its own), one on $\widetilde{V}_j(u)$, and one on $\widetilde{V}_k(v)$. 
+Assuming that $x$ gets bound to $u \in \mathbb{F}^{s_j}$ and $y$ gets bound to $v \in \mathbb{F}^{s_k}$ during sumcheck, a claim on this layer results in three total claims: one on $\widetilde{\text{add}}(g, u, v)$ (which the verifier can compute from the circuit description and therefore check on its own), one on $\widetilde{V}_j(u)$, and one on $\widetilde{V}_k(v)$. 
 
 ### Example
 We start with two "source" MLEs, $\widetilde{V}_j(x_0, x_1), \widetilde{V}_k(y_0, y_1)$ over two variables with four evaluations each, and wish to add each value in the first with its $4 - \text{idx}$ "complementary value" in the second. The result should be the MLE representing layer $i$, i.e. $\widetilde{V}_i(z_0, z_1)$. 

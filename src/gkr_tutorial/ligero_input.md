@@ -1,5 +1,5 @@
 # Ligero Polynomial Commitment Scheme
-References: [GLS+21](https://eprint.iacr.org/2021/1043.pdf), page 46.
+References: [GLS+21](https://eprint.iacr.org/2021/1043.pdf), page 46, [AER24](https://eprint.iacr.org/2024/1399.pdf).
 
 ### Prerequisites
 - [Committed input layers](./gkr_tutorial/input_layers.md#committed-inputs)
@@ -113,12 +113,12 @@ The verifier checks that $H(\tilde{M}_{\cdot, j}) = \text{com}_j$, and verifies 
 
 The verifier is now convinced that the columns which the prover sent over are columns of the $\tilde{M}$ which was committed to during the commitment phase. 
 
-Finally, the verifier checks that $L \cdot \tilde{M}_{\cdot, j} = \tilde{U}_j$. This last check ensures that the prover sent $\tilde{U}$ honestly -- if they attempted to cheat by sending $L \cdot M'$ for some $M' \neq M$, we have that each row of $\text{Enc}(M)$ would differ from each row of $\text{Enc}(M')$ in at least $d(\rho^{-1} - 1)$ coordinates (as mentioned earlier, we generally have $\rho^{-1} \geq 2$), and therefore WHP (using a theorem from TODO), that $\tilde{U}$ (the honest $L \cdot \text{Enc}(M)$) differs from $\tilde{U'}$ (the dishonest $L \cdot \text{Enc}(M')$) in at least $\frac{1}{2}d(\rho^{-1} - 1)$ coordinates as well.
+Finally, the verifier checks that $L \cdot \tilde{M}_{\cdot, j} = \tilde{U}_j$. This last check ensures that the prover sent $\tilde{U}$ honestly -- if they attempted to cheat by sending $L \cdot M'$ for some $M' \neq M$, we have that each row of $\text{Enc}(M)$ would differ from each row of $\text{Enc}(M')$ in at least $d(\rho^{-1} - 1)$ coordinates (as mentioned earlier, we generally have $\rho^{-1} \geq 2$), and therefore WHP (using a result from [AER24](https://eprint.iacr.org/2024/1399.pdf)), that $\tilde{U}$ (the honest $L \cdot \text{Enc}(M)$) differs from $\tilde{U'}$ (the dishonest $L \cdot \text{Enc}(M')$) in at least $d(\rho^{-1} - 1)$ coordinates as well.
 
 With $q$ queries, the verifier catches a cheating prover at least
 
 $$
-1 - (1 - \frac{1}{2}d(\rho^{-1} - 1))^q
+1 - (1 - d(\rho^{-1} - 1))^q
 $$
 
 proportion of the time.
