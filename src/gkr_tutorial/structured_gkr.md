@@ -2,8 +2,8 @@
 
 Source: [Tha13](https://eprint.iacr.org/2013/351.pdf), section 5 ("Time-Optimal Protocols for Circuit Evaluation").
 
-## Equality MLE
-We begin by defining the $\widetilde{\text{eq}}$ MLE. We first consider the binary string equality function $\text{eq}: \{0, 1\}^{2n} \mapsto \{0, 1\}$, where
+## Review: Equality MLE
+We begin by briefly recalling the $\widetilde{\text{eq}}$ MLE (see [this section](./multilinear_extensions.md#equality-mle) for more details). We first consider the binary string equality function $\text{eq}: \{0, 1\}^{2n} \mapsto \{0, 1\}$, where
 
 $$
 \text{eq}(X_1, ..., X_n; Y_1, ..., Y_n) = \begin{cases} 1 & \text{if $\forall i: X_i = Y_i$} \\ 0 & \text{otherwise} \end{cases}
@@ -15,7 +15,9 @@ $$
 \widetilde{\text{eq}}(X_1, ..., X_n; Y_1, ..., Y_n) = \prod_{i = 1}^n (1 - X_i)(1 - Y_i) + X_i Y_i
 $$
 
+<!--
 The logic is as follows: when $X_i = Y_i$, either both are zero (in which case $(1 - X_i)(1 - Y_i) = 1$, or both are one (in which case $X_i Y_i = 1$). We see that $\widetilde{\text{eq}}$ is thus equivalent to $\text{eq}$ when $X_i, Y_i \in \{0, 1\}$, and since multilinear extensions are unique (with respect to their evaluations on the hypercube) we have that the above expression is the unique multilinear extension of the boolean equality predicate.
+-->
 
 ## Structured Layerwise Relationship
 See [Tha13](https://eprint.iacr.org/2013/351.pdf), page 25 ("Theorem 1") for a more rigorous treatment. Note that Remainder does _not_ implement Theorem 1 in its entirety, and that many circuits which do fulfill the criteria of Theorem 1 are currently not expressible within Remainder's circuit frontend.
@@ -86,16 +88,20 @@ $$
 V_i(z_1, z_2) = (1 - z_1) \cdot V_j(0, z_2)^2 + z_1 \cdot 2 \cdot V_j(1, z_2)
 $$
 
-In other words, when $z_1 = 0$ the second summand on the RHS is zero, and the first summand is just $V_j(0, z_2) = V_j(z_1, z_2)$ since we already know that $z_1 = 0$, and vice versa for when $z_1 = 1$. Applying the third transformation rule from above and extending everything into its multilinear form, we get
+In other words, when $z_1 = 0$ the second summand on the RHS is zero, and the first summand is just $V_j(0, z_2) = V_j(z_1, z_2)$ since we already know that $z_1 = 0$, and vice versa for when $z_1 = 1$. At a first glance, this may look similar to the earlier example in which we took the products of adjacent pairs of layer values, but the two are not the same -- 
+- First, the current setup is semantically quite different; in the previous example we applied a binary "shrinking" transformation between the source and destination layers by multiplying pairs of values, while in the current example we are "splitting" the circuit into two semantic halves and applying a different unary operation element-wise to each half.
+- Second, the current setup actually has its $z_1$ variable _outside_ of the argument to an MLE representing data in a previous layer. This is precisely what allows us to "select" between the two semantic halves of the circuit and compute an element-wise squaring in the first and a doubling in the second.
+
+Applying the third transformation rule from above and extending everything into its multilinear form, we get
 
 $$
-\widetilde{V}_i(Z_1, Z_2) = \sum_{b_1, b_2 \in \{0, 1\}^2} \widetilde{\text{eq}}(Z_1, Z_2; b_1, b_2) \cdot \big[(1 - b_1) \cdot V_j(0, b_2)^2 + b_1 \cdot 2 \cdot V_j(1, b_2)\big]
+\widetilde{V}_i(Z_1, Z_2) = \sum_{b_1, b_2 \in \{0, 1\}^2} \widetilde{\text{eq}}(Z_1, Z_2; b_1, b_2) \cdot \big[(1 - b_1) \cdot \widetilde{V}_j(0, b_2)^2 + b_1 \cdot 2 \cdot \widetilde{V}_j(1, b_2)\big]
 $$
 
 However, _now_ the observation that $\widetilde{\text{eq}}$ should _only_ apply to variables which are nonlinear on the RHS is helpful here -- notice that although $b_2$ as a variable would be quadratic on the RHS, $b_1$ is linear and can thus be removed from the summation altogether and replaced directly with $Z_1$:
 
 $$
-\widetilde{V}_i(Z_1, Z_2) = \sum_{b_2 \in \{0, 1\}} \widetilde{\text{eq}}(Z_2; b_2) \cdot \big[(1 - Z_1) \cdot V_j(0, b_2)^2 + Z_1 \cdot 2 \cdot V_j(1, b_2)\big]
+\widetilde{V}_i(Z_1, Z_2) = \sum_{b_2 \in \{0, 1\}} \widetilde{\text{eq}}(Z_2; b_2) \cdot \big[(1 - Z_1) \cdot \widetilde{V}_j(0, b_2)^2 + Z_1 \cdot 2 \cdot \widetilde{V}_j(1, b_2)\big]
 $$
 
 This layerwise relationship form-factor is called a "selector" in Remainder terminology and in general refers to an in-circuit version of an "if/else" statement where MLEs representing the values of layers can be broken into power-of-two-sized pieces.
@@ -154,4 +160,4 @@ $$
 \widetilde{V}_j(v_1, ..., v_n) \overset{?}{=} c_v
 $$
 
-These claims have no challenges in common, and can only be aggregated through interpolative or RLC claim aggregation, both of which are significantly more expensive than the above method. (TODO(ryancao): Add links to those)
+These claims have no challenges in common, and can only be aggregated through [interpolative](./claims.md#interpolative-claim-aggregation) or [RLC claim aggregation](./claims.md#rlc-random-linear-combination-claim-aggregation), both of which are significantly more expensive than the above method.
