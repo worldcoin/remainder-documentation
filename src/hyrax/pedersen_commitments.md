@@ -4,7 +4,7 @@ We continue to work in the elliptic curve group of prime order $\mathbb{G}$ in t
 
 ## Commitment Schemes
 
-Before explaining what Pedersen commitments are, we briefly provide background on commitment schemes. Commitment schemes allow a party to commit to a message $m$ in the form of a commitment $c$. 
+Before explaining what Pedersen commitments are, we briefly provide background on commitment schemes. Commitment schemes allow a party to commit to a message $m$ in the form of a commitment $c$. Note that the setup and definition for a [_polynomial commitment scheme_](../gkr_tutorial/input_layers.md#committed-inputs) is similar but with some subtle differences, as polynomial commitment schemes deal with committing to a message which is a bounded-degree polynomial such that a proof for evaluation at a later-determined point can be provided, while a commitment scheme in the sense of a Pedersen commitment more generally commits to a message (and can also be used as a PCS via [proof-of-dot-product](./hyrax_primitives.md#proof-of-dot-product)).
 
 ### Properties
 Commitment schemes are best described by the properties they satisfy. We informally define them below:
