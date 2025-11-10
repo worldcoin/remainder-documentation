@@ -17,9 +17,9 @@ Then, we can see that if $\eq(x, z)$ were linear in the $x$ variables, i.e., we 
 
 Fortunately, $\eq(x; z): \{0, 1\}^{2n} \to \{0, 1\}$ has an explicit formula which is linear in each of $x_i$, or the bits of $x$. Intuitively, if $x = z$, then each of its bits must be equal. In boolean logic, this is the same thing as saying $(x_i = z_i = 0)$ OR $(x_i = z_i = 1)$ for all of the bits $i$ (which is an AND over all of the bits $i$). 
 
-When our inputs $x_i, z_i \in \{0, 1\}$ this statement can be expressed as the following product: $$\prod_{i = 1}^n{(1 - x_i)(1 - z_i) + x_iz_i}.$$ Taking the multilinear extension of $\eq$ simply means allowing for inputs $x_i, z_i \in \mathbb{F}$, because the polynomial is already linear in each variable. Because when $x_i, z_i \in \{0, 1\}$, $\eq(x; z) = \widetilde{\eq}(x; z)$, we have the multilinear extension $\widetilde{\eq}(x; z).$
+When our inputs $x_i, z_i \in \{0, 1\}$ this statement can be expressed as the following product: $$\prod_{i = 1}^n{(1 - x_i)(1 - z_i) + x_iz_i}.$$ Taking the multilinear extension of $\eq$ simply means allowing for non-binary inputs $x_i, z_i \in \mathbb{F}$, because the polynomial is already linear in each variable. Because when $x_i, z_i \in \{0, 1\}$, $\eq(x; z) = \widetilde{\eq}(x; z)$, we have the multilinear extension $\widetilde{\eq}(x; z).$
 
-Another property of multilinear extensions is that they are uniquely defined. I.e., $\sum_{z_i \in \{0, 1\}}{\widetilde{\eq}(x; z) \cdot f(z_1, \dots, z_n)}$ is the *only* formulation of $\widetilde{f},$ and any other formulation would be equivalent to this one.
+Another property of multilinear extensions is that they are uniquely defined. I.e., $\sum_{z_i \in \{0, 1\}}{\widetilde{\eq}(x; z) \cdot f(z_1, \dots, z_n)}$ is the *only* multilinear function in $n$ variables which extetends $f$.
 
 ## Example
 Let $f(x_1, x_2, x_3) =2x_1^2x_3 + 4x_2x_3^3 + 3x_1x_2^2x_3 + 5x_1 + 6x_2 + 3.$ Let us first build a table of evaluations of $f$ for $x_i \in \{0, 1\}:$

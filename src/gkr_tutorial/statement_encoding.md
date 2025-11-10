@@ -22,7 +22,7 @@ $$
 \end{cases}
 $$
 
-In other words, if we think of a physical representation of $C$, the _binary gates_ represent the "wires" of the circuit. They show how the values from nodes belonging in previous layers of the circuit can be used to compute the value of the node in a certain layer. In fact, for every node with label $z$ in layer $i \neq 0: \exists \quad\!\!\!\! x, y$ such that $\add(z, x, y) = 1$ or $\mul(z, x, y) = 1$ for $x, y$ as labels for nodes in layers $j, k > i$.
+In other words, if we think of a physical representation of $C$, the _binary gates_ represent the "wires" of the circuit. They show how the values from wires belonging in previous layers of the circuit can be used to compute a value in a future layer (from input to output). In fact, for every value with label $z$ in layer $i \neq 0: \exists \quad\!\!\!\! x, y$ such that $\add(z, x, y) = 1$ or $\mul(z, x, y) = 1$ for $x, y$ as labels for values in layers $j, k > i$.
 
 ### Example
 
