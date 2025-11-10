@@ -46,10 +46,10 @@ $$
 f_n(r_n) \overset{?}{=} f(r_1, ..., r_n)
 $$
 
-How does this oracle query actually get evaluated in GKR? The answer is _claims_ and sumcheck over claims for a previous layer. Specifically, let's consider the following relationship (see [structured GKR](./regular_gkr.md) section for more information about the $\widetilde{q}$ polynomial and this kind of layerwise relationship):
+How does this oracle query actually get evaluated in GKR? The answer is _claims_ and sumcheck over claims for a previous layer. Specifically, let's consider the following relationship (see [structured GKR](./regular_gkr.md) section for more information about the $\widetilde{eq}$ polynomial and this kind of layerwise relationship):
 
 $$
-\widetilde{V}_{i + 1}(X_1, ..., X_n) = \sum_{b_1, ..., b_n} \widetilde{q}(X_1, ..., X_n; b_1, ..., b_n) \cdot \widetilde{V}_i(b_1, ..., b_n)^2
+\widetilde{V}_{i + 1}(X_1, ..., X_n) = \sum_{b_1, ..., b_n} \widetilde{eq}(X_1, ..., X_n; b_1, ..., b_n) \cdot \widetilde{V}_i(b_1, ..., b_n)^2
 $$
 
 This is the polynomial relationship between layer $i$ and layer $i + 1$ of a circuit where the $i + 1$'th layer's values are exactly those of the $i$'th layer's values squared. For example, if the evaluations of $\widetilde{V}_i$ are $[a_1, a_2, a_3, a_4]$ then we expect the evaluations of $\widetilde{V}_{i + 1}$ to be $[a_1^2, a_2^2, a_3^2, a_4^2]$. 
@@ -63,19 +63,19 @@ $$
 for $g_1, ..., g_n, c_i \in \mathbb{F}$, and wishes to prove it to the verifier. It does so by running sumcheck on the RHS of the above equation, i.e.
 
 $$
-c_i \overset{?}{=} \sum_{b_1, ..., b_n} \widetilde{q}(g_1, ..., g_n; b_1, ..., b_n) \cdot \widetilde{V}_{i + 1}(b_1, ..., b_n)^2
+c_i \overset{?}{=} \sum_{b_1, ..., b_n} \widetilde{eq}(g_1, ..., g_n; b_1, ..., b_n) \cdot \widetilde{V}_{i + 1}(b_1, ..., b_n)^2
 $$
 
 Let $b_1, ..., b_n$ be bound to $r_1, ..., r_n \in \mathbb{F}$ during the rounds of sumcheck. Additionally, let $f_n(X_n)$ be the univariate polynomial the prover sends in the $n$'th round of sumcheck. The oracle query check is then
 
 $$
-f_n(r_n) \overset{?}{=} \widetilde{q}(g_1, ..., g_n; r_1, ..., r_n) \cdot \widetilde{V}_{i + 1}(r_1, ..., r_n)^2
+f_n(r_n) \overset{?}{=} \widetilde{eq}(g_1, ..., g_n; r_1, ..., r_n) \cdot \widetilde{V}_{i + 1}(r_1, ..., r_n)^2
 $$
 
-The verifier is able to compute $\widetilde{q}(g_1, ..., g_n; r_1, ..., r_n)$ on its own in $O(n)$ time, but unless $\widetilde{V}_{i + 1}$ is an MLE within an input layer of the GKR circuit, they will not be able to determine the value of $\widetilde{V}_{i + 1}(r_1, ..., r_n)$. Instead, the prover sends over a new _claimed value_ $c_{i + 1} \overset{?}{=} \widetilde{V}_{i + 1}(r_1, ..., r_n)$, and the verifier checks that
+The verifier is able to compute $\widetilde{eq}(g_1, ..., g_n; r_1, ..., r_n)$ on its own in $O(n)$ time, but unless $\widetilde{V}_{i + 1}$ is an MLE within an input layer of the GKR circuit, they will not be able to determine the value of $\widetilde{V}_{i + 1}(r_1, ..., r_n)$. Instead, the prover sends over a new _claimed value_ $c_{i + 1} \overset{?}{=} \widetilde{V}_{i + 1}(r_1, ..., r_n)$, and the verifier checks that
 
 $$
-f_n(r_n) \overset{?}{=} \widetilde{q}(g_1, ..., g_n; r_1, ..., r_n) \cdot c_{i + 1}^2
+f_n(r_n) \overset{?}{=} \widetilde{eq}(g_1, ..., g_n; r_1, ..., r_n) \cdot c_{i + 1}^2
 $$
 
 The only thing left to check is whether $\widetilde{V}_{i + 1}(r_1, ..., r_n) \overset{?}{=} c_{i + 1}$. Notice, however, that this now a new claim on an MLE residing in layer $i + 1$, and that we started with a claim on layer $i$. In other words, we've _reduced_ the validity of a claim on layer $i + 1$ to that of a claim on layer $i$, which is the core idea behind GKR: start with claims on circuit output layers, and reduce those using sumcheck to claims on earlier layers of the circuit. Eventually all remaining claims will be those on circuit input layers, which can be directly checked via either a direct verifier MLE evaluation for public input layers, or a PCS evaluation proof for committed input layers. 
@@ -106,7 +106,7 @@ The idea behind RLC claim aggregation is precisely what it sounds like: the prov
 We start with structured layers, and use the same example relationship from above:
 
 $$
-\widetilde{V}_i(X_1, ..., X_n) = \sum_{b_1, ..., b_n} \widetilde{q}(X_1, ..., X_n; b_1, ..., b_n) \cdot \widetilde{V}_{i + 1}(b_1, ..., b_n)^2
+\widetilde{V}_i(X_1, ..., X_n) = \sum_{b_1, ..., b_n} \widetilde{eq}(X_1, ..., X_n; b_1, ..., b_n) \cdot \widetilde{V}_{i + 1}(b_1, ..., b_n)^2
 $$
 
 For simplicity, we aggregate two claims rather than $m$ claims, but the methodology generalizes in a straightforward fashion. Our aggregated claim is constructed as follows:
@@ -119,12 +119,12 @@ $$
 Similarly, we take an RLC of the summations and create a new summation to sumcheck over (we let $b = b_1, ..., b_n$ and $g^{(j)} = g_1^{(j)}, ..., g_n^{(j)}$ for concision):
 
 $$
-c^\star_i \overset{?}{=} \sum_{b_1, ..., b_n} \widetilde{q}(g^{(1)}; b) \cdot \widetilde{V}_i(b) + \alpha \cdot \sum_{b_1, ..., b_n} \widetilde{q}(g^{(2)}; b) \cdot \widetilde{V}_{i + 1}(b)^2 \\
+c^\star_i \overset{?}{=} \sum_{b_1, ..., b_n} \widetilde{eq}(g^{(1)}; b) \cdot \widetilde{V}_i(b) + \alpha \cdot \sum_{b_1, ..., b_n} \widetilde{eq}(g^{(2)}; b) \cdot \widetilde{V}_{i + 1}(b)^2 \\
 
-= \sum_{b_1, ..., b_n} \big[ \widetilde{q}(g^{(1)}; b) + \alpha \cdot \widetilde{q}(g^{(2)}; b) \big] \cdot \widetilde{V}_{i + 1}(b)^2
+= \sum_{b_1, ..., b_n} \big[ \widetilde{eq}(g^{(1)}; b) + \alpha \cdot \widetilde{eq}(g^{(2)}; b) \big] \cdot \widetilde{V}_{i + 1}(b)^2
 $$
 
-For structured layers, in other words, the prover and verifier simply take a random linear combination of the claims and perform sumcheck over a polynomial which is identical to the original layerwise relationship polynomial but with the $\widetilde{q}$ term replaced with an RLC of $\widetilde{q}$ terms in the same manner as the RLC of the original claims. 
+For structured layers, in other words, the prover and verifier simply take a random linear combination of the claims and perform sumcheck over a polynomial which is identical to the original layerwise relationship polynomial but with the $\widetilde{eq}$ term replaced with an RLC of $\widetilde{eq}$ terms in the same manner as the RLC of the original claims. 
 
 **Gate Layers**
 
@@ -151,13 +151,13 @@ c^\star_i \overset{?}{=} \sum_{x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \wide
 = \sum_{x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \big[ \widetilde{\mul}_{i, j, k}(g^{(1)}, x, y) + \alpha \cdot \widetilde{\mul}_{i, j, k}(g^{(2)}, x, y) \big] \cdot \big[ \widetilde{V}_i(x) \cdot \widetilde{V}_i(y) \big]
 $$
 
-Rather than taking a linear combination of the $\widetilde{q}$ polynomials, we instead take a linear combination of the $\widetilde{\mul}_{i, j, k}$ polynomials.
+Rather than taking a linear combination of the $\widetilde{eq}$ polynomials, we instead take a linear combination of the $\widetilde{\mul}_{i, j, k}$ polynomials.
 
 **Costs**
 
 The prover costs for RLC claim aggregation are as follows -- assume that we are working with a structured layer (the analysis is similar for gate layers) and that the degree of every sumcheck variable is $d$ (in the above example for a structured layer, $d = 3$). Additionally, assume that we have $m$ claims over a layer with $n$ variables. 
-- As shown above, RLC claim aggregation for structured layers simply involves "factoring out" the $\widetilde{q}$ term between each of the $g^{(i)}$'s and the $b$'s. Rather than multiplying the structured polynomial relationship by a single $\widetilde{q}$, we multiply by an RLC of $m$ $\widetilde{q}$ terms. 
-- For each additional $\widetilde{q}$ term, the prover incurs an additional $d + 1$ evaluations worth of work (across a single sumcheck round). Evaluating $\widetilde{q}$ can be done in $O(2^j)$ time by the prover for $j$ variables, and thus the total cost (for $m$ claims) is
+- As shown above, RLC claim aggregation for structured layers simply involves "factoring out" the $\widetilde{eq}$ term between each of the $g^{(i)}$'s and the $b$'s. Rather than multiplying the structured polynomial relationship by a single $\widetilde{eq}$, we multiply by an RLC of $m$ $\widetilde{eq}$ terms. 
+- For each additional $\widetilde{eq}$ term, the prover incurs an additional $d + 1$ evaluations worth of work (across a single sumcheck round). Evaluating $\widetilde{eq}$ can be done in $O(2^j)$ time by the prover for $j$ variables, and thus the total cost (for $m$ claims) is
 $$
 m \cdot (d + 1) \cdot \sum_{j = 1}^n 2^j
 $$
@@ -165,7 +165,7 @@ $$
 
 The proof size is identical to that of the single-claim sumcheck case, since the degree of the sumcheck messages do not change.
 
-Finally, the verifier cost is slightly increased. Specifically, during intermediate rounds of sumcheck the verifier does not do any additional work (compared to the single-claim sumcheck case), but during the oracle query the verifier must evaluate $m$ separate instances of $\widetilde{q}$ at fixed points. This takes the verifier $O(mn)$ additional time. 
+Finally, the verifier cost is slightly increased. Specifically, during intermediate rounds of sumcheck the verifier does not do any additional work (compared to the single-claim sumcheck case), but during the oracle query the verifier must evaluate $m$ separate instances of $\widetilde{eq}$ at fixed points. This takes the verifier $O(mn)$ additional time. 
 
 **Matrix Multiplication Layers**
 
