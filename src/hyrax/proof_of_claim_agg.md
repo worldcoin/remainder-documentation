@@ -17,10 +17,12 @@ $$
 \widetilde{V}_i(g_1^{(m)}, g_2^{(m)}, \dots, g_n^{(m)}) \overset{?}= c_i^{(m)}.
 $$
 
-We are aggregating $m$ claims each of $n$ variables -- let the coefficients of $V_i \circ \ell (X)$ be $H_0, H_1, \dots, H_{(m-1)\cdot n}$, and let the commitments to them be $C_{H_0}, C_{H_1}, \dots, C_{H_{(m-1)\cdot n}}.$
+We are aggregating $m$ claims each of $n$ variables -- let the coefficients of $V_i \circ \ell (X)$ be $a_0, a_1, \dots, a_{(m-1)\cdot n}$, and let the commitments to them be $C_{a_0}, C_{a_1}, \dots, C_{a_{(m-1)\cdot n}}.$
 
-$\mathcal{V}$ now has two things to verify: one, that the polynomial was computed by aggregating the given claims. By the definition of $V_i \circ \ell (X)$, this means that $V_i \circ \ell (0) = c_i^{(1)}, V_i \circ \ell (1) = c_i^{(2)}, \dots, V_i \circ \ell (m - 1) = c_i^{(m)}.$ It can do this by homomorphically evaluating $V_i \circ \ell (X)$ at these points using the commitments to the coefficients of this polynomial, and doing a [proof of equality](hyrax_primitives.md/#proof-of-equality) between that and the commitment to the claim $c_i^{(X + 1)}.$ 
+$\mathcal{V}$ now has two things to verify: first, that the polynomial was computed by aggregating the given claims, and second, that the prover actually knows the values committed to within the commitments $C_{a_i}.$
 
-Additionally, $\mathcal{P}$ must prove to $\mathcal{V}$ that it indeed knows the original coefficients $H_0, \dots, H_{(m-1) \cdot n}$ without revealing them. For this, $\mathcal{P}$ and $\mathcal{V}$ can engage in $(m-1) \cdot n + 1$ [proofs of opening](hyrax_primitives.md/#proof-of-opening) for each of the commitments to the coefficients. 
+By the definition of $V_i \circ \ell (X)$, this means that $V_i \circ \ell (0) = c_i^{(1)}, V_i \circ \ell (1) = c_i^{(2)}, \dots, V_i \circ \ell (m - 1) = c_i^{(m)}.$ It can do this by homomorphically evaluating $V_i \circ \ell (X)$ at these points using the commitments to the coefficients of this polynomial, and checking an additional [proof of equality](hyrax_primitives.md/#proof-of-equality) between that and the commitment to the claim $c_i^{(X + 1)}.$ 
 
-After this, $\mathcal{V}$ can sample the random challenge $r^{\star}$, and evaluates $V_i \circ \ell (r^\star)$ using the commitments to its coefficients ($\sum{(r^{\star})^i \cdot C_{H_i}}$) to compute the aggregated claim. 
+Additionally, $\mathcal{P}$ must prove to $\mathcal{V}$ that it indeed knows the original coefficients $a_0, \dots, a_{(m-1) \cdot n}$ without revealing them. For this, $\mathcal{P}$ and $\mathcal{V}$ can engage in $(m-1) \cdot n + 1$ [proofs of opening](hyrax_primitives.md/#proof-of-opening) for each of the commitments to the coefficients. 
+
+After this, $\mathcal{V}$ can sample the random challenge $r^{\star}$, and evaluates $V_i \circ \ell (r^\star)$ using the commitments to its coefficients ($\sum{(r^{\star})^i \cdot C_{a_i}}$) to compute the aggregated claim. 

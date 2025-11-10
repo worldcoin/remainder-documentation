@@ -1,12 +1,12 @@
 # Multilinear Extensions (MLEs)
 
-Let $f(x_1, x_2, \dots, x_n)$ be a function $\{0, 1\}^n \to \mathbb{F}$ with coefficients $a_i \in \mathbb{F}$. Its multilinear extension $\widetilde{f}(x_1, \dots, x_n)$ is defined such that $\widetilde{f}$ is linear in each $x_j$ and $x_j \in \mathbb{F}$, such that $\widetilde{f}(x) = f(x) \quad\!\!\!\forall\quad\!\!\!\!\! x \in \{0, 1\}^n$.
+Let $f(x_1, x_2, \dots, x_n)$ be a function $\in \mathbb{F}[X_1, ..., X_n]^{<2}$. Its multilinear extension $\widetilde{f}(x_1, \dots, x_n)$ is defined such that $\widetilde{f}$ is linear in each $x_j$ and $x_j \in \mathbb{F}$, such that $\widetilde{f}(x) = f(x) \quad\!\!\!\forall\quad\!\!\!\!\! x \in \{0, 1\}^n$.
 
 ## Equality MLE
 In order to explicitly formulate $\widetilde{f}$ in terms of $f$, let us define the following indicator function: 
 
 $$
-    \eq(x; z) = 
+    \widetilde{\eq}(x; z): \{0, 1\}^{2n} \mapsto \{0, 1\} = 
 \begin{cases}
     1 ,& \text{if } x = z \\
     0,              & \text{otherwise}.
@@ -48,4 +48,13 @@ We also build a table for $\widetilde{\eq}(x; z)$ for $x_i \in \{0, 1\}$ in term
 |$(1, 1, 0)$ | $(x_1)(x_2)(1-x_3)$ |
 |$(1, 1, 1)$ | $(x_1)(x_2)(x_3)$ |.
 
-Then, using the formula for $\widetilde{f}(x_1, \dots, x_n) = \sum_{z_i \in \{0, 1\}}{\widetilde{\eq}(x; z) \cdot f(z_1, \dots, z_n)}$, we get the explicit formula: $\widetilde{f}(x_1, \dots, x_n) = 3(1-x_1)(1-x_2)(1-x_3) + 3(1-x_1)(1-x_2)(x_3) + 9(1-x_1)(x_2)(1-x_3) + 13(1-x_1)(x_2)(x_3) + 8(x_1)(1-x_2)(1-x_3) + 10(x_1)(1-x_2)(x_3) + 14(x_1)(x_2)(1-x_3) + 23(x_1)(x_2)(x_3)$. From here you can verify that $\widetilde{f}(x) = f(x)$ when $x \in \{0, 1\}^n$, and that $\widetilde{f}(x)$ is linear in each of the $x$ variables. 
+Then, using the formula for $\widetilde{f}(x_1, \dots, x_n) = \sum_{z_i \in \{0, 1\}}{\widetilde{\eq}}(x; z) \cdot f(z_1, \dots, z_n)$, we get the explicit formula: 
+
+$$
+\widetilde{f}(x_1, \dots, x_n) = 3(1-x_1)(1-x_2)(1-x_3) + 3(1-x_1)(1-x_2)(x_3) \\ 
++\quad\!\!\!\! 9(1-x_1)(x_2)(1-x_3) +
+ 13(1-x_1)(x_2)(x_3) + 8(x_1)(1-x_2)(1-x_3) \\
++\quad\!\!\!\! 10(x_1)(1-x_2)(x_3) + 14(x_1)(x_2)(1-x_3) + 23(x_1)(x_2)(x_3)
+$$. 
+
+From here you can verify that $\widetilde{f}(x) = f(x)$ when $x \in \{0, 1\}^n$, and that $\widetilde{f}(x)$ is linear in each of the $x$ variables. 
