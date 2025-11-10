@@ -6,7 +6,7 @@ References: [WTS+18](https://eprint.iacr.org/2017/1132.pdf), page 8.
 - [Pedersen commitments](./hyrax/pedersen_commitments.md)
 
 As described within the [committed input layers](./gkr_tutorial/input_layers.md#committed-inputs) section, the Hyrax polynomial commitment scheme (PCS) consists of a $\text{Commit}$ and an $\text{Eval}$ phase such that
-- During $\text{Commit}$, the prover sends a commitment $\text{com}$ for the input layer MLE $\widetilde{V}_d$.
+- During $\text{Commit}$, the prover sends a commitment $\com$ for the input layer MLE $\widetilde{V}_d$.
 - After running the rest of the Hyrax IP, we are left with a claim $\widetilde{V}_d(r_1, ..., r_n) \overset{?}{=} c_d$.
 - During $\text{Eval}$, the prover sends an evaluation proof $\pi$ showing that $\widetilde{V}_d(r_1, ..., r_n) = c_d$. 
 
@@ -38,11 +38,11 @@ Indeed, this above observation allows us to create a very simple PCS with the he
 - During the $\text{KeyGen}$ phase, we produce generators $g_1, ..., g_{2^n}, h$. 
 - During the $\text{Commit}$ phase, the prover generates a blinding factor $s_0$ and computes the commitment
 $$
-\text{com} = s_0 \cdot h + \sum_{j = 1}^{2^n} a_j \cdot g_j
+\com = s_0 \cdot h + \sum_{j = 1}^{2^n} a_j \cdot g_j
 $$
 - During the $\text{Eval}$ phase, the prover and verifier engage in a proof-of-dot-product, where
     - The public vector is $\otimes_{i = 0}^{n}(1 - r_i, r_i)$ 
-    - The committed vector is $\text{com}$
+    - The committed vector is $\com$
     - The committed inner product value is $c_d \cdot g_1 + s_1 \cdot h$
 
 We note that the size of the commitment is $O(1)$ since the commitment is a single group element. However, both the verifier runtime and communication cost are $O(2^n)$ (as proof-of-dot-product incurs costs which are linear in the size of the vectors), which is less than ideal. Can we do better?
@@ -77,20 +77,20 @@ We denote the left vector as $L \in \mathbb{F}^{2^{n / 2}}$ and the right vector
 ## Commitment Phase
 We assume that $\text{KeyGen}$ has given the prover and verifier a set of common generators $g_1, ..., g_{2^{n / 2}}, h_1, ..., h_{2^{n / 2}}$. The prover generates random blinding factors $s_1, ..., s_{2^{n / 2}}$ and computes the following during the commit phase:
 $$
-\text{com} =
+\com =
 \begin{bmatrix}
-\text{com}_1\\
-\text{com}_2\\
+\com_1\\
+\com_2\\
 \vdots \\
-\text{com}_{2^{n / 2}}
+\com_{2^{n / 2}}
 \end{bmatrix}
 $$
-where $\text{com}_k = s_k \cdot h_k + \sum_{j = 1}^{2^{n / 2}} a_{ 2^{n / 2} \cdot (k - 1) + j} \cdot g_{2^{n / 2} \cdot (k - 1) + j}$ is a Pedersen commitment to the $k$'th row of $M$. 
+where $\com_k = s_k \cdot h_k + \sum_{j = 1}^{2^{n / 2}} a_{ 2^{n / 2} \cdot (k - 1) + j} \cdot g_{2^{n / 2} \cdot (k - 1) + j}$ is a Pedersen commitment to the $k$'th row of $M$. 
 
 ## Evaluation Phase
-The prover sends $\text{com}$ to the verifier, who computes a "squashed" commitment
+The prover sends $\com$ to the verifier, who computes a "squashed" commitment
 $$
-\text{squashed\_com} = \sum_{k = 1}^{2^{n / 2}} L_k \cdot \text{com}_k
+\text{squashed\_com} = \sum_{k = 1}^{2^{n / 2}} L_k \cdot \com_k
 $$
 Note that the above is now a blinded Pedersen vector commitment to the vector-matrix product $L \cdot M$. The verifier can do the above in $O(2^{n / 2})$ group operations. Finally, the prover and verifier execute a proof-of-dot-product with the following:
 - The public vector is $R$

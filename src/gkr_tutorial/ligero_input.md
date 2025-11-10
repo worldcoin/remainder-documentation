@@ -5,7 +5,7 @@ References: [GLS+21](https://eprint.iacr.org/2021/1043.pdf), page 46, [AER24](ht
 - [Committed input layers](./gkr_tutorial/input_layers.md#committed-inputs)
 
 As described within the [committed input layers](./gkr_tutorial/input_layers.md#committed-inputs) section, the Ligero polynomial commitment scheme (PCS) consists of a $\text{Commit}$ and an $\text{Eval}$ phase such that
-- During $\text{Commit}$, the prover sends a commitment $\text{com}$ for the input layer MLE $\widetilde{V}_d$.
+- During $\text{Commit}$, the prover sends a commitment $com$ for the input layer MLE $\widetilde{V}_d$.
 - After running the rest of the GKR claim reduction process, we are left with a claim $\widetilde{V}_d(r_1, ..., r_n) \overset{?}{=} c_d$.
 - During $\text{Eval}$, the prover sends an evaluation proof $\pi$ showing that $\widetilde{V}_d(r_1, ..., r_n) = c_d$. 
 
@@ -93,10 +93,10 @@ The prover commits to $\tilde{M}$ as follows:
 - Using a cryptographic hash function $H: \mathbb{F}^* \mapsto \mathbb{F}$, the prover first computes a hash over each column:
 
 $$
-\text{com}_j = H(\tilde{M}_{1, j}, ..., \tilde{M}_{\rho^{-1} 2^{n / 2}, j})
+\com_j = H(\tilde{M}_{1, j}, ..., \tilde{M}_{\rho^{-1} 2^{n / 2}, j})
 $$
 
-- Next, the prover takes the vector of column-wise commitments and computes a Merkle tree using those commitments as the leaves. In other words, the bottom layer of the tree is $[\text{com}_1, ..., \text{com}_{2^{n / 2}}]$, with pairs of leaves being hashed, and the root of the tree $\text{root}_{\tilde{M}} = \text{Merkleize}([\text{com}_1, ..., \text{com}_{2^{n / 2}}])$ is the commitment.
+- Next, the prover takes the vector of column-wise commitments and computes a Merkle tree using those commitments as the leaves. In other words, the bottom layer of the tree is $[\com_1, ..., \com_{2^{n / 2}}]$, with pairs of leaves being hashed, and the root of the tree $\text{root}_{\tilde{M}} = \text{Merkleize}([\com_1, ..., \com_{2^{n / 2}}])$ is the commitment.
 - The (interactive) prover sends $\text{root}$ to the verifier. Note that with this commitment setup, the verifier is able to "open" any _column_ of $\tilde{M}$ and ensure that it is consistent with the commitment $\text{root}_{\tilde{M}}$. 
 
 ## Evaluation Phase
@@ -107,9 +107,9 @@ The verifier asserts that $U \cdot R = c_d$. If the prover is honest and $U = L 
 The verifier then computes $\tilde{U} = \text{Enc}(U)$, with $\tilde{U} \in \mathbb{F}^{\rho^{-1} 2^{n / 2}}$. To ensure that the prover computed $U$ correctly, it will check random values in $\tilde{U}$ against $L \cdot \tilde{M}$. 
 - Note that because $\text{Enc}$ is a linear operation, we have that $\text{Enc}(L \cdot M) = L \cdot \text{Enc}(M)$, where $\text{Enc}(M)$ is the row-wise encoding as described earlier (check this for yourself -- use the intuition that Reed-Solomon encoding is just polynomial evaluation over a domain)
 
-The verifier picks a set of indices $j \in \mathcal{J}$ and "opens" those columns of $\tilde{M}$. For each $j$, the prover sends over $\tilde{M}_{\cdot, j}$, as well as a Merkle path for $\text{com}_j$ against $\text{root}_{\tilde{M}}$. 
+The verifier picks a set of indices $j \in \mathcal{J}$ and "opens" those columns of $\tilde{M}$. For each $j$, the prover sends over $\tilde{M}_{\cdot, j}$, as well as a Merkle path for $\com_j$ against $\text{root}_{\tilde{M}}$. 
 
-The verifier checks that $H(\tilde{M}_{\cdot, j}) = \text{com}_j$, and verifies the Merkle path from $\text{com}_j$ to the $\text{root}_{\tilde{M}}$ it received during the commit phase.
+The verifier checks that $H(\tilde{M}_{\cdot, j}) = \com_j$, and verifies the Merkle path from $\com_j$ to the $\text{root}_{\tilde{M}}$ it received during the commit phase.
 
 The verifier is now convinced that the columns which the prover sent over are columns of the $\tilde{M}$ which was committed to during the commitment phase. 
 

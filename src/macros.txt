@@ -3,3 +3,4 @@
 \mul:{\mathrm{mul}}
 \eq:{\mathrm{eq}}
 \deg:{\mathrm{degree}}
+\com:{\mathrm{com}}
