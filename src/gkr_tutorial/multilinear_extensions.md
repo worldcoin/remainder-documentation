@@ -19,7 +19,7 @@ Fortunately, $\eq(x; z): \{0, 1\}^{2n} \to \{0, 1\}$ has an explicit formula whi
 
 When our inputs $x_i, z_i \in \{0, 1\}$ this statement can be expressed as the following product: $$\prod_{i = 1}^n{(1 - x_i)(1 - z_i) + x_iz_i}.$$ Taking the multilinear extension of $\eq$ simply means allowing for non-binary inputs $x_i, z_i \in \mathbb{F}$, because the polynomial is already linear in each variable. Because when $x_i, z_i \in \{0, 1\}$, $\eq(x; z) = \widetilde{\eq}(x; z)$, we have the multilinear extension $\widetilde{\eq}(x; z).$
 
-Another property of multilinear extensions is that they are uniquely defined. I.e., $\sum_{z_i \in \{0, 1\}}{\widetilde{\eq}(x; z) \cdot f(z_1, \dots, z_n)}$ is the *only* multilinear function in $n$ variables which extetends $f$.
+Another property of multilinear extensions is that they are uniquely defined. I.e., $\sum_{z_i \in \{0, 1\}}{\widetilde{\eq}(x; z) \cdot f(z_1, \dots, z_n)}$ is the *only* multilinear function in $n$ variables which extends $f$.
 
 ## Example
 Let $f(x_1, x_2, x_3) =2x_1^2x_3 + 4x_2x_3^3 + 3x_1x_2^2x_3 + 5x_1 + 6x_2 + 3.$ Let us first build a table of evaluations of $f$ for $x_i \in \{0, 1\}:$
@@ -48,7 +48,7 @@ We also build a table for $\widetilde{\eq}(x; z)$ for $x_i \in \{0, 1\}$ in term
 |$(1, 1, 0)$ | $(x_1)(x_2)(1-x_3)$ |
 |$(1, 1, 1)$ | $(x_1)(x_2)(x_3)$ |.
 
-Then, using the formula for $\widetilde{f}(x_1, \dots, x_n) = \sum_{z_i \in \{0, 1\}}{\widetilde{\eq}}(x; z) \cdot f(z_1, \dots, z_n)$, we get the explicit formula: 
+Then, using the formula for $\widetilde{f}(x_1, \dots, x_n) = \sum_{z_i \in \{0, 1\}}{\widetilde{\eq}(x; z) \cdot f(z_1, \dots, z_n)}$, we get the explicit formula: 
 
 $$
 \widetilde{f}(x_1, \dots, x_n) = 3(1-x_1)(1-x_2)(1-x_3) + 3(1-x_1)(1-x_2)(x_3) \\ 
