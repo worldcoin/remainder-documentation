@@ -3,7 +3,7 @@ See [XZZ+19](https://eprint.iacr.org/2019/317.pdf), [ZLW+20](https://eprint.iacr
 
 ## Gate MLEs
 Gate MLEs define an arbitrary wiring pattern between previous layers ($\widetilde{V}_{i + 1}$ below) and the current layer's MLE ($\widetilde{V}_i$ below):
-$$\widetilde{V}_i(z) = \sum_{x, y \in \{0, 1\}^{2s_{i + 1}}} \widetilde{\text{add}}_{i + 1}(z, x, y) \bigg[ \widetilde{V}_{i + 1}(x) + \widetilde{V}_{i + 1}(y) \bigg] + \widetilde{\text{mul}}_{i + 1}(z, x, y) \bigg[ \widetilde{V}_{i + 1}(x) \cdot \widetilde{V}_{i + 1}(y) \bigg]$$
+$$\widetilde{V}_i(z) = \sum_{x, y \in \{0, 1\}^{2s_{i + 1}}} \widetilde{\add}_{i + 1}(z, x, y) \bigg[ \widetilde{V}_{i + 1}(x) + \widetilde{V}_{i + 1}(y) \bigg] + \widetilde{\mul}_{i + 1}(z, x, y) \bigg[ \widetilde{V}_{i + 1}(x) \cdot \widetilde{V}_{i + 1}(y) \bigg]$$
 We define three *types* of gate layers within Remainder, although they are all quite similar in spirit.
 
 ## Notation
@@ -19,7 +19,7 @@ $$
 $$
 In other words, $\text{id}(z, x)$ is $1$ if and only if there is a gate from the $z$'th value in the $j$'th layer to the $x$'th value in the $i$'th layer. These can be thought of as "routing" gates or "copy constraints", as they directly pass a value from one layer to another. The MLE of the identity function above is defined as follows:
 $$
-\widetilde{\text{id}}: \mathbb{F}^{<2}[Z_1, ..., Z_{s_i}, X_1, ..., X_{s_j}] \mapsto \mathbb{F} \quad \text{where} \quad \widetilde{\text{id}}(g, u) = \sum_{z \in \{0, 1\}^{s_i}, x \in \{0, 1\}^{s_j}} \widetilde{\text{eq}}(g, z) \cdot \widetilde{\text{eq}}(u, x) \cdot \text{id}(z, x)
+\widetilde{\text{id}}: \mathbb{F}^{<2}[Z_1, ..., Z_{s_i}, X_1, ..., X_{s_j}] \mapsto \mathbb{F} \quad \text{where} \quad \widetilde{\text{id}}(g, u) = \sum_{z \in \{0, 1\}^{s_i}, x \in \{0, 1\}^{s_j}} \widetilde{q}(g, z) \cdot \widetilde{q}(u, x) \cdot \text{id}(z, x)
 $$
 The polynomial relationship between the "destination" layer $i$'s MLE and the "source" layer $j$'s MLE is as follows:
 $$
@@ -42,17 +42,17 @@ For all other tuples over binary values we have that $\text{id}(z, x) = 0$.
 ## Add Gate
 The concepts for addition and multiplication gates are very similar to that of identity gate above. For add gate, we have the binary wiring indicator predicate:
 $$
-\text{add}(z, x, y): \{0, 1\}^{s_i} \times \{0, 1\}^{s_j} \times \{0, 1\}^{s_k} \mapsto \{0, 1\} \quad \text{where} \quad \text{add}(z, x, y) = \begin{cases} 1 & \text{if $\widetilde{V}_i(z) = \widetilde{V}_j(x) + \widetilde{V}_k(y)$}\\ 0 & \text{otherwise}\end{cases}
+\add(z, x, y): \{0, 1\}^{s_i} \times \{0, 1\}^{s_j} \times \{0, 1\}^{s_k} \mapsto \{0, 1\} \quad \text{where} \quad \add(z, x, y) = \begin{cases} 1 & \text{if $\widetilde{V}_i(z) = \widetilde{V}_j(x) + \widetilde{V}_k(y)$}\\ 0 & \text{otherwise}\end{cases}
 $$
-Here, we have that $\text{add}(z, x, y) = 1$ if and only if the $x$'th value in the $j$'th layer and the $y$'th value in the $k$'th layer sum to the $z$'th value in the $i$'th layer. The MLE of $\text{add}(z, x, y)$ is similar to that of $\text{id}$:
+Here, we have that $\add(z, x, y) = 1$ if and only if the $x$'th value in the $j$'th layer and the $y$'th value in the $k$'th layer sum to the $z$'th value in the $i$'th layer. The MLE of $\add(z, x, y)$ is similar to that of $\text{id}$:
 $$
-\widetilde{\text{add}}: \mathbb{F}^{<2}[Z_1, ..., Z_{s_i}, X_1, ..., X_{s_j}, Y_1, ..., Y_{s_k}] \mapsto \mathbb{F} \\ \quad \\ \text{where} \\ \quad \\ \widetilde{\text{add}}(g, u, v) = \sum_{z \in \{0, 1\}^{s_i}, x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\text{eq}}(g, z) \cdot \widetilde{\text{eq}}(u, x) \cdot \widetilde{\text{eq}}(v, y) \cdot \text{add}(z, x, y)
+\widetilde{\add}: \mathbb{F}^{<2}[Z_1, ..., Z_{s_i}, X_1, ..., X_{s_j}, Y_1, ..., Y_{s_k}] \mapsto \mathbb{F} \\ \quad \\ \text{where} \\ \quad \\ \widetilde{\add}(g, u, v) = \sum_{z \in \{0, 1\}^{s_i}, x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{q}(g, z) \cdot \widetilde{q}(u, x) \cdot \widetilde{q}(v, y) \cdot \add(z, x, y)
 $$
 and the polynomial relationship is defined very similarly to that of identity gate:
 $$
-\widetilde{V}_i(g) = \sum_{x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\text{add}}(g, x, y) \cdot \bigg[\widetilde{V}_j(x) + \widetilde{V}_k(y)\bigg]
+\widetilde{V}_i(g) = \sum_{x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\add}(g, x, y) \cdot \bigg[\widetilde{V}_j(x) + \widetilde{V}_k(y)\bigg]
 $$
-Assuming that $x$ gets bound to $u \in \mathbb{F}^{s_j}$ and $y$ gets bound to $v \in \mathbb{F}^{s_k}$ during sumcheck, a claim on this layer results in three total claims: one on $\widetilde{\text{add}}(g, u, v)$ (which the verifier can compute from the circuit description and therefore check on its own), one on $\widetilde{V}_j(u)$, and one on $\widetilde{V}_k(v)$. 
+Assuming that $x$ gets bound to $u \in \mathbb{F}^{s_j}$ and $y$ gets bound to $v \in \mathbb{F}^{s_k}$ during sumcheck, a claim on this layer results in three total claims: one on $\widetilde{\add}(g, u, v)$ (which the verifier can compute from the circuit description and therefore check on its own), one on $\widetilde{V}_j(u)$, and one on $\widetilde{V}_k(v)$. 
 
 ### Example
 We start with two "source" MLEs, $\widetilde{V}_j(x_0, x_1), \widetilde{V}_k(y_0, y_1)$ over two variables with four evaluations each, and wish to add each value in the first with its $4 - \text{idx}$ "complementary value" in the second. The result should be the MLE representing layer $i$, i.e. $\widetilde{V}_i(z_0, z_1)$. 
@@ -63,24 +63,24 @@ For example, let's say that the evaluations of $\widetilde{V}_j(x_0, x_1)$ are $
 - $(1, 0; 1, 0; 0, 1)$: similar reasoning to the above.
 - $(1, 1; 1, 1; 0, 0)$: similar reasoning to the above.
 
-For all other binary tuples we have that $\widetilde{\text{add}}(z, x, y) = 0$, and our resulting MLE's evaluations should be as follows: $[a + h, b + g, c + f, d + e]$. 
+For all other binary tuples we have that $\widetilde{\add}(z, x, y) = 0$, and our resulting MLE's evaluations should be as follows: $[a + h, b + g, c + f, d + e]$. 
 
 <!-- TODO(ryancao): Code example of the above -->
 
 ## Mul Gate
 Multiplication gate is nearly identical to addition gate. For mul gate, we have the binary wiring indicator predicate:
 $$
-\text{mul}(z, x, y): \{0, 1\}^{s_i} \times \{0, 1\}^{s_j} \times \{0, 1\}^{s_k} \mapsto \{0, 1\} \quad \text{where} \quad \text{mul}(z, x, y) = \begin{cases} 1 & \text{if $\widetilde{V}_i(z) = \widetilde{V}_j(x) \cdot \widetilde{V}_k(y)$}\\ 0 & \text{otherwise}\end{cases}
+\mul(z, x, y): \{0, 1\}^{s_i} \times \{0, 1\}^{s_j} \times \{0, 1\}^{s_k} \mapsto \{0, 1\} \quad \text{where} \quad \mul(z, x, y) = \begin{cases} 1 & \text{if $\widetilde{V}_i(z) = \widetilde{V}_j(x) \cdot \widetilde{V}_k(y)$}\\ 0 & \text{otherwise}\end{cases}
 $$
-Here, we have that $\text{mul}(z, x, y) = 1$ if and only if the the $z$'th value in the $i$'th layer equals the product of the $x$'th value in the $j$'th layer with the $y$'th value in the $k$'th layer. The MLE of $\text{mul}(z, x, y)$ is identical to that of $\text{add}$:
+Here, we have that $\mul(z, x, y) = 1$ if and only if the the $z$'th value in the $i$'th layer equals the product of the $x$'th value in the $j$'th layer with the $y$'th value in the $k$'th layer. The MLE of $\mul(z, x, y)$ is identical to that of $\add$:
 $$
-\widetilde{\text{mul}}: \mathbb{F}^{<2}[Z_1, ..., Z_{s_i}, X_1, ..., X_{s_j}, Y_1, ..., Y_{s_k}] \mapsto \mathbb{F} \\ \quad \\ \text{where} \\ \quad \\ \widetilde{\text{mul}}(g, u, v) = \sum_{z \in \{0, 1\}^{s_i}, x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\text{eq}}(g, z) \cdot \widetilde{\text{eq}}(u, x) \cdot \widetilde{\text{eq}}(v, y) \cdot \text{mul}(z, x, y)
+\widetilde{\mul}: \mathbb{F}^{<2}[Z_1, ..., Z_{s_i}, X_1, ..., X_{s_j}, Y_1, ..., Y_{s_k}] \mapsto \mathbb{F} \\ \quad \\ \text{where} \\ \quad \\ \widetilde{\mul}(g, u, v) = \sum_{z \in \{0, 1\}^{s_i}, x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{q}(g, z) \cdot \widetilde{q}(u, x) \cdot \widetilde{q}(v, y) \cdot \mul(z, x, y)
 $$
-and the polynomial relationship is defined nearly identically to that of $\text{add}$ gate:
+and the polynomial relationship is defined nearly identically to that of $\add$ gate:
 $$
-\widetilde{V}_i(g) = \sum_{x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\text{mul}}(g, x, y) \cdot \bigg[\widetilde{V}_j(x) \cdot \widetilde{V}_k(y)\bigg]
+\widetilde{V}_i(g) = \sum_{x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\mul}(g, x, y) \cdot \bigg[\widetilde{V}_j(x) \cdot \widetilde{V}_k(y)\bigg]
 $$
-Assuming that $x$ gets bound to $u \in \mathbb{F}^{s_j}$ and $y$ gets bound to $v \in \mathbb{F}^{s_k}$ during sumcheck, a claim on this layer results in three total claims: one on $\widetilde{\text{mul}}(g, u, v)$ (which the verifier can check on its own), one on $\widetilde{V}_j(u)$, and one on $\widetilde{V}_k(v)$. 
+Assuming that $x$ gets bound to $u \in \mathbb{F}^{s_j}$ and $y$ gets bound to $v \in \mathbb{F}^{s_k}$ during sumcheck, a claim on this layer results in three total claims: one on $\widetilde{\mul}(g, u, v)$ (which the verifier can check on its own), one on $\widetilde{V}_j(u)$, and one on $\widetilde{V}_k(v)$. 
 
 ### Example
 We start with two "source" MLEs, $\widetilde{V}_j(x_0, x_1), \widetilde{V}_k(y_0, y_1)$ over two variables with four evaluations each, and wish to accumulate (add up) the product of the 0th and 2nd evaluations with that of the 1st and 3rd evaluations, and place this into the 0th evaluation in the resulting MLE. The result should be the MLE representing layer $i$, i.e. $\widetilde{V}_i(z_0, z_1)$, whose evaluations are all zero except for its 0th evaluation.
@@ -93,4 +93,4 @@ Then our "nonzero gate tuples" are as follows:
 - $(0, 1; 1, 0; 1, 1)$: similar reasoning to the above.
 - $(0, 1; 1, 1; 1, 0)$: similar reasoning to the above.
 
-For all other binary tuples we have that $\widetilde{\text{add}}(z, x, y) = 0$, and our resulting MLE's evaluations should be as follows: $[a * f + b * e, c * h + d * g, 0, 0]$. Note here for $\widetilde{\text{mul}}$ that we are able to add multiple products to each output value in the $i$'th layer, and that the same is true for both $\widetilde{\text{add}}$ and $\widetilde{\text{id}}$. In other words, we actually have unlimited addition fan-in and degree-2 multiplication fan-in.
+For all other binary tuples we have that $\widetilde{\add}(z, x, y) = 0$, and our resulting MLE's evaluations should be as follows: $[a * f + b * e, c * h + d * g, 0, 0]$. Note here for $\widetilde{\mul}$ that we are able to add multiple products to each output value in the $i$'th layer, and that the same is true for both $\widetilde{\add}$ and $\widetilde{\text{id}}$. In other words, we actually have unlimited addition fan-in and degree-2 multiplication fan-in.

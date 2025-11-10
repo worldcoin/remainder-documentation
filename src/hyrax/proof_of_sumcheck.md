@@ -71,7 +71,7 @@ Over here we have encoded all of $\mathcal{V}$'s checks except for the final ora
 
 ## Example
 
-We provide a minimal example to show how $M$ and $\pi$ are constructed. Assume $\mathcal{P}$ and $\mathcal{V}$ are engaging in sumcheck over the claim that $V_i(g_1, g_2) = H$, and via layerwise encoding, $V_i(z) = \sum_{x_i, y_i, z_i \in \{0, 1\}}\widetilde{\text{add}}(z_1, z_2; x_1, x_2; y_1)(V_{i+1}(x_1, x_2) + V_{i+1}(y_1)).$ There are $3$ rounds of sumcheck (for each of the $x$ and $y$) variables, where $r_1, r_2$ bind to $x_1, x_2$ and $r_3$ is bound to $x_3$. At the end of sumcheck, $\mathcal{P}$ commits to $\widetilde{V}_{i+1}(r_1, r_2)$ and $\widetilde{V}_{i+1}(r_3)$ as $V_0$ and $V_1.$ 
+We provide a minimal example to show how $M$ and $\pi$ are constructed. Assume $\mathcal{P}$ and $\mathcal{V}$ are engaging in sumcheck over the claim that $V_i(g_1, g_2) = H$, and via layerwise encoding, $V_i(z) = \sum_{x_i, y_i, z_i \in \{0, 1\}}\widetilde{\add}(z_1, z_2; x_1, x_2; y_1)(V_{i+1}(x_1, x_2) + V_{i+1}(y_1)).$ There are $3$ rounds of sumcheck (for each of the $x$ and $y$) variables, where $r_1, r_2$ bind to $x_1, x_2$ and $r_3$ is bound to $x_3$. At the end of sumcheck, $\mathcal{P}$ commits to $\widetilde{V}_{i+1}(r_1, r_2)$ and $\widetilde{V}_{i+1}(r_3)$ as $V_0$ and $V_1.$ 
 
 
 $M, \vec{\pi}$ look like this: 
@@ -81,7 +81,7 @@ M =
 2 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
 -1 & -r_1 & -r_1^2 & 2 & 1 & 1 & 0 & 0 & 0 & 0 & 0\\
 0 & 0 & 0 & -1 & -r_2 & -r_2^2 & 2 & 1 & 1 & 0 & 0\\
-0 & 0 & 0 & 0 & 0 & 0 & -1 & -r_3 & -r_3^2 & \widetilde{\text{add}}(g_1, g_2; r_1, r_2; r_3) & \widetilde{\text{add}}(g_1, g_2; r_1, r_2; r_3)
+0 & 0 & 0 & 0 & 0 & 0 & -1 & -r_3 & -r_3^2 & \widetilde{\add}(g_1, g_2; r_1, r_2; r_3) & \widetilde{\add}(g_1, g_2; r_1, r_2; r_3)
 \end{bmatrix}
 $$
 
