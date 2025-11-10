@@ -19,7 +19,7 @@ $$
 $$
 In other words, $\text{id}(z, x)$ is $1$ if and only if there is a gate from the $z$'th value in the $j$'th layer to the $x$'th value in the $i$'th layer. These can be thought of as "routing" gates or "copy constraints", as they directly pass a value from one layer to another. The MLE of the identity function above is defined as follows:
 $$
-\widetilde{\text{id}}: \mathbb{F}^{<2}[Z_1, ..., Z_{s_i}, X_1, ..., X_{s_j}] \mapsto \mathbb{F} \quad \text{where} \quad \widetilde{\text{id}}(g, u) = \sum_{z \in \{0, 1\}^{s_i}, x \in \{0, 1\}^{s_j}} \widetilde{q}(g, z) \cdot \widetilde{q}(u, x) \cdot \text{id}(z, x)
+\widetilde{\text{id}}: \mathbb{F}^{<2}[Z_1, ..., Z_{s_i}, X_1, ..., X_{s_j}] \mapsto \mathbb{F} \quad \text{where} \quad \widetilde{\text{id}}(g, u) = \sum_{z \in \{0, 1\}^{s_i}, x \in \{0, 1\}^{s_j}} \widetilde{\eq}(g, z) \cdot \widetilde{\eq}(u, x) \cdot \text{id}(z, x)
 $$
 The polynomial relationship between the "destination" layer $i$'s MLE and the "source" layer $j$'s MLE is as follows:
 $$
@@ -46,7 +46,7 @@ $$
 $$
 Here, we have that $\add(z, x, y) = 1$ if and only if the $x$'th value in the $j$'th layer and the $y$'th value in the $k$'th layer sum to the $z$'th value in the $i$'th layer. The MLE of $\add(z, x, y)$ is similar to that of $\text{id}$:
 $$
-\widetilde{\add}: \mathbb{F}^{<2}[Z_1, ..., Z_{s_i}, X_1, ..., X_{s_j}, Y_1, ..., Y_{s_k}] \mapsto \mathbb{F} \\ \quad \\ \text{where} \\ \quad \\ \widetilde{\add}(g, u, v) = \sum_{z \in \{0, 1\}^{s_i}, x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{q}(g, z) \cdot \widetilde{q}(u, x) \cdot \widetilde{q}(v, y) \cdot \add(z, x, y)
+\widetilde{\add}: \mathbb{F}^{<2}[Z_1, ..., Z_{s_i}, X_1, ..., X_{s_j}, Y_1, ..., Y_{s_k}] \mapsto \mathbb{F} \\ \quad \\ \text{where} \\ \quad \\ \widetilde{\add}(g, u, v) = \sum_{z \in \{0, 1\}^{s_i}, x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\eq}(g, z) \cdot \widetilde{\eq}(u, x) \cdot \widetilde{\eq}(v, y) \cdot \add(z, x, y)
 $$
 and the polynomial relationship is defined very similarly to that of identity gate:
 $$
@@ -74,7 +74,7 @@ $$
 $$
 Here, we have that $\mul(z, x, y) = 1$ if and only if the the $z$'th value in the $i$'th layer equals the product of the $x$'th value in the $j$'th layer with the $y$'th value in the $k$'th layer. The MLE of $\mul(z, x, y)$ is identical to that of $\add$:
 $$
-\widetilde{\mul}: \mathbb{F}^{<2}[Z_1, ..., Z_{s_i}, X_1, ..., X_{s_j}, Y_1, ..., Y_{s_k}] \mapsto \mathbb{F} \\ \quad \\ \text{where} \\ \quad \\ \widetilde{\mul}(g, u, v) = \sum_{z \in \{0, 1\}^{s_i}, x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{q}(g, z) \cdot \widetilde{q}(u, x) \cdot \widetilde{q}(v, y) \cdot \mul(z, x, y)
+\widetilde{\mul}: \mathbb{F}^{<2}[Z_1, ..., Z_{s_i}, X_1, ..., X_{s_j}, Y_1, ..., Y_{s_k}] \mapsto \mathbb{F} \\ \quad \\ \text{where} \\ \quad \\ \widetilde{\mul}(g, u, v) = \sum_{z \in \{0, 1\}^{s_i}, x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\eq}(g, z) \cdot \widetilde{\eq}(u, x) \cdot \widetilde{\eq}(v, y) \cdot \mul(z, x, y)
 $$
 and the polynomial relationship is defined nearly identically to that of $\add$ gate:
 $$
