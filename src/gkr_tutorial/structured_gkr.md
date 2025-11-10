@@ -3,10 +3,10 @@
 Source: [Tha13](https://eprint.iacr.org/2013/351.pdf), section 5 ("Time-Optimal Protocols for Circuit Evaluation").
 
 ## Review: Equality MLE
-We begin by briefly recalling the $\widetilde{\eq}$ MLE (see [this section](./multilinear_extensions.md#equality-mle) for more details). We first consider the binary string equality function $q: \{0, 1\}^{2n} \mapsto \{0, 1\}$, where
+We begin by briefly recalling the $\widetilde{\eq}$ MLE (see [this section](./multilinear_extensions.md#equality-mle) for more details). We first consider the binary string equality function $\eq: \{0, 1\}^{2n} \mapsto \{0, 1\}$, where
 
 $$
-q(X_1, ..., X_n; Y_1, ..., Y_n) = \begin{cases} 1 & \text{if $\forall i: X_i = Y_i$} \\ 0 & \text{otherwise} \end{cases}
+\eq(X_1, ..., X_n; Y_1, ..., Y_n) = \begin{cases} 1 & \text{if $\forall i: X_i = Y_i$} \\ 0 & \text{otherwise} \end{cases}
 $$
 
 This function is $1$ if and only if $X$ and $Y$ are equal as binary strings, and $0$ otherwise. We can extend this to a multilinear extension via the following -- consider $\widetilde{\eq}: \mathbb{F}^{2n} \mapsto \mathbb{F}$, where
@@ -16,7 +16,7 @@ $$
 $$
 
 <!--
-The logic is as follows: when $X_i = Y_i$, either both are zero (in which case $(1 - X_i)(1 - Y_i) = 1$, or both are one (in which case $X_i Y_i = 1$). We see that $\widetilde{\eq}$ is thus equivalent to $q$ when $X_i, Y_i \in \{0, 1\}$, and since multilinear extensions are unique (with respect to their evaluations on the hypercube) we have that the above expression is the unique multilinear extension of the boolean equality predicate.
+The logic is as follows: when $X_i = Y_i$, either both are zero (in which case $(1 - X_i)(1 - Y_i) = 1$, or both are one (in which case $X_i Y_i = 1$). We see that $\widetilde{\eq}$ is thus equivalent to $\eq$ when $X_i, Y_i \in \{0, 1\}$, and since multilinear extensions are unique (with respect to their evaluations on the hypercube) we have that the above expression is the unique multilinear extension of the boolean equality predicate.
 -->
 
 ## Structured Layerwise Relationship
@@ -39,14 +39,14 @@ $$
 where $z_1 z_2 0$ is the binary representation of $2 \cdot z_1 z_2$ and $z_1 z_2 1$ is the binary representation of $2 \cdot z_1 z_2 + 1$. This is in fact very close to the exact form-factor of the polynomial layerwise relationship which we should create between the layers -- we now consider the somewhat un-intuitive relationship
 
 $$
-V_i(Z_1, Z_2) = \sum_{b_1, b_2 \in \{0, 1\}^2} q(Z_1, Z_2; b_1, b_2) \cdot V_j(b_1, b_2, 0) \cdot V_j(b_1, b_2, 1)
+V_i(Z_1, Z_2) = \sum_{b_1, b_2 \in \{0, 1\}^2} \eq(Z_1, Z_2; b_1, b_2) \cdot V_j(b_1, b_2, 0) \cdot V_j(b_1, b_2, 1)
 $$
 
 One way to read the above relationship is the following: for any (binary decomposition) $Z_1, Z_2$, the value of the $i$'th layer at the index represented by $Z_1, Z_2$ _should_ be $V_j(Z_1, Z_2, 0) \cdot V_j(Z_1, Z_2, 1)$. We are summing over all possible values of the hypercube above, $b_1, b_2 \in \{0, 1\}^2$, and for each value we check whether the current iterated hypercube value $b_1, b_2$ "equals" the argument $Z_1, Z_2$ value. If so, we contribute $V_j(b_1, b_2, 0) \cdot V_j(b_1, b_2, 1)$ to the sum and if not, we contribute zero to the sum. 
 
 In this way we see for $Z_1, Z_2 \in \{0, 1\}$ that all of the summed values will be zero except for when $b_1, b_2$ are exactly identical to $Z_1, Z_2$, and thus only the correct value $V_j(b_1, b_2, 0) \cdot V_j(b_1, b_2, 1)$ will contribute to the sum (and thus the value of $V_i(Z_1, Z_2)$). 
 
-As described, the above relationship looks extremely inefficient in some sense -- why bother summing over all the hypercube values when we already know that all of them will be zero because $q$ will evaluate to zero at all values except one? 
+As described, the above relationship looks extremely inefficient in some sense -- why bother summing over all the hypercube values when we already know that all of them will be zero because $\eq$ will evaluate to zero at all values except one? 
 
 The answer is that it's not enough to only consider $V_i(Z_1, Z_2)$ for binary $Z_1, Z_2$, as our claims will be of the form $\widetilde{V}_i(g_1, g_2) = c$, where $g_1, g_2, c \in \mathbb{F}$, and $\widetilde{V}_i$ is the multilinear extension of $V_i$ (see [claims](./claims.md) section for more information on prover claims). Another way to see this is that the above relationship is able to be shown for each $Z_1, Z_2 \in \{0, 1\}$, but we want to make sure that the relationship holds for _all_ $Z_1, Z_2 \in \{0, 1\}$. Rather than checking each index individually, it's much more efficient to check a "random combination" of all values simultaneously by evaluating $\widetilde{V}_i$ at a _random_ point $g_1, g_2$. We thus have, instead, that
 
