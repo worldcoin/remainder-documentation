@@ -13,7 +13,7 @@ $$
 \end{cases}
 $$
 
-Then, we can see that if $\eq(x, z)$ were linear in the $x$ variables, i.e., we could define a multilinear extension for $\eq$, called $\widetilde{\eq}$, we can define $$\widetilde{f}(x_1, \dots, x_n) = \sum_{z_i \in \{0, 1\}}{\widetilde{eq}(x; z) \cdot f(z_1, \dots, z_n)}$$ where $z_i$ are the bits of $z$. 
+Then, we can see that if $\eq(x, z)$ were linear in the $x$ variables, i.e., we could define a multilinear extension for $\eq$, called $\widetilde{\eq}$, we can define $$\widetilde{f}(x_1, \dots, x_n) = \sum_{z_i \in \{0, 1\}}{\widetilde{\eq}(x; z) \cdot f(z_1, \dots, z_n)}$$ where $z_i$ are the bits of $z$. 
 
 Fortunately, $\eq(x; z): \{0, 1\}^{2n} \to \{0, 1\}$ has an explicit formula which is linear in each of $x_i$, or the bits of $x$. Intuitively, if $x = z$, then each of its bits must be equal. In boolean logic, this is the same thing as saying $(x_i = z_i = 0)$ OR $(x_i = z_i = 1)$ for all of the bits $i$ (which is an AND over all of the bits $i$). 
 
