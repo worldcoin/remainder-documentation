@@ -19,7 +19,7 @@ In such cases, and also for typical applications of indexed lookups, a more soph
 
 Let $w$ denote an MLE of witness values (with $M$ variables) and let $t$ denote the MLE of table values (with $N$ values).  For example, when performing a range check on purported base 256 digits, the entries of $w$ are the purported digits, while $t$ contains the values 0 .. 255 (and $N=8$).
 LogUp additionally involves some auxilliary information in the form of the multiplicities $m$.  This MLE has the same length as the table $t$, and specifies the number of times that each table element occurs in the witness.
-To continue the example, if $w = 233, 233, 0, 1$, then $m_0=1, m_1=1, m_233 = 2$ with all other entries being zero.
+To continue the example, if $w = 233, 233, 0, 1$, then $m_0=1, m_1=1, m_{233} = 2$ with all other entries being zero.
 The multiplicities $m$, like the table values $t$, are not computed in circuit, but rather provided as inputs.
 
 LogUp demonstrates that the following equality holds in the field of fractions:
@@ -34,7 +34,7 @@ The implementation of LogUp in Remainder assumes that the field size is signific
 
 # Example: u8 range check
 The following example, building on the above, uses a lookup to check that the provided values are in the range $0 \dots 255$.
-See also `remainder_frontend/src/examples/lookup.rs`:
+See also `remainder_frontend/examples/lookup.rs`:
 ```rust
 fn build_example_lookup_circuit<F: Field>(
     table_num_vars: usize,
@@ -69,8 +69,7 @@ fn build_example_lookup_circuit<F: Field>(
 }
 
 /// Example demonstrating a range check using a lookup table.
-#[test]
-pub fn range_check_example() {
+fn main() {
     const TABLE_NUM_VARS: usize = 8;
     const WITNESS_NUM_VARS: usize = 2;
     const RANGE_LIMIT: u64 = 1 << TABLE_NUM_VARS; // 256
@@ -121,7 +120,7 @@ pub fn range_check_example() {
 # Example: sigmoid function
 The following example uses an indexed lookup to check that the provided input and output values correspond under the sigmoid function.
 Inputs and outputs are both scaled and discretized: for all integers $2^9 \leq i < 2^9$, the corresponding field element $i \in \mathbb{F}$ represents the real value $i / 2^5$.
-See also `remainder_frontend/src/examples/indexed_lookup.rs`:
+See also `remainder_frontend/examples/indexed_lookup.rs`:
 ```rust
 fn build_example_indexed_lookup_circuit<F: Field>(
     table_num_vars: usize,
@@ -168,8 +167,7 @@ fn build_example_indexed_lookup_circuit<F: Field>(
     builder.build().unwrap()
 }
 
-#[test]
-pub fn indexed_lookup_example() {
+fn main() {
     // Uses an indexed lookup to check the application of a function defined by a lookup table.
     // The sigmoid function is used.
     // Inputs and outputs are both scaled and discretized: for all integers `2^9 <= i < 2^9`, the corresponding field element $i \in \mathbb{F}$ represents the real value $i / 2^8$.
