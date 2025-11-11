@@ -1,6 +1,6 @@
 # Proof of Claim Aggregation
 
-There are [two main methods of claim aggregation](../gkr_tutorial/claims.md) used in Remainder, and we must provide proof that claims have been aggregated correctly for both methods, Random Linear Combination (RLC) and Interpolative Claim Aggregation.
+There are [two main methods of GKR claim aggregation](../gkr_tutorial/claims.md) used in Remainder, and we must provide proof that claims have been aggregated correctly for both methods, Random Linear Combination (RLC) and Interpolative Claim Aggregation, within the Hyrax framework as well.
 
 ## Random Linear Combination (RLC) Claim Aggregation
 Recall that [RLC claim aggregation](../gkr_tutorial/claims.md/#rlc-random-linear-combination-claim-aggregation) does not require a specific claim aggregation step, but rather just modifies the sumcheck equation for the next round. Therefore, the Hyrax $\mathcal{P}$ does not need to provide a separate proof of claim aggregation, but instead in its [proof of sumcheck](./proof_of_sumcheck.md), $\mathcal{V}$ takes the random linear combination of the $\widetilde{\text{add}}, \widetilde{\text{mul}},$ or $\widetilde{eq}$ polynomials when computing the expected value of the "oracle query."
@@ -25,4 +25,4 @@ By the definition of $V_i \circ \ell (X)$, this means that $V_i \circ \ell (0) =
 
 Additionally, $\mathcal{P}$ must prove to $\mathcal{V}$ that it indeed knows the original coefficients $a_0, \dots, a_{(m-1) \cdot n}$ without revealing them. For this, $\mathcal{P}$ and $\mathcal{V}$ can engage in $(m-1) \cdot n + 1$ [proofs of opening](hyrax_primitives.md/#proof-of-opening) for each of the commitments to the coefficients. 
 
-After this, $\mathcal{V}$ can sample the random challenge $r^{\star}$, and evaluates $V_i \circ \ell (r^\star)$ using the commitments to its coefficients ($\sum{(r^{\star})^i \cdot C_{a_i}}$) to compute the aggregated claim. 
+After this, $\mathcal{V}$ can sample the random challenge $r^{\star}$, and evaluates $V_i \circ \ell (r^\star)$ using the commitments to its coefficients (via $\sum{(r^{\star})^i \cdot C_{H_i}}$) to compute the aggregated claim. 

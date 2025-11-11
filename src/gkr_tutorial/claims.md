@@ -101,7 +101,7 @@ The idea behind RLC claim aggregation is precisely what it sounds like: the prov
 
  We defer to the corresponding pages for more detailed explanations of the layerwise relationships, but review their form factors here and show how RLC claim aggregation can be done for each here.
 
-**Structured Layers**
+#### Structured Layers
 
 We start with structured layers, and use the same example relationship from above:
 
@@ -126,7 +126,7 @@ $$
 
 For structured layers, in other words, the prover and verifier simply take a random linear combination of the claims and perform sumcheck over a polynomial which is identical to the original layerwise relationship polynomial but with the $\widetilde{\text{eq}}$ term replaced with an RLC of $\widetilde{\text{eq}}$ terms in the same manner as the RLC of the original claims. 
 
-**Gate Layers**
+#### Gate Layers
 
 A similar idea applies to gate layers. We use [mul gate](./gate.md#mul-gate) as the example layerwise relationship here:
 
@@ -153,7 +153,7 @@ $$
 
 Rather than taking a linear combination of the $\widetilde{\text{eq}}$ polynomials, we instead take a linear combination of the $\widetilde{\text{mul}}_{i, j, k}$ polynomials.
 
-**Costs**
+#### Costs
 
 The prover costs for RLC claim aggregation are as follows -- assume that we are working with a structured layer (the analysis is similar for gate layers) and that the degree of every sumcheck variable is $d$ (in the above example for a structured layer, $d = 3$). Additionally, assume that we have $m$ claims over a layer with $n$ variables. 
 - As shown above, RLC claim aggregation for structured layers simply involves "factoring out" the $\widetilde{\text{eq}}$ term between each of the $g^{(i)}$'s and the $b$'s. Rather than multiplying the structured polynomial relationship by a single $\widetilde{\text{eq}}$, we multiply by an RLC of $m$ $\widetilde{\text{eq}}$ terms. 
@@ -167,7 +167,7 @@ The proof size is identical to that of the single-claim sumcheck case, since the
 
 Finally, the verifier cost is slightly increased. Specifically, during intermediate rounds of sumcheck the verifier does not do any additional work (compared to the single-claim sumcheck case), but during the oracle query the verifier must evaluate $m$ separate instances of $\widetilde{\text{eq}}$ at fixed points. This takes the verifier $O(mn)$ additional time. 
 
-**Matrix Multiplication Layers**
+#### Matrix Multiplication Layers (counterexample)
 
 Prerequisite: [matrix multiplication](TODO @ryancao) layers page.
 
@@ -188,7 +188,7 @@ c \overset{?}{=} \sum_{y \in \{0, 1\}^j} \widetilde{A}(g_X, y) \cdot \widetilde{
 c' \overset{?}{=} \sum_{y \in \{0, 1\}^j} \widetilde{A}(g_X', y) \cdot \widetilde{B}(y, g_Z') \\
 $$
 
-**Input Layers**
+#### Input Layers (counterexample)
 
 For input layers: RLC claim aggregation combines claims
 $$

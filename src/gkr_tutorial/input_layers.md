@@ -10,7 +10,7 @@ $$
 \widetilde{V}_d(r^{(d, m)}_1, ..., r^{(d, m)}_n) = c^{(m)}_d
 $$
 
-These claims are optionally aggregated via [interpolative claim aggregation](./claims.md#interpolative-claim-aggregation) (note that RLC claim aggregation does not work for input layer claims) into a single claim
+These claims are optionally aggregated via [interpolative claim aggregation](./claims.md#interpolative-claim-aggregation) (note that RLC claim aggregation does not work for input layer claims; see [here](./claims.md#input-layers-counterexample) for more details) into a single claim
 
 $$
 \widetilde{V}_d(r^\star_1, ..., r^\star_n) = c^\star_d
@@ -20,7 +20,7 @@ which the verifier must check on its own, optionally with help from the prover. 
 
 ## Public Inputs
 Public input layers are circuit inputs where the prover sends the values to the verifier in the clear. In particular, this means that the verifier knows the full set of evaluations of $\widetilde{V}_d$ over $\{0, 1\}^n$ and can evaluate the MLE on its own. Thus:
-- Before the prover generates the output layer claim challenges ($r^{(0)}_1, ..., r^{(0)}_n$ above), they send these evaluations to the verifier by absorbing them into the transcript. 
+- Before the prover generates the output layer claim challenges ($r^{(0)}_1, ..., r^{(0)}_n$ above), they send these evaluations to the verifier by absorbing them into the [transcript](./proof.md). 
 - When the verifier is ready to check the claim $\widetilde{V}_d(r^\star_1, ..., r^\star_n) = c^\star_d$, they use the aforementioned evaluations to directly evaluate $\widetilde{V}_d$ at $r^\star_1, ..., r^\star_n$ and check that the evaluation is indeed the claimed $c^\star_d$. 
 
 ## Committed Inputs

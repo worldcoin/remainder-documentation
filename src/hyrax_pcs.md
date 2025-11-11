@@ -85,10 +85,10 @@ $$
 \text{com}_{2^{n / 2}}
 \end{bmatrix}
 $$
-where $\text{com}_k = s_k \cdot h_k + \sum_{j = 1}^{2^{n / 2}} a_{ 2^{n / 2} \cdot (k - 1) + j} \cdot g_{2^{n / 2} \cdot (k - 1) + j}$ is a Pedersen commitment to the $k$'th row of $M$. 
+where $\text{com}_k = s_k \cdot h_k + \sum_{j = 1}^{2^{n / 2}} a_{ 2^{n / 2} \cdot (k - 1) + j} \cdot g_{2^{n / 2} \cdot (k - 1) + j}$ is a Pedersen commitment to the $k$'th row of $M$. The prover sends $\text{com}$ to the verifier.
 
 ## Evaluation Phase
-The prover sends $\text{com}$ to the verifier, who computes a "squashed" commitment
+The verifier computes a "squashed" commitment
 $$
 \text{squashed\_com} = \sum_{k = 1}^{2^{n / 2}} L_k \cdot \text{com}_k
 $$
@@ -98,3 +98,18 @@ Note that the above is now a blinded Pedersen vector commitment to the vector-ma
 - The committed inner product value is $c_d \cdot g_1 + s_1 \cdot h$
 
 Note that unlike the simple protocol, this proof-of-dot-product is invoked over two vectors of length $2^{n / 2}$ rather than $2^n$. The final evaluation proof size is thus $O(2^{n / 2})$ and the final verifier cost is also $O(2^{n / 2})$, although the commitment size is now increased to $O(2^{n / 2})$ from $O(1)$ earlier. 
+
+## Costs
+Assume that the prover is committing to a multilinear polynomial in $n$ variables. Assume that $n$ is even, and that $g_1, ..., g_{2^{n / 2}}, h \in \mathbb{G}$ are our generators (we implicitly arrange down the polynomial's coefficients into a square matrix, although other matrix shapes are equally valid and result in different costs/proof sizes). For simplicity, assume that computing a multi-scalar multiplication over $k$ generators costs $O(k \log_2 \lvert \mathbb{F} \rvert)$ (this can be improved with e.g. Pippenger's, of course).
+### Prover Cost
+- During the commitment phase, the prover computes Pedersen vector commitments to each row of $M$. Each Pedersen vector commitment is an MSM of length $2^{n / 2}$, and thus the total runtime is $O(2^{n / 2} \cdot 2^{n / 2} \log_2 \lvert \mathbb{F} \rvert)$ group operations.
+- During the evaluation phase, the prover computes a proof-of-dot-product over $\text{squashed\_com}$ and $R$. This requires roughly $O(2^{n / 2})$ group operations. 
+- The prover's total cost is thus $O(2^n \log_2 \lvert \mathbb{F} \rvert + 2^{n / 2})$ group operations.
+### Proof Size
+- The commitment size is one Pedersen vector commitment per row of the matrix, i.e. $O(2^{n / 2})$ group elements. 
+- The evaluation proof is a proof-of-dot-product where the vector is length $O(2^{n / 2})$, resulting in $O(2^{n / 2})$ group elements being communicated.
+### Verifier Cost
+- During the commitment phase, the verifier receives row commitments $\text{com}_1, ..., \text{com}_{2^{n / 2}}$.
+- During the evaluation phase, the verifier first computes $\text{squashed\_com}$ by itself, which requires computing a single MSM of length $2^{n / 2}$. This costs $O(2^{n / 2} \log_2 \lvert \mathbb{F} \rvert)$ group operations.
+- Next, the verifier engages in verifying a proof-of-dot-product with the prover between $\text{squashed\_com}$ and $R$. This costs roughly $O(2^{n / 2})$ group operations.
+- The verifier's total cost is thus $O(2^{n / 2} \cdot (\log_2 \lvert \mathbb{F} \rvert + 1))$. 
