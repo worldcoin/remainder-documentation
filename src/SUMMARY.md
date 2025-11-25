@@ -25,4 +25,4 @@
 - [Frontend Components](./frontend_components.md)
     - [Matmult Layer](./frontend/matmult.md)
     - [Gate Layer](./frontend/gate.md)
-    - [Lookup Layer](./frontend/lookup.md)
+    - [Lookups](./frontend/lookup.md)
