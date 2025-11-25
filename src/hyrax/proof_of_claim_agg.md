@@ -3,7 +3,7 @@
 There are [two main methods of GKR claim aggregation](../gkr_tutorial/claims.md) used in Remainder, and we must provide proof that claims have been aggregated correctly for both methods, Random Linear Combination (RLC) and Interpolative Claim Aggregation, within the Hyrax framework as well.
 
 ## Random Linear Combination (RLC) Claim Aggregation
-Recall that [RLC claim aggregation](../gkr_tutorial/claims.md/#rlc-random-linear-combination-claim-aggregation) does not require a specific claim aggregation step, but rather just modifies the sumcheck equation for the next round. Therefore, the Hyrax $\mathcal{P}$ does not need to provide a separate proof of claim aggregation, but instead in its [proof of sumcheck](./proof_of_sumcheck.md), $\mathcal{V}$ takes the random linear combination of the $\widetilde{\text{add}}, \widetilde{\text{mul}},$ or $\widetilde{eq}$ polynomials when computing the expected value of the "oracle query."
+Recall that [RLC claim aggregation](../gkr_tutorial/claims.md/#rlc-random-linear-combination-claim-aggregation) does not require a specific claim aggregation step, but rather just modifies the sumcheck equation for the next round. Therefore, the Hyrax $\mathcal{P}$ does not need to provide a separate proof of claim aggregation, but instead in its [proof of sumcheck](./proof_of_sumcheck.md), $\mathcal{V}$ takes the random linear combination of the $\widetilde{\add}, \widetilde{\mul},$ or $\widetilde{\eq}$ polynomials when computing the expected value of the "oracle query."
 
 
 ## Interpolative Claim Aggregation

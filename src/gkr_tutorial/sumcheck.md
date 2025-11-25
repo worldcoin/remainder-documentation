@@ -25,7 +25,7 @@ Note that the sum we are trying to verify can be rewritten as such:
 $$H \overset{?}= \sum_{x_1 \in \{0, 1\}}\sum_{x_2 \in \{0, 1\}}\sum_{x_3 \in \{0, 1\}}\dots\sum_{x_n \in \{0, 1\}}f(x_1, \dots, x_n).$$
 Let's say $\mathcal{P}$ sends $\mathcal{V}$ the following univariate:
 $$f_1(X) \overset{?}= \sum_{x_2 \in \{0, 1\}}\sum_{x_3 \in \{0, 1\}}\dots\sum_{x_n \in \{0, 1\}}f(X, x_2, \dots, x_n).$$
-One way for $\mathcal{P}$ to communicate $g(X)$ to $\mathcal{V}$ the univariate $g(X)$ is to send $d + 1 = degree(g) + 1$ evaluations of $g(X)$. While $\mathcal{P}$ can alternatively send coefficients, we focus on this method of defining a univariate and assume $\mathcal{P}$ sends the evaluations $g(0), g(1), \dots, g(d)$ to $\mathcal{V}$.
+One way for $\mathcal{P}$ to communicate $g(X)$ to $\mathcal{V}$ the univariate $g(X)$ is to send $d + 1 = \deg(g) + 1$ evaluations of $g(X)$. While $\mathcal{P}$ can alternatively send coefficients, we focus on this method of defining a univariate and assume $\mathcal{P}$ sends the evaluations $g(0), g(1), \dots, g(d)$ to $\mathcal{V}$.
 
 $\mathcal{V}$ can verify whether $H$ is correct in relation to $f_1(X)$ by checking whether $H = f_1(0) + f_1(1).$ In other words, we have *reduced* the validity of claim that $H$ is the sum of the evaluations of $f$ over the $n$-dimensional boolean hypercube to the claim that $f_1(X)$ is the univariate polynomial over a smaller sum. 
 
@@ -73,6 +73,6 @@ $\mathcal{P}$ sends $\mathcal{V}$ the univariate: $$f_1(X) = \sum_{x_{2} \in \{0
 $\mathcal{V}$ checks that $(f_2(0) = 629) + (f_2(1) = 663) = 1292 = f_1(5).$ Next, $\mathcal{V}$ samples another challenge $r_2 = 7$ and sends it to $\mathcal{P}$ who then computes and sends $f_3(X) = 653X + 737.$ Finally, $\mathcal{V}$ samples another random challenge $r_3 = 3$ and checks whether $f_3(3) = f(5, 7, 3).$ Indeed, $f_3 = 2696 = f(5, 7, 3).$
 
 ## Why Sumcheck?
-In the previous section, we introduced the notion of a multilinear extension of a polynomial $f$, which is defined as $$\widetilde{f}(x_1, \dots, x_n) = \sum_{z_i \in \{0, 1\}}{\widetilde{\text{eq}}(x; z) \cdot f(z_1, \dots, z_n)}.$$ Notice that naturally, a multilinear extension is defined by taking the sum over a boolean hypercube, which is what sumcheck proves claims over. 
+In the previous section, we introduced the notion of a multilinear extension of a polynomial $f$, which is defined as $$\widetilde{f}(x_1, \dots, x_n) = \sum_{z_i \in \{0, 1\}}{\widetilde{\eq}(x; z) \cdot f(z_1, \dots, z_n)}.$$ Notice that naturally, a multilinear extension is defined by taking the sum over a boolean hypercube, which is what sumcheck proves claims over. 
 
 In the next section, we will go over how we can encode layers of circuits as multilinear extensions, and prove statements about the output of these layers using sumcheck.

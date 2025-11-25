@@ -10,10 +10,10 @@ Note that each of these definitions will be described in further detail in the s
 | $C$ | Layered arithmetic circuit. |
 | $d$ | Depth of the circuit $C$. |
 | $\mathcal{L}_i$ | Layer $i$ of the circuit, such that any node on $\mathcal{L}_i$ is the result of a computation from nodes in layers $j$ and $k$, such that $j, k < i$. |
-| $\text{val}_i(x)$ | The value of $C$ at node $x$, such that $x$ is a label for a node in $\mathcal{L}_i$. We say that $x$ has $s_i$ bits. |
+| $\val_i(x)$ | The value of $C$ at node $x$, such that $x$ is a label for a node in $\mathcal{L}_i$. We say that $x$ has $s_i$ bits. |
 | $\widetilde{f}$ | A function $\mathbb{F}^n \to \mathbb{F}$. This is the unique multilinear extension encoding the function $f: \{0, 1\}^n \to \mathbb{F}.$  |
-| $\text{add}_{i, j ,k}(z, x, y)$ | A function: $\{0, 1\}^{s_{i} + s_j + s_k} \to \{0, 1\}$ which indicates whether $\text{val}_{i+1}(z) = \text{val}_j(x) + \text{val}_k(y).$  | 
-| $\text{mul}_{i, j, k}(z, x, y)$ | A function: $\{0, 1\}^{s_{i} + s_j + s_k} \to \{0, 1\}$ which indicates whether $\text{val}_{i+1}(z) = \text{val}_j(x) \cdot \text{val}_k(y).$  | 
+| $\add_{i, j ,k}(z, x, y)$ | A function: $\{0, 1\}^{s_{i} + s_j + s_k} \to \{0, 1\}$ which indicates whether $val_{i+1}(z) = \val_j(x) + \val_k(y).$  | 
+| $\mul_{i, j, k}(z, x, y)$ | A function: $\{0, 1\}^{s_{i} + s_j + s_k} \to \{0, 1\}$ which indicates whether $val_{i+1}(z) = \val_j(x) \cdot \val_k(y).$  | 
 
 ## High-level Description
 
