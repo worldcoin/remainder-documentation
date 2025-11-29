@@ -16,8 +16,8 @@ These four equalities above are actually the first _claims_ whose validity the p
 
 $$
 \text{Sample } r_1, r_2 \overset{\$}{\leftarrow} \mathbb{F} \\ \quad \\
-\text{Let } a^\star = (1 - r_1)(1 - r_2)(a_1) + (1 - r_1)(r_2)(a_2) + (r_1)(1 - r_2)(a_3) + (r_1)(r_2)(a_4) \\ \quad \\
-\text{Prove } \widetilde{V}_0(r_1, r_2) = a^\star
+a^\star \overset{\text{assign}}{=} (1 - r_1)(1 - r_2)(a_1) + (1 - r_1)(r_2)(a_2) + (r_1)(1 - r_2)(a_3) + (r_1)(r_2)(a_4) \\ \quad \\
+\text{Prove } \widetilde{V}_0(r_1, r_2) \overset{?}{=} a^\star
 $$
 
 Note that the above follows precisely from the definition of a [multilinear extension (MLE)](./multilinear_extensions.md), and it can indeed be viewed exactly as the evaluation of $\widetilde{V}_0$ at the random points $r_1, r_2$. The protocol takes a slight soundness hit here, as a cheating prover might get away with an incorrect circuit output (say, $\widetilde{V}_0^* \neq \widetilde{V}_0$, but $\widetilde{V}_0^*(r_1, r_2) = \widetilde{V}_0(r_1, r_2)$), but the probability of such an occurrence is $\frac{1}{\lvert \mathbb{F} \rvert}$, as non-identical MLEs only intersect at exactly one point via the [Schwartz-Zippel lemma](./sumcheck.md#schwartz-zippel-lemma).
@@ -169,7 +169,7 @@ Finally, the verifier cost is slightly increased. Specifically, during intermedi
 
 #### Matrix Multiplication Layers (counterexample)
 
-Prerequisite: [matrix multiplication](TODO @ryancao) layers page.
+Prerequisite: [matrix multiplication](./matmult_layer.md) layers page.
 
 For matrix multiplication layers: consider $AB \overset{?}{=} C$, and consider the sumcheck relationship $\widetilde{C}(X, Z) \overset{?}{=} \sum_{y \in \{0, 1\}^j} \widetilde{A}(X, y) \cdot \widetilde{B}(y, Z)$. 
 

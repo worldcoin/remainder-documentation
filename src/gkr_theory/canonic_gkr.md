@@ -1,8 +1,8 @@
 # Canonic GKR
 See [XZZ+19](https://eprint.iacr.org/2019/317.pdf), [ZLW+20](https://eprint.iacr.org/2020/1247.pdf) for more details.
 
-## Gate MLEs
-Gate MLEs define an arbitrary wiring pattern between previous layers ($\widetilde{V}_{i + 1}$ below) and the current layer's MLE ($\widetilde{V}_i$ below):
+## "Gate"-style layerwise relationship
+Unlike the [structured wiring pattern](./structured_gkr.md#structured-layerwise-relationship) described in the previous section, "gate"-style layerwise relationships allow for an arbitrary wiring pattern between a destination layer and its source layer(s). In general, these layerwise relationships are defined via indicator functions $\text{id}, \text{add}, \text{mul}$ (these function like the $\text{eq}$ function in structured layerwise relationships, but allow for input wires whose indices have no relationship to those of the output wire). Consider, for example, the canonic layerwise GKR equation, which defines the relationship between a previous layer's MLE ($\widetilde{V}_{i + 1}$ below) and the current layer's MLE ($\widetilde{V}_i$ below):
 $$\widetilde{V}_i(z) = \sum_{x, y \in \{0, 1\}^{2s_{i + 1}}} \widetilde{\add}_{i + 1}(z, x, y) \bigg[ \widetilde{V}_{i + 1}(x) + \widetilde{V}_{i + 1}(y) \bigg] + \widetilde{\mul}_{i + 1}(z, x, y) \bigg[ \widetilde{V}_{i + 1}(x) \cdot \widetilde{V}_{i + 1}(y) \bigg]$$
 We define three *types* of gate layers within Remainder, although they are all quite similar in spirit.
 
