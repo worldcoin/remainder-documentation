@@ -1,8 +1,8 @@
 [book]
-authors = ["Ryan Cao"]
+authors = ["Tools for Humanity Applied Research Team"]
 language = "en"
 src = "src"
-title = "Remainder Documentation Test"
+title = "The Remainder Book"
 
 # https://github.com/lzanini/mdbook-katex
 [preprocessor.katex]
