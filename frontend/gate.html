@@ -1,0 +1,535 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Gate Layer - Remainder Documentation Test</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Remainder Documentation Test</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="gate-frontend-tutorial"><a class="header" href="#gate-frontend-tutorial">Gate Frontend Tutorial</a></h1>
+<p>We build off of the theory introduction to "gate layers" in GKR, in the <a href="../gkr_tutorial/canonic_gkr.html">Canonic GKR</a> section. The following section shows examples on how to create these layers, defined by wirings and the binary operation they denote, in Remainder.</p>
+<p>NOTE: The diagrams differ from the circuit (as written in our code example) in one subtle way: we subtract the "expected output" from the output of the gate layer in the code to verify that the circuit computed the correct value. This is equivalent to this section on <a href="../gkr_tutorial/encoding_layers.html">transforming a circuit to have zero output</a>.</p>
+<h2 id="example-1-binary-gate"><a class="header" href="#example-1-binary-gate">Example 1: Binary Gate</a></h2>
+<h3 id="diagram"><a class="header" href="#diagram">Diagram</a></h3>
+<p>Let us define the following layerwise relationship, as a small GKR circuit:</p>
+<p><img src="../figures/binary.jpg" alt="Diagram representing binary gate" /></p>
+<h3 id="code"><a class="header" href="#code">Code</a></h3>
+<p>The way we would represent the above diagram as a GKR circuit in Remainder is:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn build_example_binary_gate_circuit&lt;F: Field&gt;(
+    input_num_vars_lhs: usize,
+    input_num_vars_rhs: usize,
+    wiring: Vec&lt;(u32, u32, u32)&gt;,
+    binary_operation: BinaryOperation,
+    output_num_vars: usize,
+) -&gt; Circuit&lt;F&gt; {
+    let mut builder = CircuitBuilder::&lt;F&gt;::new();
+
+    let public = builder.add_input_layer("Public", LayerVisibility::Public);
+    // The left-hand side candidates for the input to the binary gate
+    let lhs_input = builder.add_input_shred("LHS candidates for binary gate", input_num_vars_lhs, &amp;public);
+    // The right-hand side candidates for the input to the binary gate
+    let rhs_input = builder.add_input_shred("RHS candidates for binary gate", input_num_vars_rhs, &amp;public);
+    // The expected output of the gate operation
+    let expected_output = builder.add_input_shred("Expected output", output_num_vars, &amp;public);
+
+  
+    let gate_result = builder.add_gate_node(&amp;lhs_input, &amp;rhs_input, wiring, binary_operation, None);
+   
+    let output = builder.add_sector(gate_result - expected_output);
+    builder.set_output(&amp;output);
+
+    builder.build().unwrap()
+}
+
+#[test]
+pub fn binary_gate_example() {
+    const LHS_NUM_VARS: usize = 3;
+    const RHS_NUM_VARS: usize = 2;
+    const OUTPUT_NUM_VARS: usize = 2;
+
+    // Example inputs to the gate function
+    let lhs_mle: MultilinearExtension&lt;Fr&gt; = vec![5, 7, 2, 9, 13, 1, 11, 2].into();
+    let rhs_mle: MultilinearExtension&lt;Fr&gt; = vec![11, 13, 15, 3].into();
+    // Example wiring
+    let wiring = vec![
+        (0, 0, 1), 
+        (0, 1, 3),
+        (1, 5, 3),
+        (2, 6, 2),
+        (2, 7, 1),
+        (3, 2, 0),
+    ];
+    let expected_output_mle: MultilinearExtension&lt;Fr&gt; = vec![28, 4, 41, 13].into();
+
+
+    // Create circuit description
+    let mut prover_circuit =
+        build_example_binary_gate_circuit::&lt;Fr&gt;(LHS_NUM_VARS, RHS_NUM_VARS, wiring, BinaryOperation::Add, OUTPUT_NUM_VARS);
+    let mut verifier_circuit = prover_circuit.clone();
+
+    prover_circuit.set_input("LHS candidates for binary gate", lhs_mle.clone());
+    prover_circuit.set_input("RHS candidates for binary gate", rhs_mle.clone());
+    prover_circuit.set_input("Expected output", expected_output_mle.clone());
+
+    let provable_circuit = prover_circuit.finalize().unwrap();
+
+    // Prove the circuit
+    let (proof_config, proof_as_transcript) =
+        prove_circuit_with_runtime_optimized_config::&lt;Fr, PoseidonSponge&lt;Fr&gt;&gt;(&amp;provable_circuit);
+
+    // Create verifier circuit description and attach inputs.
+    verifier_circuit.set_input("LHS candidates for binary gate", lhs_mle);
+    verifier_circuit.set_input("RHS candidates for binary gate", rhs_mle);
+    verifier_circuit.set_input("Expected output", expected_output_mle);
+
+    let (verifiable_circuit, predetermined_public_inputs) =
+        verifier_circuit.gen_verifiable_circuit().unwrap();
+    verify_circuit_with_proof_config(
+        &amp;verifiable_circuit,
+        predetermined_public_inputs,
+        &amp;proof_config,
+        proof_as_transcript,
+    );
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="example-2-identity-gate"><a class="header" href="#example-2-identity-gate">Example 2: Identity Gate</a></h2>
+<h3 id="diagram-1"><a class="header" href="#diagram-1">Diagram</a></h3>
+<p>Let us define the following layerwise relationship, as a small GKR circuit:</p>
+<p><img src="../figures/id.jpg" alt="Diagram representing binary gate" /></p>
+<h3 id="code-1"><a class="header" href="#code-1">Code</a></h3>
+<p>The way we would represent the above diagram as a GKR circuit in Remainder is:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn build_example_identity_gate_circuit&lt;F: Field&gt;(
+    source_num_vars: usize,
+    wiring: Vec&lt;(u32, u32)&gt;,
+    output_num_vars: usize,
+) -&gt; Circuit&lt;F&gt; {
+    let mut builder = CircuitBuilder::&lt;F&gt;::new();
+
+    let public = builder.add_input_layer("Public", LayerVisibility::Public);
+    // The MLE that we are routing via the wiring
+    let source = builder.add_input_shred("Source for identity gate", source_num_vars, &amp;public);
+    // Expected result of the wiring
+    let expected_output = builder.add_input_shred("Expected output", output_num_vars, &amp;public);
+    
+    let gate_result = builder.add_identity_gate_node(&amp;source, wiring, output_num_vars, None);
+   
+    let output = builder.add_sector(gate_result - expected_output);
+    builder.set_output(&amp;output);
+
+    builder.build().unwrap()
+}
+
+#[test]
+pub fn id_gate_example() {
+    const SOURCE_NUM_VARS: usize = 3;
+    const OUTPUT_NUM_VARS: usize = 2;
+
+    // The example input MLE.
+    let source_mle: MultilinearExtension&lt;Fr&gt; = vec![5, 7, 2, 9, 13, 1, 11, 2].into();
+    // Example wiring.
+    let wiring = vec![
+        (0, 1), 
+        (0, 3),
+        (1, 7),
+        (2, 6),
+        (2, 5),
+        (3, 2),
+    ];
+    let expected_output_mle: MultilinearExtension&lt;Fr&gt; = vec![16, 2, 12, 2].into();
+
+
+    // Create circuit description.
+    let mut prover_circuit =
+        build_example_identity_gate_circuit::&lt;Fr&gt;(SOURCE_NUM_VARS, wiring, OUTPUT_NUM_VARS);
+    let mut verifier_circuit = prover_circuit.clone();
+
+    prover_circuit.set_input("Source for identity gate", source_mle.clone());
+    prover_circuit.set_input("Expected output", expected_output_mle.clone());
+
+    let provable_circuit = prover_circuit.finalize().unwrap();
+
+    // Prove the circuit.
+    let (proof_config, proof_as_transcript) =
+        prove_circuit_with_runtime_optimized_config::&lt;Fr, PoseidonSponge&lt;Fr&gt;&gt;(&amp;provable_circuit);
+
+    // Create verifier circuit description and attach inputs.
+    verifier_circuit.set_input("Source for identity gate", source_mle);
+    verifier_circuit.set_input("Expected output", expected_output_mle);
+
+    let (verifiable_circuit, predetermined_public_inputs) =
+        verifier_circuit.gen_verifiable_circuit().unwrap();
+    verify_circuit_with_proof_config(
+        &amp;verifiable_circuit,
+        predetermined_public_inputs,
+        &amp;proof_config,
+        proof_as_transcript,
+    );
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="example-3-dataparallel-binary-gate"><a class="header" href="#example-3-dataparallel-binary-gate">Example 3: Dataparallel Binary Gate</a></h2>
+<h3 id="diagram-2"><a class="header" href="#diagram-2">Diagram</a></h3>
+<p>Let us define the following layerwise relationship, as a small GKR circuit:</p>
+<p><img src="../figures/dataparallel_binary.jpg" alt="Diagram representing dataparallel binary gate" /></p>
+<h3 id="code-2"><a class="header" href="#code-2">Code</a></h3>
+<p>The way we would represent the above diagram as a GKR circuit in Remainder is:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>fn build_example_binary_gate_circuit_dataparallel&lt;F: Field&gt;(
+    num_dataparallel_vars: usize,
+    input_num_vars_lhs: usize,
+    input_num_vars_rhs: usize,
+    wiring: Vec&lt;(u32, u32, u32)&gt;,
+    binary_operation: BinaryOperation,
+    output_num_vars: usize,
+) -&gt; Circuit&lt;F&gt; {
+    let mut builder = CircuitBuilder::&lt;F&gt;::new();
+
+    let public = builder.add_input_layer("Public", LayerVisibility::Public);
+    // The input candidates for the left-hand side of the gate
+    let lhs_input = builder.add_input_shred("LHS candidates for binary gate", input_num_vars_lhs, &amp;public);
+    // The input candidates for the right-hand side of the gate
+    let rhs_input = builder.add_input_shred("RHS candidates for binary gate", input_num_vars_rhs, &amp;public);
+    // The expected output of the gate operation
+    let expected_output = builder.add_input_shred("Expected output", output_num_vars, &amp;public);
+
+  
+    let gate_result = builder.add_gate_node(&amp;lhs_input, &amp;rhs_input, wiring, binary_operation, Some(num_dataparallel_vars));
+   
+    let output = builder.add_sector(gate_result - expected_output);
+    builder.set_output(&amp;output);
+
+    builder.build().unwrap()
+}
+
+#[test]
+pub fn binary_gate_dataparallel_example() {
+    const NUM_DATAPARALLEL_VARS: usize = 1;
+    const LHS_NUM_VARS: usize = 3;
+    const RHS_NUM_VARS: usize = 2;
+    const OUTPUT_NUM_VARS: usize = 2;
+
+    // Example inputs
+    let lhs_mle: MultilinearExtension&lt;Fr&gt; = vec![5, 7, 2, 9, 13, 1, 11, 2].into();
+    let rhs_mle: MultilinearExtension&lt;Fr&gt; = vec![11, 13, 15, 3].into();
+    // Example wiring: Is repeated across (1 &lt;&lt; [NUM_DATAPARALLEL_VARS]) copies of the circuit
+    let wiring = vec![
+        (0, 0, 1), 
+        (0, 3, 0),
+        (1, 2, 1),
+    ];
+    let expected_output_mle: MultilinearExtension&lt;Fr&gt; = vec![38, 15, 33, 14].into();
+
+
+    // Create circuit description
+    let mut prover_circuit =
+        build_example_binary_gate_circuit_dataparallel::&lt;Fr&gt;(NUM_DATAPARALLEL_VARS, LHS_NUM_VARS, RHS_NUM_VARS, wiring, BinaryOperation::Add, OUTPUT_NUM_VARS);
+    let mut verifier_circuit = prover_circuit.clone();
+
+    prover_circuit.set_input("LHS candidates for binary gate", lhs_mle.clone());
+    prover_circuit.set_input("RHS candidates for binary gate", rhs_mle.clone());
+    prover_circuit.set_input("Expected output", expected_output_mle.clone());
+
+    let provable_circuit = prover_circuit.finalize().unwrap();
+
+    // Prove the circuit
+    let (proof_config, proof_as_transcript) =
+        prove_circuit_with_runtime_optimized_config::&lt;Fr, PoseidonSponge&lt;Fr&gt;&gt;(&amp;provable_circuit);
+
+    // Create verifier circuit description and attach inputs.
+    verifier_circuit.set_input("LHS candidates for binary gate", lhs_mle);
+    verifier_circuit.set_input("RHS candidates for binary gate", rhs_mle);
+    verifier_circuit.set_input("Expected output", expected_output_mle);
+
+    let (verifiable_circuit, predetermined_public_inputs) =
+        verifier_circuit.gen_verifiable_circuit().unwrap();
+    verify_circuit_with_proof_config(
+        &amp;verifiable_circuit,
+        predetermined_public_inputs,
+        &amp;proof_config,
+        proof_as_transcript,
+    );
+}
+
+<span class="boring">}</span></code></pre></pre>
+<h2 id="example-4-dataparallel-identity-gate"><a class="header" href="#example-4-dataparallel-identity-gate">Example 4: Dataparallel Identity Gate</a></h2>
+<h3 id="diagram-3"><a class="header" href="#diagram-3">Diagram</a></h3>
+<p>Let us define the following layerwise relationship, as a small GKR circuit:</p>
+<p><img src="../figures/dataparallel_id.jpg" alt="Diagram representing dataparallel binary gate" /></p>
+<h3 id="code-3"><a class="header" href="#code-3">Code</a></h3>
+<p>The way we would represent the above diagram as a GKR circuit in Remainder is:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn build_example_identity_gate_circuit_dataparallel&lt;F: Field&gt;(
+    num_dataparallel_vars: usize,
+    source_num_vars: usize,
+    wiring: Vec&lt;(u32, u32)&gt;,
+    output_num_vars: usize,
+) -&gt; Circuit&lt;F&gt; {
+    let mut builder = CircuitBuilder::&lt;F&gt;::new();
+
+    let public = builder.add_input_layer("Public", LayerVisibility::Public);
+    // The MLE that we are routing via the wiring
+    let source = builder.add_input_shred("Source for identity gate", source_num_vars, &amp;public);
+    // Expected routing result from the wiring
+    let expected_output = builder.add_input_shred("Expected output", output_num_vars, &amp;public);
+    
+    let gate_result = builder.add_identity_gate_node(&amp;source, wiring, output_num_vars, Some(num_dataparallel_vars));
+   
+    let output = builder.add_sector(gate_result - expected_output);
+    builder.set_output(&amp;output);
+    
+    builder.build().unwrap()
+}
+
+#[test]
+pub fn id_gate_dataparallel_example() {
+    const NUM_DATAPARALLEL_VARS: usize = 1;
+    const SOURCE_NUM_VARS: usize = 3;
+    const OUTPUT_NUM_VARS: usize = 2;
+
+    // Example input
+    let source_mle: MultilinearExtension&lt;Fr&gt; = vec![5, 7, 2, 9, 13, 1, 11, 2].into();
+    // Example wiring. This is repeated across (1 &lt;&lt; [NUM_DATAPARALLEL_VARS]) copies of the circuit.
+    let wiring = vec![
+        (0, 1), 
+        (0, 3),
+        (1, 2),
+    ];
+    let expected_output_mle: MultilinearExtension&lt;Fr&gt; = vec![16, 2, 3, 11].into();
+
+
+    // Create circuit description
+    let mut prover_circuit =
+        build_example_identity_gate_circuit_dataparallel::&lt;Fr&gt;(NUM_DATAPARALLEL_VARS, SOURCE_NUM_VARS, wiring, OUTPUT_NUM_VARS);
+    let mut verifier_circuit = prover_circuit.clone();
+
+    prover_circuit.set_input("Source for identity gate", source_mle.clone());
+    prover_circuit.set_input("Expected output", expected_output_mle.clone());
+
+    let provable_circuit = prover_circuit.finalize().unwrap();
+
+    // Prove the circuit
+    let (proof_config, proof_as_transcript) =
+        prove_circuit_with_runtime_optimized_config::&lt;Fr, PoseidonSponge&lt;Fr&gt;&gt;(&amp;provable_circuit);
+
+    // Create verifier circuit description and attach inputs.
+    verifier_circuit.set_input("Source for identity gate", source_mle);
+    verifier_circuit.set_input("Expected output", expected_output_mle);
+
+    let (verifiable_circuit, predetermined_public_inputs) =
+        verifier_circuit.gen_verifiable_circuit().unwrap();
+    verify_circuit_with_proof_config(
+        &amp;verifiable_circuit,
+        predetermined_public_inputs,
+        &amp;proof_config,
+        proof_as_transcript,
+    );
+}
+<span class="boring">}</span></code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../frontend/matmult.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../frontend/lookup.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../frontend/matmult.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../frontend/lookup.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

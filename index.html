@@ -36,23 +36,11 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
-        </div>
-    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -93,13 +81,10 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
-                sidebar_toggle.checked = false;
             }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -133,7 +118,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -150,12 +135,7 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -176,15 +156,130 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="chapter-1"><a class="header" href="#chapter-1">Chapter 1</a></h1>
-<p>Remainder documentation!</p>
+<h1 id="quickstart"><a class="header" href="#quickstart">Quickstart</a></h1>
+<p>Hi there! Welcome to the official Remainder documentation/tutorial. For the code reference, see <a href="">this site (published soon!)</a>. Note that Remainder is specifically a GKR/Hyrax prover and that this tutorial assumes familiarity with basic concepts in zero-knowledge and interactive proofs. For a softer introduction to the basics behind verifiable computation, interactive proofs, and zero-knowledge, see Chapter 1 of <a href="https://people.cs.georgetown.edu/jthaler/ProofsArgsAndZK.pdf">Justin Thaler's wonderful manuscript</a>.</p>
+<p>The documentation is split into four primary parts:</p>
+<ul>
+<li><a href="./gkr_tutorial.html">The first</a> is an intuitive introduction to the "GKR" interactive proof scheme for layered circuits. The name "GKR" refers to Goldwasser, Kalai, and Rothblum, the co-authors of the <a href="https://dl.acm.org/doi/10.1145/2699436">paper</a> which first introduced the notion of proving the correctness of layered circuits' outputs with respect to their inputs via sumcheck. If you are not familiar with GKR concepts, we strongly recommend you read this section before engaging with either of the next two sections or even the quickstart below.</li>
+<li><a href="./canonical_gkr.html">The second</a> follows from the first and dives a tad deeper into the specific methodology of layerwise relationships, prover claims, etc. and explains the various concepts behind GKR in a loosely mathematical fashion.</li>
+<li><a href="./frontend_basic_tutorial.html">The third</a> also follows from the first and describes the same concepts as the second, but in less detail and complete with code examples.</li>
+</ul>
+<p>In addition, we provide a concise "how-to" quickstart here. This quickstart covers the basics of using Remainder as a GKR proof system library, including the following:</p>
+<ul>
+<li>Circuit description generation</li>
+<li>Appending inputs to a circuit description</li>
+<li>Proving and verifying</li>
+</ul>
+<h2 id="creating-a-layered-gkr-circuit"><a class="header" href="#creating-a-layered-gkr-circuit">Creating a Layered (GKR) Circuit</a></h2>
+<p>See <code>remainder_frontend/tests/tutorial.rs</code> (TODO -- put link here) for code reference. To define a layered circuit, we must describe the circuit's inputs, intermediate layers and relationships between them, and output layers. We'll first take a look at the <code>build_circuit()</code> function. The first line is</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut builder = CircuitBuilder::&lt;Fr&gt;::new();
+<span class="boring">}</span></code></pre></pre>
+<p>This creates a new <code>CircuitBuilder</code> instance with native field <code>Fr</code> (BN254's scalar field). The <code>CircuitBuilder</code> is where all circuit components (nodes) will be aggregated and compiled into a full layered circuit.</p>
+<p>The next line is</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let input_layer = builder.add_input_layer("Input Layer", LayerVisibility::Private);
+<span class="boring">}</span></code></pre></pre>
+<p>This adds an input <em>layer</em> to the circuit (see <a href="./gkr_tutorial/input_layers.html">input layer</a> page for more details). Note that an input <em>layer</em> is one which gets all claims on it bundled together and is treated as a single polynomial (multilinear extension) when the prover decides how to divide the circuit inputs to commit to each one. We then have the following:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let lhs = builder.add_input_shred("LHS", 2, &amp;input_layer);
+let rhs = builder.add_input_shred("RHS", 2, &amp;input_layer);
+let expected_output = builder.add_input_shred("Output", 2, &amp;input_layer);
+<span class="boring">}</span></code></pre></pre>
+<p>We add three input "shred"s to the circuit, all of which are subsets of the data within the input layer which we added earlier. Each "shred" has 2 variables (i.e. has <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">4</span></span></span></span> evaluations, and is identified with a unique string, e.g. <code>"RHS"</code>). The difference between an input layer and an input "shred" is that the latter refers to a specific subset of the input layer's data which should be treated as a contiguous chunk to be used as input to a later layer within the circuit.</p>
+<p>We begin adding layers to the circuit:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let multiplication_sector = builder.add_sector(lhs * rhs);
+<span class="boring">}</span></code></pre></pre>
+<p>Notice that even though <code>lhs</code> and <code>rhs</code> are input "shred"s from the same input <em>layer</em>, because we added them as separate "shred"s earlier, we can now use them as separate inputs to be element-wise multiplied against one another. In general, input <em>layers</em> are treated as a single entity by the verifier, while input <em>shreds</em> are treated as subsets of input layers which the prover can use as inputs to other layers within the circuit.</p>
+<p>This first layer is a "sector", which is the Remainder way of referring to <a href="./regular_gkr.html">structured layerwise relationships</a>. This simply means that with evaluations <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">a</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">b</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">c</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">d</span><span class="mclose">]</span></span></span></span> in <code>lhs</code> and <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">h</span><span class="mclose">]</span></span></span></span> in <code>rhs</code>, the resulting layer should hold the element-wise product of the evaluations in <code>lhs</code> and those in <code>rhs</code>, i.e. <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">a</span><span class="mord mathnormal">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">b</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">c</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal">h</span><span class="mclose">]</span></span></span></span>.</p>
+<p>We add another layer to the circuit:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let subtraction_sector = builder.add_sector(multiplication_sector - expected_output);
+
+builder.set_output(&amp;subtraction_sector);
+<span class="boring">}</span></code></pre></pre>
+<p>This layer is another element-wise operator, but where we element-wise subtract all of the values rather than multiply them. Here, we are semantically subtracting the <code>expected_output</code> from the earlier layer we created which was the element-wise product of the values in <code>lhs</code> and <code>rhs</code> (see <a href="./gkr_tutorial/encoding_layers.html#note-transforming-a-circuit-to-have-zero-output">this section</a> for more details). The resulting layer should be zero if the two are element-wise equal, and we thus call <code>builder.set_output()</code> on the resulting layer, which tells the circuit builder that this layer's values should be publicly revealed to the verifier (and that no future layer depends on the values).</p>
+<p>Finally, we create the layered circuit from its components:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>builder.build().unwrap()
+<span class="boring">}</span></code></pre></pre>
+<p>This creates a <code>Circuit&lt;Fr&gt;</code> struct which contains the layered circuit description (see <a href="./gkr_tutorial/encoding_layers.html#circuit-description"><code>GKRCircuitDescription</code></a>), the mapping between nodes and layers (see <code>CircuitMap</code>), and the state for circuit inputs which have been partially populated already.</p>
+<h2 id="populating-circuit-inputs"><a class="header" href="#populating-circuit-inputs">Populating Circuit Inputs</a></h2>
+<p>First, we instantiate the circuit description which we created above (see the function <code>tutorial_test()</code>):</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let base_circuit = build_circuit();
+let mut prover_circuit = base_circuit.clone();
+let verifier_circuit = base_circuit.clone();
+<span class="boring">}</span></code></pre></pre>
+<p>Note that we additionally create prover and verifier "versions" of the circuit. The reason for this is that the prover will want to attach input data to the circuit, whereas the verifier will want to receive those inputs from the proof itself and will not independently attach inputs to the circuit this time around. We additionally note that in general, rather than generating the circuit description once and then cloning for the prover and verifier, we will usually generate the circuit description and serialize it, then distribute the description to both the proving and verifying party. The above emulates this but in code.</p>
+<p>The next step to proving the correctness of the output of a GKR circuit is to provide the circuit with <em>all</em> of its inputs (including hints for "verification" rather than "computation" circuits, e.g. the binary decomposition of a value; note that Remainder currently does not have features which assist with computing such "hint" values and these will have to be manually computed outside of the main <code>prove()</code> function). In the case of our example circuit, we have the following:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let lhs_data = vec![1, 2, 3, 4].into();
+let rhs_data = vec![5, 6, 7, 8].into();
+let expected_output_data = vec![5, 12, 21, 32].into();
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>vec!</code>s above define the integer values belonging to the input "<em>shreds</em>" which we declared earlier in our circuit description definition (recall that "shreds" are already assigned to input <em>layers</em>). Additionally, since we declared earlier that e.g. <code>let lhs = builder.add_input_shred("LHS", 2, &amp;input_layer);</code>, where the <code>2</code> represents the number of variables as the argument of the multilinear extension representing that input "shred", we have <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span> values within each input "shred", i.e. 4 evaluations for each of the above.</p>
+<p>We ask the circuit to set the above data using our string tags for the input "shred"s (note that we need an exact string match here).</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>circuit.set_input("LHS", lhs_data);
+circuit.set_input("RHS", rhs_data);
+circuit.set_input("Output", expected_output_data);
+<span class="boring">}</span></code></pre></pre>
+<h2 id="generating-a-gkr-proof"><a class="header" href="#generating-a-gkr-proof">Generating a GKR proof</a></h2>
+<p>We next "finalize" the circuit for proving, i.e. check that all declared input "shred"s have data associated to them, combine their data with respect to their declared input layer sources, and set up parameters for polynomial commitments to input layers, e.g. Ligero PCS.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let provable_circuit = circuit.finalize().unwrap();
+<span class="boring">}</span></code></pre></pre>
+<p>Finally, we run the prover using the "runtime-optimized" configuration:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let (proof_config, proof_as_transcript) =
+    prove_circuit_with_runtime_optimized_config::&lt;Fr, PoseidonSponge&lt;Fr&gt;&gt;(&amp;provable_circuit);
+<span class="boring">}</span></code></pre></pre>
+<p>This function returns a <code>ProofConfig</code> and a <code>TranscriptReader&lt;Fr, PoseidonSponge&lt;Fr&gt;&gt;</code>. The former tells the verifier which configuration it should run in to verify the proof, and the latter <em>is</em> a transcript representing the full GKR proof (see <a href="./gkr_tutorial/proof.html">Proof/Transcript</a> section for more details).</p>
+<h2 id="verifying-the-gkr-proof"><a class="header" href="#verifying-the-gkr-proof">Verifying the GKR proof</a></h2>
+<p>To verify the proof, we first take the circuit description and prepare it for verification:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let (verifiable_circuit, verifier_predetermined_public_inputs) =
+    verifier_circuit.gen_verifiable_circuit().unwrap();
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>verifier_predetermined_public_inputs</code> should be an empty map here -- the tl;dr is that it just represents public inputs which are known beforehand to the verifier (e.g. lookup table values, public constants which do not vary between different circuit proving instances, etc.), but in this case all of our inputs are private. Finally, we verify:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>verify_circuit_with_proof_config::&lt;Fr, PoseidonSponge&lt;Fr&gt;&gt;(
+    &amp;verifiable_circuit,
+    verifier_predetermined_public_inputs,
+    &amp;proof_config,
+    proof_as_transcript,
+);
+<span class="boring">}</span></code></pre></pre>
+<p>This function uses the provided <code>proof_config</code> and executes the GKR verifier against the <code>verifiable_circuit</code>, i.e. the verifier-ready circuit description. The function crashes if the proof does not verify for any reason, although in this case it should pass.</p>
+<p>Congratulations -- you have just</p>
+<ul>
+<li>Created your first layered circuit description</li>
+<li>Attached data to the circuit input layers</li>
+<li>Proven the correctness of the circuit outputs against the inputs</li>
+<li>Verified the resulting GKR proof</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
 
-                            <a rel="next prefetch" href="gkr_tutorial.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="gkr_background/gkr_background.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -195,7 +290,7 @@
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
 
-                    <a rel="next prefetch" href="gkr_tutorial.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="gkr_background/gkr_background.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -219,7 +314,6 @@
         <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-
 
 
     </div>
