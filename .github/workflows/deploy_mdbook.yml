@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install mdbook
-        run: cargo install mdbook
-      - name: Install mdbook-katex
-        run: cargo install mdbook-katex
+      - name: Install mdbook with specific (compatible) version
+        run: cargo install mdbook --version 0.4.48
+      - name: Install mdbook-katex with specific (compatible) version
+        run: cargo install mdbook-katex --version 0.9.4
       - name: Build the book
         run: mdbook build
       - name: Deploy to GitHub Pages
