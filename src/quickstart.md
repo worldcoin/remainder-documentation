@@ -3,8 +3,9 @@ Hi there! Welcome to the official Remainder documentation/tutorial. For the code
 
 The documentation is split into four primary parts:
 - [The first](./gkr_tutorial.md) is an intuitive introduction to the "GKR" interactive proof scheme for layered circuits. The name "GKR" refers to Goldwasser, Kalai, and Rothblum, the co-authors of the [paper](https://dl.acm.org/doi/10.1145/2699436) which first introduced the notion of proving the correctness of layered circuits' outputs with respect to their inputs via sumcheck. If you are not familiar with GKR concepts, we strongly recommend you read this section before engaging with either of the next two sections or even the quickstart below.
-- [The second](./canonical_gkr.md) follows from the first and dives a tad deeper into the specific methodology of layerwise relationships, prover claims, etc. and explains the various concepts behind GKR in a loosely mathematical fashion. 
-- [The third](./frontend_basic_tutorial.md) also follows from the first and describes the same concepts as the second, but in less detail and complete with code examples. 
+- [The second](./canonical_gkr.md) follows from the first and dives a tad deeper into the specific methodology of layerwise relationships, prover claims, etc. and explains the various concepts behind GKR in a more mathematical fashion. 
+- [The third](./frontend_basic_tutorial.md) also follows from the first and describes the same concepts as the second, but via code examples rather than looking at the theory. 
+- [The fourth](./hyrax/hyrax.md) describes the Hyrax ZK interactive protocol which "wraps" the GKR protocol via blinded Pedersen commitments. 
 
 In addition, we provide a concise "how-to" quickstart here. This quickstart covers the basics of using Remainder as a GKR proof system library, including the following:
 - Circuit description generation
