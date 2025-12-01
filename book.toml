@@ -7,3 +7,4 @@ title = "Remainder Documentation Test"
 # https://github.com/lzanini/mdbook-katex
 [preprocessor.katex]
 after = ["links"]
+macros = "src/macros.txt"
