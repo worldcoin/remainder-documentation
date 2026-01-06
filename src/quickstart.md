@@ -12,7 +12,7 @@ In addition, we provide a concise "how-to" quickstart here. This quickstart cove
 - Proving and verifying
 
 ## Creating a Layered (GKR) Circuit
-See `remainder_frontend/tests/tutorial.rs` (TODO -- put link here) for code reference. To define a layered circuit, we must describe the circuit's inputs, intermediate layers and relationships between them, and output layers. We'll first take a look at the `build_circuit()` function. The first line is
+See `frontend/examples/tutorial.rs` (TODO -- put link here) for code reference. To define a layered circuit, we must describe the circuit's inputs, intermediate layers and relationships between them, and output layers. We'll first take a look at the `build_circuit()` function. The first line is
 ```rust
 let mut builder = CircuitBuilder::<Fr>::new();
 ```
@@ -20,15 +20,24 @@ This creates a new `CircuitBuilder` instance with native field `Fr` (BN254's sca
 
 The next line is
 ```rust
-let input_layer = builder.add_input_layer("Input Layer", LayerVisibility::Private);
+let lhs_rhs_input_layer =
+    builder.add_input_layer("LHS RHS input layer", LayerVisibility::Committed);
+let expected_output_input_layer =
+    builder.add_input_layer("Expected output", LayerVisibility::Public);
 ```
-This adds an input _layer_ to the circuit (see [input layer](./gkr_tutorial/input_layers.md) page for more details). Note that an input _layer_ is one which gets all claims on it bundled together and is treated as a single polynomial (multilinear extension) when the prover decides how to divide the circuit inputs to commit to each one. We then have the following:
+
+This adds two input _layers_ to the circuit (see the [Input Layer](./gkr_tutorial/input_layers.md) page for more details). Note that an input _layer_ is one which gets all claims on it bundled together and is treated as a single polynomial (multilinear extension) when the prover decides how to divide the circuit inputs to commit to each one.
+
+In this example we separate the input data into _two_ separate input layers because we want some of them to be _committed_ instead of publicly known. This means that the verifier should only be able to see _polynomial commitments_ to the MLEs on such input layers (see [Committed Inputs](./gkr_theory/input_layers.md#committed-inputs)). Depending on the proving backend used (plain GKR vs. Hyrax), committed layers can act as _private layers_ in the sense that the verfier learns nothing about their contents when verifying a proof (more on that later on).
+
+We then have the following:
 ```rust
-let lhs = builder.add_input_shred("LHS", 2, &input_layer);
-let rhs = builder.add_input_shred("RHS", 2, &input_layer);
-let expected_output = builder.add_input_shred("Output", 2, &input_layer);
+let lhs = builder.add_input_shred("LHS", 2, &lhs_rhs_input_layer);
+let rhs = builder.add_input_shred("RHS", 2, &lhs_rhs_input_layer);
+let expected_output = builder.add_input_shred("Expected output", 2, &lhs_rhs_input_layer);
 ```
-We add three input "shred"s to the circuit, all of which are subsets of the data within the input layer which we added earlier. Each "shred" has 2 variables (i.e. has $2^2 = 4$ evaluations, and is identified with a unique string, e.g. `"RHS"`). The difference between an input layer and an input "shred" is that the latter refers to a specific subset of the input layer's data which should be treated as a contiguous chunk to be used as input to a later layer within the circuit. 
+
+We add three input "shred"s to the circuit, the first two being subsets of the data in the `"LHS RHS input layer"`, and the last one being (the entire) `"Expected output"` layer. Each "shred" has 2 variables (i.e. has $2^2 = 4$ evaluations, and is identified with a unique string, e.g. `"RHS"`). The difference between an input layer and an input "shred" is that the latter refers to a specific subset of the input layer's data which should be treated as a contiguous chunk to be used as input to a later layer within the circuit. 
 
 We begin adding layers to the circuit:
 ```rust
@@ -48,7 +57,7 @@ This layer is another element-wise operator, but where we element-wise subtract 
 
 Finally, we create the layered circuit from its components:
 ```rust
-builder.build().unwrap()
+builder.build().expect("Failed to build circuit")
 ```
 This creates a `Circuit<Fr>` struct which contains the layered circuit description (see [`GKRCircuitDescription`](./gkr_tutorial/encoding_layers.md#circuit-description)), the mapping between nodes and layers (see `CircuitMap`), and the state for circuit inputs which have been partially populated already. 
 
@@ -71,16 +80,18 @@ The `vec!`s above define the integer values belonging to the input "_shreds_" wh
 
 We ask the circuit to set the above data using our string tags for the input "shred"s (note that we need an exact string match here). 
 ```rust
-circuit.set_input("LHS", lhs_data);
-circuit.set_input("RHS", rhs_data);
-circuit.set_input("Output", expected_output_data);
+prover_circuit.set_input("LHS", lhs_data);
+prover_circuit.set_input("RHS", rhs_data);
+prover_circuit.set_input("Expected output", expected_output_data);
 ```
 
 ## Generating a GKR proof
 
 We next "finalize" the circuit for proving, i.e. check that all declared input "shred"s have data associated to them, combine their data with respect to their declared input layer sources, and set up parameters for polynomial commitments to input layers, e.g. Ligero PCS.
 ```rust
-let provable_circuit = circuit.finalize().unwrap();
+let provable_circuit = prover_circuit
+    .gen_provable_circuit()
+    .expect("Failed to generate provable circuit");
 ```
 
 Finally, we run the prover using the "runtime-optimized" configuration:
@@ -94,15 +105,15 @@ This function returns a `ProofConfig` and a `TranscriptReader<Fr, PoseidonSponge
 ## Verifying the GKR proof
 To verify the proof, we first take the circuit description and prepare it for verification:
 ```rust
-let (verifiable_circuit, verifier_predetermined_public_inputs) =
-    verifier_circuit.gen_verifiable_circuit().unwrap();
+let verifiable_circuit = verifier_circuit
+    .gen_verifiable_circuit()
+    .expect("Failed to generate verifiable circuit");
 ```
 
-The `verifier_predetermined_public_inputs` should be an empty map here -- the tl;dr is that it just represents public inputs which are known beforehand to the verifier (e.g. lookup table values, public constants which do not vary between different circuit proving instances, etc.), but in this case all of our inputs are private. Finally, we verify:
+Finally, we verify:
 ```rust
 verify_circuit_with_proof_config::<Fr, PoseidonSponge<Fr>>(
     &verifiable_circuit,
-    verifier_predetermined_public_inputs,
     &proof_config,
     proof_as_transcript,
 );
