@@ -2,9 +2,9 @@
 References: [GLS+21](https://eprint.iacr.org/2021/1043.pdf), page 46, [AER24](https://eprint.iacr.org/2024/1399.pdf).
 
 ### Prerequisites
-- [Committed input layers](./gkr_tutorial/input_layers.md#committed-inputs)
+- [Committed input layers](./input_layers.md#committed-inputs)
 
-As described within the [committed input layers](./gkr_tutorial/input_layers.md#committed-inputs) section, the Ligero polynomial commitment scheme (PCS) consists of a $\text{Commit}$ and an $\text{Eval}$ phase such that
+As described within the [committed input layers](./input_layers.md#committed-inputs) section, the Ligero polynomial commitment scheme (PCS) consists of a $\text{Commit}$ and an $\text{Eval}$ phase such that
 - During $\text{Commit}$, the prover sends a commitment $com$ for the input layer MLE $\widetilde{V}_d$.
 - After running the rest of the GKR claim reduction process, we are left with a claim $\widetilde{V}_d(r_1, ..., r_n) \overset{?}{=} c_d$.
 - During $\text{Eval}$, the prover sends an evaluation proof $\pi$ showing that $\widetilde{V}_d(r_1, ..., r_n) = c_d$. 
@@ -26,7 +26,7 @@ Next, consider the set of (univariate) polynomials $\mathbb{F}^{<d}[X]$ of degre
 The last property of Reed-Solomon codes is extremely useful for the purposes of code-based PCSs such as Ligero and FRI -- if we have that $n = 2d$, for example, then for two polynomials $f, g \in \mathbb{F}^{<d}[X]$ where $f \neq g$ we have that $\lvert \text{Enc}(f) - \text{Enc}(g) \rvert_0 \geq d + 1$, which is over half of the evaluation domain. This intuitively makes it very easy for a verifier to catch a prover who commits to one polynomial's codeword and attempts to evaluate using another's, since sampling even a single random point within $\mathcal{L}$ will reveal the difference with probability $> \frac{1}{2}$. 
 
 ## Vector-Matrix-Vector Product Observation
-(Reader's note: the construction described here is identical to that in the [Hyrax PCS](../hyrax_pcs.md#vector-matrix-vector-product-observation) section.) Let our input layer MLE $\widetilde{V}_d(X_1, ..., X_n)$ have evaluations $a_1, ..., a_{2^n}$ over $X_1, ..., X_n \in \{0, 1\}^n$ (for example, $a_1 = \widetilde{V}_d(0, ..., 0)$). 
+(Reader's note: the construction described here is identical to that in the [Hyrax PCS](../hyrax/hyrax_pcs.md#vector-matrix-vector-product-observation) section.) Let our input layer MLE $\widetilde{V}_d(X_1, ..., X_n)$ have evaluations $a_1, ..., a_{2^n}$ over $X_1, ..., X_n \in \{0, 1\}^n$ (for example, $a_1 = \widetilde{V}_d(0, ..., 0)$). 
 
 As described in the introduction above, the prover is trying to show that $\widetilde{V}_d(r_1, ..., r_n) = c_d$. As described in the Hyrax PCS section, one way to compute the evaluation is as follows:
 

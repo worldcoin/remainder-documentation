@@ -1,6 +1,6 @@
 # Proof of Sumcheck
 
-A key observation that the Hyrax protocol makes is that the verifier's [sumcheck](../gkr_tutorial/sumcheck.md) "checks," i.e. that $g_i(0) + g_i(1) = g_{i-1}(r_{i-1})$, and the final oracle query, can be modeled as linear equations. 
+A key observation that the Hyrax protocol makes is that the verifier's [sumcheck](../gkr_background/sumcheck.md) "checks," i.e. that $g_i(0) + g_i(1) = g_{i-1}(r_{i-1})$, and the final oracle query, can be modeled as linear equations. 
 
 At each round, $\mathcal{P}$ "sends" $\mathcal{V}$ the univariate $g_i(X)$ by committing to its coefficients using Pedersen scalar commitments. Let $a_{i, 0}, \dots, a_{i, n}$ (to get commitments $C_{a_{i, 0}}, \dots, C_{a_{i, n}}$) be the coefficients for a degree $n$ univariate, where $a_{i, j}$ is the coefficient of the $j$-th degree term. 
 
@@ -67,7 +67,7 @@ However, there is a small subtlety: every $d_i$ coefficients in $\vec{\pi}$ must
 
 ## The final "oracle query"
 
-Over here we have encoded all of $\mathcal{V}$'s checks except for the final oracle query. Recall that at the end of sumcheck, $\mathcal{P}$ has [claims on underlying MLEs](../gkr_tutorial/encoding_layers.md/#using-the-equivalence-between-layer-encodings). In the Hyrax universe, $\mathcal{P}$ commits to the claims it has on each of these MLEs, say via the commitments $v_0, \dots, v_k.$ Then $\mathcal{V}$ can combine these commitments linearly to compute a commitment to the expected value $f(r_1, \dots, r_n).$ Then, we expand the matrix $M$ to have $k$ additional columns and add the coefficients $\mathcal{V}$ needs to compute the linear combination of $v_0, \dots, v_k$ to the last (the $n$-th) row of $M$, and $\vec{\pi}$ has $k$ additional entries with the commitments $v_0, \dots, v_n$. Then $\mathcal{V}$ can expect the result of the final dot product to be $0$.
+Over here we have encoded all of $\mathcal{V}$'s checks except for the final oracle query. Recall that at the end of sumcheck, $\mathcal{P}$ has [claims on underlying MLEs](../gkr_background/encoding_layers.md/#using-the-equivalence-between-layer-encodings). In the Hyrax universe, $\mathcal{P}$ commits to the claims it has on each of these MLEs, say via the commitments $v_0, \dots, v_k.$ Then $\mathcal{V}$ can combine these commitments linearly to compute a commitment to the expected value $f(r_1, \dots, r_n).$ Then, we expand the matrix $M$ to have $k$ additional columns and add the coefficients $\mathcal{V}$ needs to compute the linear combination of $v_0, \dots, v_k$ to the last (the $n$-th) row of $M$, and $\vec{\pi}$ has $k$ additional entries with the commitments $v_0, \dots, v_n$. Then $\mathcal{V}$ can expect the result of the final dot product to be $0$.
 
 ## Example
 

@@ -3,7 +3,7 @@ Hi there! Welcome to the official Remainder documentation/tutorial. For the code
 
 The documentation is split into four primary parts:
 - [The first](./gkr_background/gkr_background.md) is an intuitive introduction to the "GKR" interactive proof scheme for layered circuits. The name "GKR" refers to Goldwasser, Kalai, and Rothblum, the co-authors of the [paper](https://dl.acm.org/doi/10.1145/2699436) which first introduced the notion of proving the correctness of layered circuits' outputs with respect to their inputs via sumcheck. If you are not familiar with GKR concepts, we strongly recommend you read this section before engaging with either of the next two sections or even the quickstart below.
-- [The second](./gkr_theory/canonic_gkr.md) follows from the first and dives a tad deeper into the specific methodology of layerwise relationships, prover claims, etc. and explains the various concepts behind GKR in a loosely mathematical fashion. 
+- [The second](./gkr_theory/theory_overview.md) follows from the first and dives a tad deeper into the specific methodology of layerwise relationships, prover claims, etc. and explains the various concepts behind GKR in a loosely mathematical fashion. 
 - [The third](./frontend/frontend_components.md) also follows from the first and describes the same concepts as the second, but in less detail and complete with code examples.
 - [The final](./hyrax/hyrax.md) is an introduction to the Hyrax [interactive proof protocol](https://eprint.iacr.org/2017/1132.pdf), a "wrapper" around the GKR protocol which offers statistical zero-knowledge in exchange for the use of elliptic curves. 
 
@@ -27,7 +27,7 @@ let expected_output_input_layer =
     builder.add_input_layer("Expected output", LayerVisibility::Public);
 ```
 
-This adds two input _layers_ to the circuit (see the [Input Layer](./gkr_tutorial/input_layers.md) page for more details). Note that an input _layer_ is one which gets all claims on it bundled together and is treated as a single polynomial (multilinear extension) when the prover decides how to divide the circuit inputs to commit to each one.
+This adds two input _layers_ to the circuit (see the [Input Layer](./gkr_theory/input_layers.md) page for more details). Note that an input _layer_ is one which gets all claims on it bundled together and is treated as a single polynomial (multilinear extension) when the prover decides how to divide the circuit inputs to commit to each one.
 
 In this example we separate the input data into _two_ separate input layers because we want some of them to be _committed_ instead of publicly known. This means that the verifier should only be able to see _polynomial commitments_ to the MLEs on such input layers (see [Committed Inputs](./gkr_theory/input_layers.md#committed-inputs)). Depending on the proving backend used (plain GKR vs. Hyrax), committed layers can act as _private layers_ in the sense that the verfier learns nothing about their contents when verifying a proof (more on that later on).
 
@@ -46,7 +46,7 @@ let multiplication_sector = builder.add_sector(lhs * rhs);
 ```
 Notice that even though `lhs` and `rhs` are input "shred"s from the same input _layer_, because we added them as separate "shred"s earlier, we can now use them as separate inputs to be element-wise multiplied against one another. In general, input _layers_ are treated as a single entity by the verifier, while input _shreds_ are treated as subsets of input layers which the prover can use as inputs to other layers within the circuit.
 
-This first layer is a "sector", which is the Remainder way of referring to [structured layerwise relationships](./regular_gkr.md). This simply means that with evaluations $[a, b, c, d]$ in `lhs` and $[e, f, g, h]$ in `rhs`, the resulting layer should hold the element-wise product of the evaluations in `lhs` and those in `rhs`, i.e. $[ae, bf, cg, dh]$. 
+This first layer is a "sector", which is the Remainder way of referring to [structured layerwise relationships](./gkr_theory/structured_gkr.md#structured-layerwise-relationship). This simply means that with evaluations $[a, b, c, d]$ in `lhs` and $[e, f, g, h]$ in `rhs`, the resulting layer should hold the element-wise product of the evaluations in `lhs` and those in `rhs`, i.e. $[ae, bf, cg, dh]$. 
 
 We add another layer to the circuit:
 ```rust
@@ -54,13 +54,13 @@ let subtraction_sector = builder.add_sector(multiplication_sector - expected_out
 
 builder.set_output(&subtraction_sector);
 ```
-This layer is another element-wise operator, but where we element-wise subtract all of the values rather than multiply them. Here, we are semantically subtracting the `expected_output` from the earlier layer we created which was the element-wise product of the values in `lhs` and `rhs` (see [this section](./gkr_tutorial/encoding_layers.md#note-transforming-a-circuit-to-have-zero-output) for more details). The resulting layer should be zero if the two are element-wise equal, and we thus call `builder.set_output()` on the resulting layer, which tells the circuit builder that this layer's values should be publicly revealed to the verifier (and that no future layer depends on the values). 
+This layer is another element-wise operator, but where we element-wise subtract all of the values rather than multiply them. Here, we are semantically subtracting the `expected_output` from the earlier layer we created which was the element-wise product of the values in `lhs` and `rhs` (see [this section](./gkr_background/encoding_layers.md#note-transforming-a-circuit-to-have-zero-output) for more details). The resulting layer should be zero if the two are element-wise equal, and we thus call `builder.set_output()` on the resulting layer, which tells the circuit builder that this layer's values should be publicly revealed to the verifier (and that no future layer depends on the values). 
 
 Finally, we create the layered circuit from its components:
 ```rust
 builder.build().expect("Failed to build circuit")
 ```
-This creates a `Circuit<Fr>` struct which contains the layered circuit description (see [`GKRCircuitDescription`](./gkr_tutorial/encoding_layers.md#circuit-description)), the mapping between nodes and layers (see `CircuitMap`), and the state for circuit inputs which have been partially populated already. 
+This creates a `Circuit<Fr>` struct which contains the layered circuit description (see [`GKRCircuitDescription`](./gkr_background/encoding_layers.md#circuit-description)), the mapping between nodes and layers (see `CircuitMap`), and the state for circuit inputs which have been partially populated already. 
 
 ## Populating Circuit Inputs
 First, we instantiate the circuit description which we created above (see the function `tutorial_test()`):
@@ -101,7 +101,7 @@ let (proof_config, proof_as_transcript) =
     prove_circuit_with_runtime_optimized_config::<Fr, PoseidonSponge<Fr>>(&provable_circuit);
 ```
 
-This function returns a `ProofConfig` and a `TranscriptReader<Fr, PoseidonSponge<Fr>>`. The former tells the verifier which configuration it should run in to verify the proof, and the latter _is_ a transcript representing the full GKR proof (see [Proof/Transcript](./gkr_tutorial/proof.md) section for more details). 
+This function returns a `ProofConfig` and a `TranscriptReader<Fr, PoseidonSponge<Fr>>`. The former tells the verifier which configuration it should run in to verify the proof, and the latter _is_ a transcript representing the full GKR proof (see [Proof/Transcript](./gkr_theory/proof.md) section for more details). 
 
 ## Verifying the GKR proof
 To verify the proof, we first take the circuit description and prepare it for verification:
