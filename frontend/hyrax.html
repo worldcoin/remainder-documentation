@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Frontend Components - The Remainder Book</title>
+        <title>Hyrax - The Remainder Book</title>
 
 
         <!-- Custom HTML head -->
@@ -156,42 +156,16 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="frontend-components"><a class="header" href="#frontend-components">Frontend Components</a></h1>
-<p>The basic component of a GKR circuit is a <em>layer</em>. A layer is defined as an MLE plus polynomial relationship which explicitly states how each evaluation of that MLE (over the boolean hypercube) is related to evaluations of MLEs within previous layers.</p>
-<h2 id="remainder-components-overview"><a class="header" href="#remainder-components-overview">Remainder Components Overview</a></h2>
-<p>The layer types which are supported in GKR are as follows:</p>
-<ul>
-<li><a href="./gate.html">"Gate"</a> layers, which define the arbitrary-wiring layerwise
-relationships described in the <a href="../gkr_theory/canonic_gkr.html">"canonic GKR"</a>
-section.</li>
-<li><a href="./structured.html">"Structured"</a> layers, which define the regular-wiring
-layerwise relationships described in the
-<a href="../gkr_theory/structured_gkr.html">"structured GKR"</a> section.</li>
-<li><a href="./matmult.html">"Matmult"</a> layers, which define the matrix multiplication-like
-layerwise relationships described in the
-<a href="../gkr_theory/matmult_layer.html">"matmult"</a> section.</li>
-<li><a href="./lookup.html">"Lookup"</a> layers, which define the lookup (LogUp) arguments described in the <a href="../gkr_theory/lookup.html">"lookup"</a> section.</li>
-</ul>
-<p>Additionally, we provide an example of how to compile into a Hyrax-provable circuit rather than a GKR-provable one in <a href="./hyrax.html">this</a> section.</p>
-<h2 id="remainder-circuit-definition"><a class="header" href="#remainder-circuit-definition">Remainder Circuit Definition</a></h2>
-<p>Circuits in Remainder are created via a "compilation" process. In essence:</p>
-<ul>
-<li>Circuit writers (that's you!) define the layer types and layer-wise
-relationships by defining <code>Node</code>s of the variety as described above.</li>
-<li>Circuit writers (still you!) also define the input layers and "shred"s within each input layer for the circuit.</li>
-<li>Additionally, each type of <code>Node</code> requires as input references to other <code>Node</code>s which act as the "source data" for that node's outputs.</li>
-<li>Once all of these relationships have been defined, Remainder will compile the set of nodes + source relationships into a layered circuit which can be run and proven/verified. Note that there are a couple of compilation options here, including compiling into the shallowest possible circuit by "combining" layers which are topologically oblivious (i.e. any layerwise ordering is valid).</li>
-</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../gkr_theory/proof.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../frontend/lookup.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../frontend/matmult.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../hyrax/hyrax.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -201,11 +175,11 @@ relationships by defining <code>Node</code>s of the variety as described above.<
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../gkr_theory/proof.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../frontend/lookup.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../frontend/matmult.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../hyrax/hyrax.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
