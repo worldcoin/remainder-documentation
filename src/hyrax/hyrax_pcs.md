@@ -2,10 +2,10 @@
 References: [WTS+18](https://eprint.iacr.org/2017/1132.pdf), page 8.
 
 ### Prerequisites
-- [Committed input layers](./gkr_tutorial/input_layers.md#committed-inputs)
-- [Pedersen commitments](./hyrax/pedersen_commitments.md)
+- [Committed input layers](../gkr_theory/input_layers.md#committed-inputs)
+- [Pedersen commitments](./pedersen_commitments.md)
 
-As described within the [committed input layers](./gkr_tutorial/input_layers.md#committed-inputs) section, the Hyrax polynomial commitment scheme (PCS) consists of a $\text{Commit}$ and an $\text{Eval}$ phase such that
+As described within the [committed input layers](../gkr_theory/input_layers.md#committed-inputs) section, the Hyrax polynomial commitment scheme (PCS) consists of a $\text{Commit}$ and an $\text{Eval}$ phase such that
 - During $\text{Commit}$, the prover sends a commitment $\com$ for the input layer MLE $\widetilde{V}_d$.
 - After running the rest of the Hyrax IP, we are left with a claim $\widetilde{V}_d(r_1, ..., r_n) \overset{?}{=} c_d$.
 - During $\text{Eval}$, the prover sends an evaluation proof $\pi$ showing that $\widetilde{V}_d(r_1, ..., r_n) = c_d$. 
@@ -34,7 +34,7 @@ In the future, we note that the latter vector is simply a tensor product of the 
 \end{bmatrix}
 $, so we represent it as the tensor product $\otimes_{i = 0}^{n}(1 - r_i, r_i).$ 
 
-Indeed, this above observation allows us to create a very simple PCS with the help of [proof-of-dot-product](./hyrax/hyrax_primitives.md#proof-of-dot-product). In particular, 
+Indeed, this above observation allows us to create a very simple PCS with the help of [proof-of-dot-product](./hyrax_primitives.md#proof-of-dot-product). In particular, 
 - During the $\text{KeyGen}$ phase, we produce generators $g_1, ..., g_{2^n}, h$. 
 - During the $\text{Commit}$ phase, the prover generates a blinding factor $s_0$ and computes the commitment
 $$
@@ -48,7 +48,7 @@ $$
 We note that the size of the commitment is $O(1)$ since the commitment is a single group element. However, both the verifier runtime and communication cost are $O(2^n)$ (as proof-of-dot-product incurs costs which are linear in the size of the vectors), which is less than ideal. Can we do better?
 
 ## Vector-Matrix-Vector Product Observation
-(Reader's note: the construction described here is identical to that in the [Ligero PCS](./gkr_tutorial/ligero_input.md#vector-matrix-vector-product-observation) section.) Rather than simply linearly arranging the coefficients of $\widetilde{V}_d$ as above, we can instead arrange them in a square matrix (for now, assume that $n$ is even) of size $2^{n/2} \times 2^{n/2}$ by enumerating the coefficients in row-major order:
+(Reader's note: the construction described here is identical to that in the [Ligero PCS](../gkr_theory/ligero_input.md#vector-matrix-vector-product-observation) section.) Rather than simply linearly arranging the coefficients of $\widetilde{V}_d$ as above, we can instead arrange them in a square matrix (for now, assume that $n$ is even) of size $2^{n/2} \times 2^{n/2}$ by enumerating the coefficients in row-major order:
 
 $$
 M = \begin{bmatrix}

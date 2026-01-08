@@ -73,7 +73,7 @@ Note that in this definition, we still are linear in the variables $x_1, x_2.$
 
 ### General
 Now we go over how to write $\widetilde{V}_i(x_1, x_2)$ in terms of $\widetilde{V}_j(z)$ for $j > i.$ 
-Recall the definition of [$\add_{i, j, k}(z, x, y)$ and $\mul_{i, j, k}(z, x, y)$](./gkr_tutorial.md/#notation-glossary). For example, in the case of $\mathcal{L}_2$: 
+Recall the definition of [$\add_{i, j, k}(z, x, y)$ and $\mul_{i, j, k}(z, x, y)$](./gkr_background.md/#notation-glossary). For example, in the case of $\mathcal{L}_2$: 
 $$
 \add_{2, 3, 3}((0, 0), (0, 1), (1, 0)) = 1 \\ 
 \mul_{2, 3, 3}((0, 1), (0, 0), (1, 0)) = 1 \\
@@ -99,7 +99,7 @@ $$
 + \quad\widetilde{\eq}(x; z)\mul_{i, j, k}(z, x', y')\big[\widetilde{V}_j(x') \cdot \widetilde{V}_k(y')\big] 
     \bigg).
 $$ 
-More detail and examples on transforming these indicator gate functions into MLEs are described in the [section on Canonical GKR](./canonical_gkr.md).
+More detail and examples on transforming these indicator gate functions into MLEs are described in the [section on canonic GKR](../gkr_theory/canonic_gkr.md).
 
 ## Using the Equivalence between Layer Encodings
 
@@ -137,15 +137,15 @@ $\mathcal{V}$ knows the structure of the circuit, so they can compute $\add_{0, 
 
 However, instead we say that $\mathcal{P}$ "reduces" the claim that $\widetilde{V}_0(g) \overset{?}= 45$ to two claims on $\widetilde{V}_1: V_1(u) \overset{?}= c_1; \widetilde{V}_1(v) \overset{?} = c_2.$ 
 
-Similarly, $\widetilde{V}_1$ has a relationship to MLEs in later layers, so the sumcheck on $\widetilde{V}_1$ will reduce to claims on these MLEs, eventually propagating to claims on the [input layer](./input_layers.md).
+Similarly, $\widetilde{V}_1$ has a relationship to MLEs in later layers, so the sumcheck on $\widetilde{V}_1$ will reduce to claims on these MLEs, eventually propagating to claims on the [input layer](../gkr_theory/input_layers.md).
 
-For another example of claim reduction for [structured GKR](./canonical_gkr.md), see [this section](./claims.md#claim-propagation).
+For another example of claim reduction for [structured GKR](../gkr_theory/structured_gkr.md), see [this section](../gkr_theory/claims.md#claim-propagation).
 
 ### General
 
 In general, GKR works very similarly to the example above. We cover the case where $\mathcal{V}$ expects the output of the circuit to be $0$. $\mathcal{P}$ receives a challenge from $\mathcal{V}, g$ and claims that the MLE representing $\mathcal{L}_0$ still evaluates to $0$ over that random point. I.e., $\mathcal{P}$ claims that $\widetilde{V}_0(g) = 0.$ Using the encoding of $\widetilde{V}_0$ using later layers, $\mathcal{P}$ reduces its claim on the output of the circuit to evaluations of MLEs representing future layers.
 
-Note that there is an exponential blow-up of claims when reducing claims on one layer to the next. We describe a protocol to aggregate claims (and therefore achieve a one-to-one reduction) in the [claims section](./claims.md).
+Note that there is an exponential blow-up of claims when reducing claims on one layer to the next. We describe a protocol to aggregate claims (and therefore achieve a one-to-one reduction) in the [claims section](../gkr_theory/claims.md).
 
 ## Circuit Description
 
@@ -157,7 +157,7 @@ Therefore, the circuit description of our example circuit is this:
 
 ## Note: Transforming a Circuit to have Zero Output
 
-In Remainder, $\mathcal{V}$ expects circuits to have output $0$. This is because certain types of circuits (such as those resulting from [LogUp](./lookup.md)) require the output to specifically be $0$, and $\mathcal{V}$ needs to specifically verify this fact.
+In Remainder, $\mathcal{V}$ expects circuits to have output $0$. This is because certain types of circuits (such as those resulting from [LogUp](../gkr_theory/lookup.md)) require the output to specifically be $0$, and $\mathcal{V}$ needs to specifically verify this fact.
 
 If a circuit does not have output $0$, one way to transform this is to add the negative of the expected output to the input. The last layer of the circuit can be the sum of this expected output, and the actual output of the circuit. This results in a circuit with the output layer evaluating to $0$. We show this transformation applied to our example above:
 

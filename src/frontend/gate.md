@@ -1,7 +1,7 @@
 # Gate Frontend Tutorial
-We build off of the theory introduction to "gate layers" in GKR, in the [Canonic GKR](../gkr_tutorial/canonic_gkr.md) section. The following section shows examples on how to create these layers, defined by wirings and the binary operation they denote, in Remainder.
+We build off of the theory introduction to "gate layers" in GKR, in the [Canonic GKR](../gkr_theory/canonic_gkr.md) section. The following section shows examples on how to create these layers, defined by wirings and the binary operation they denote, in Remainder.
 
-NOTE: The diagrams differ from the circuit (as written in our code example) in one subtle way: we subtract the "expected output" from the output of the gate layer in the code to verify that the circuit computed the correct value. This is equivalent to this section on [transforming a circuit to have zero output](../gkr_tutorial/encoding_layers.md/#note-transforming-a-circuit-to-have-zero-output).
+NOTE: The diagrams differ from the circuit (as written in our code example) in one subtle way: we subtract the "expected output" from the output of the gate layer in the code to verify that the circuit computed the correct value. This is equivalent to this section on [transforming a circuit to have zero output](../gkr_background/encoding_layers.md/#note-transforming-a-circuit-to-have-zero-output).
 
 ## Example 1: Binary Gate
 

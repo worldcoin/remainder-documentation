@@ -1,7 +1,7 @@
 # GKR Claims
 
 ## Claim definition
-"Claims" in GKR are statements which the prover has yet to show correctness for. As described [earlier](./encoding_layers.md#using-the-equivalence-between-layer-encodings), the first step in proving the correctness of a GKR circuit (after sending over all circuit inputs, both public and committed) is to take the circuit's (public) output layer $\widetilde{V}_0$ and send over all of its evaluations to the verifier. 
+"Claims" in GKR are statements which the prover has yet to show correctness for. As described [earlier](../gkr_background/encoding_layers.md#using-the-equivalence-between-layer-encodings), the first step in proving the correctness of a GKR circuit (after sending over all circuit inputs, both public and committed) is to take the circuit's (public) output layer $\widetilde{V}_0$ and send over all of its evaluations to the verifier. 
 
 For example, let's say that we have a circuit whose output layer contains 4 elements, i.e. whose representative MLE can be described by $\widetilde{V}_0(x_1, x_2): \mathbb{F}^2 \mapsto \mathbb{F}$. Additionally, let's say that these evaluations are $[a_1, a_2, a_3, a_4]$, such that
 
@@ -12,7 +12,7 @@ $$
 \widetilde{V}_0(1, 1) = a_4 \\
 $$
 
-These four equalities above are actually the first _claims_ whose validity the prover wishes to demonstrate to the verifier. The verifier doesn't know what the true values of $\widetilde{V}_0$ are, of course, but would be able to check each of these relationships with the prover's help via [sumcheck](./sumcheck.md). This would be rather expensive, however, as the number of claims is exactly equal to the number of circuit outputs/evaluations within the circuit's output layer. Instead, the verifier can sample some randomness and have the prover prove the following:
+These four equalities above are actually the first _claims_ whose validity the prover wishes to demonstrate to the verifier. The verifier doesn't know what the true values of $\widetilde{V}_0$ are, of course, but would be able to check each of these relationships with the prover's help via [sumcheck](../gkr_background/sumcheck.md). This would be rather expensive, however, as the number of claims is exactly equal to the number of circuit outputs/evaluations within the circuit's output layer. Instead, the verifier can sample some randomness and have the prover prove the following:
 
 $$
 \text{Sample } r_1, r_2 \overset{\$}{\leftarrow} \mathbb{F} \\ \quad \\
@@ -20,7 +20,7 @@ a^\star \overset{\text{assign}}{=} (1 - r_1)(1 - r_2)(a_1) + (1 - r_1)(r_2)(a_2)
 \text{Prove } \widetilde{V}_0(r_1, r_2) \overset{?}{=} a^\star
 $$
 
-Note that the above follows precisely from the definition of a [multilinear extension (MLE)](./multilinear_extensions.md), and it can indeed be viewed exactly as the evaluation of $\widetilde{V}_0$ at the random points $r_1, r_2$. The protocol takes a slight soundness hit here, as a cheating prover might get away with an incorrect circuit output (say, $\widetilde{V}_0^* \neq \widetilde{V}_0$, but $\widetilde{V}_0^*(r_1, r_2) = \widetilde{V}_0(r_1, r_2)$), but the probability of such an occurrence is $\frac{1}{\lvert \mathbb{F} \rvert}$, as non-identical MLEs only intersect at exactly one point via the [Schwartz-Zippel lemma](./sumcheck.md#schwartz-zippel-lemma).
+Note that the above follows precisely from the definition of a [multilinear extension (MLE)](../gkr_background/multilinear_extensions.md), and it can indeed be viewed exactly as the evaluation of $\widetilde{V}_0$ at the random points $r_1, r_2$. The protocol takes a slight soundness hit here, as a cheating prover might get away with an incorrect circuit output (say, $\widetilde{V}_0^* \neq \widetilde{V}_0$, but $\widetilde{V}_0^*(r_1, r_2) = \widetilde{V}_0(r_1, r_2)$), but the probability of such an occurrence is $\frac{1}{\lvert \mathbb{F} \rvert}$, as non-identical MLEs only intersect at exactly one point via the [Schwartz-Zippel lemma](../gkr_background/sumcheck.md#schwartz-zippel-lemma).
 
 In general, claims take the following form:
 
@@ -32,7 +32,7 @@ In other words, the prover wishes to convince the verifier that the evaluation o
 
 ## Claim Propagation
 
-For another example of claim propagation/reduction, see [this section](./encoding_layers.md#using-the-equivalence-between-layer-encodings). Note that the below example uses a [structured GKR](./regular_gkr.md) relationship while the other example uses a [canonic GKR](./canonical_gkr.md) relationship.
+For another example of claim propagation/reduction, see [this section](../gkr_background/encoding_layers.md#using-the-equivalence-between-layer-encodings). Note that the below example uses a [structured GKR](./structured_gkr.md) relationship while the other example uses a [canonic GKR](./canonic_gkr.md) relationship.
 
 Recall the general sumcheck relationship for a function $f: \mathbb{F}^n \mapsto \mathbb{F}$; the prover claims that the following relationship is true for $H \in \mathbb{F}$:
 
@@ -46,7 +46,7 @@ $$
 f_n(r_n) \overset{?}{=} f(r_1, ..., r_n)
 $$
 
-How does this oracle query actually get evaluated in GKR? The answer is _claims_ and sumcheck over claims for a previous layer. Specifically, let's consider the following relationship (see [structured GKR](./regular_gkr.md) section for more information about the $\widetilde{\eq}$ polynomial and this kind of layerwise relationship):
+How does this oracle query actually get evaluated in GKR? The answer is _claims_ and sumcheck over claims for a previous layer. Specifically, let's consider the following relationship (see [structured GKR](./structured_gkr.md) section for more information about the $\widetilde{\eq}$ polynomial and this kind of layerwise relationship):
 
 $$
 \widetilde{V}_{i + 1}(X_1, ..., X_n) = \sum_{b_1, ..., b_n} \widetilde{\eq}(X_1, ..., X_n; b_1, ..., b_n) \cdot \widetilde{V}_i(b_1, ..., b_n)^2
@@ -97,7 +97,7 @@ Instead, Remainder implements two primary modes of _claim aggregation_, i.e. met
 ### RLC (Random Linear Combination) Claim Aggregation
 Additional reading: See [XZZ+19](https://eprint.iacr.org/2019/317.pdf), page 10 ("Combining two claims: random linear combination"). 
 
-The idea behind RLC claim aggregation is precisely what it sounds like: the prover shows that a random linear combination of the claimed values indeed equals the corresponding random linear combination of the summations on the RHS of e.g. (TODO @ryancao -- cite the equations please). The implementation of RLC claim aggregation within Remainder works for [structured layers](./regular_gkr.md) and [gate layers](./canonical_gkr.md), but not for [matrix multiplication layers](./matmult.md) or [input layers](./input_layers.md) (as explained below).
+The idea behind RLC claim aggregation is precisely what it sounds like: the prover shows that a random linear combination of the claimed values indeed equals the corresponding random linear combination of the summations on the RHS of e.g. the third equation in the [above section](./claims.md#claim-propagation). The implementation of RLC claim aggregation within Remainder works for [structured layers](./structured_gkr.md) and [gate layers](./canonic_gkr.md), but not for [matrix multiplication layers](./matmult_layer.md) or [input layers](./input_layers.md) (as explained below).
 
  We defer to the corresponding pages for more detailed explanations of the layerwise relationships, but review their form factors here and show how RLC claim aggregation can be done for each here.
 
@@ -128,7 +128,7 @@ For structured layers, in other words, the prover and verifier simply take a ran
 
 #### Gate Layers
 
-A similar idea applies to gate layers. We use [mul gate](./gate.md#mul-gate) as the example layerwise relationship here:
+A similar idea applies to gate layers. We use [mul gate](./canonic_gkr.md#mul-gate) as the example layerwise relationship here:
 
 $$
 \widetilde{V}_i(Z_1, ..., Z_{s_i}) = \sum_{x \in \{0, 1\}^{s_j}, y \in \{0, 1\}^{s_k}} \widetilde{\mul}(Z, x, y) \cdot \bigg[\widetilde{V}_j(x) * \widetilde{V}_k(y)\bigg]

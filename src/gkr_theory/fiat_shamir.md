@@ -1,5 +1,5 @@
 # Fiat-Shamir: Creating Non-interactive GKR proofs
-As described [earlier](./encoding_layers.md), both sumcheck and GKR are _interactive_ proofs with many rounds of messages exchanged between a prover and a verifier. However, Remainder is built as a non-interactive proof system, where the transformation we apply is the [Fiat-Shamir](https://mit6875.github.io/PAPERS/Fiat-Shamir.pdf) heuristic, with every prover message being "absorbed" into the state of a hash function with a sponge mode (Poseidon instantiated over the BN-254 scalar field, in our case) and every verifier message being "squeezed" from that same hash sponge.
+As described [earlier](../gkr_background/encoding_layers.md), both sumcheck and GKR are _interactive_ proofs with many rounds of messages exchanged between a prover and a verifier. However, Remainder is built as a non-interactive proof system, where the transformation we apply is the [Fiat-Shamir](https://mit6875.github.io/PAPERS/Fiat-Shamir.pdf) heuristic, with every prover message being "absorbed" into the state of a hash function with a sponge mode (Poseidon instantiated over the BN-254 scalar field, in our case) and every verifier message being "squeezed" from that same hash sponge.
 
 We note that both sumcheck and GKR have been [proven](https://eprint.iacr.org/2018/1004.pdf) _round-by-round sound_, i.e. despite being a non-constant-round interactive protocol, can still achieve soundness in the random oracle model when instantiated with a hash function believed to be indistinguishable from a random oracle. 
 
@@ -7,7 +7,7 @@ We note that both sumcheck and GKR have been [proven](https://eprint.iacr.org/20
 The sponge construction transforms a fixed-length input, fixed-length output permutation function $f$ into a variable-length input, variable-length output function $F$ which can be shown to behave indistinguishably from a random oracle given that the fixed-length permutation function itself is indistinguishable from an ideal random permutation. As mentioned earlier, Remainder uses the Poseidon sponge (i.e. a standard sponge construction instantiated over the Poseidon fixed-length permutation), and since we assume that the Poseidon permutation is indeed indistinguishable from an ideal random permutation, we only require security in the random oracle model. 
 
 ## Fiat-Shamir for Sumcheck
-We describe the Fiat-Shamir transformation for the [sumcheck](./sumcheck.md) sub-protocol as an example. As before, let
+We describe the Fiat-Shamir transformation for the [sumcheck](../gkr_background/sumcheck.md) sub-protocol as an example. As before, let
 $$
 H \overset{?}= \sum_{x_i \in \{0, 1\}}f(x_1, \dots, x_n)
 $$

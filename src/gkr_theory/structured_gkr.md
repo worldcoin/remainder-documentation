@@ -3,7 +3,7 @@
 Source: [Tha13](https://eprint.iacr.org/2013/351.pdf), section 5 ("Time-Optimal Protocols for Circuit Evaluation").
 
 ## Review: Equality MLE
-We begin by briefly recalling the $\widetilde{\eq}$ MLE (see [this section](./multilinear_extensions.md#equality-mle) for more details). We first consider the binary string equality function $\eq: \{0, 1\}^{2n} \mapsto \{0, 1\}$, where
+We begin by briefly recalling the $\widetilde{\eq}$ MLE (see [this section](../gkr_background/multilinear_extensions.md#equality-mle) for more details). We first consider the binary string equality function $\eq: \{0, 1\}^{2n} \mapsto \{0, 1\}$, where
 
 $$
 \eq(X_1, ..., X_n; Y_1, ..., Y_n) = \begin{cases} 1 & \text{if $\forall i: X_i = Y_i$} \\ 0 & \text{otherwise} \end{cases}
@@ -54,7 +54,7 @@ $$
 \widetilde{V}_i(Z_1, Z_2) = \sum_{b_1, b_2 \in \{0, 1\}^2} \widetilde{\eq}(Z_1, Z_2; b_1, b_2) \cdot \widetilde{V}_j(b_1, b_2, 0) \cdot \widetilde{V}_j(b_1, b_2, 1)
 $$
 
-Since $\widetilde{V}_i$ is identical to $V_i$ (and similarly for $\widetilde{\eq}$ and $\widetilde{V}_j$) everywhere on the hypercube, the above relationship should still hold for all binary $Z_1, Z_2$. Moreover, the above relationship is now one which we can directly apply [sumcheck](./sumcheck.md) to, since we have a summation over the hypercube!
+Since $\widetilde{V}_i$ is identical to $V_i$ (and similarly for $\widetilde{\eq}$ and $\widetilde{V}_j$) everywhere on the hypercube, the above relationship should still hold for all binary $Z_1, Z_2$. Moreover, the above relationship is now one which we can directly apply [sumcheck](../gkr_background/sumcheck.md) to, since we have a summation over the hypercube!
 
 But wait, you might say. This _still_ seems wasteful -- why are we bothering with this summation and $\widetilde{\eq}$ polynomial? Why can't we just have something like
 
@@ -62,7 +62,7 @@ $$
 \widetilde{V}_i(Z_1, Z_2) = \widetilde{V}_j(Z_1, Z_2, 0) \cdot \widetilde{V}_j(Z_1, Z_2, 1)
 $$
 
-Unfortunately the above relationship cannot work, as $Z_1, Z_2$ are linear on the LHS and quadratic on the RHS. The purpose of the summation and $\widetilde{\eq}$ polynomial is to "linearize" the RHS and quite literally turn any high degree polynomial (such as $\widetilde{V}_j(Z_1, Z_2, 0) \cdot \widetilde{V}_j(Z_1, Z_2, 1)$) into its unique multilinear extension (recall the definition of [multilinear extension](./multilinear_extensions.md)).
+Unfortunately the above relationship cannot work, as $Z_1, Z_2$ are linear on the LHS and quadratic on the RHS. The purpose of the summation and $\widetilde{\eq}$ polynomial is to "linearize" the RHS and quite literally turn any high degree polynomial (such as $\widetilde{V}_j(Z_1, Z_2, 0) \cdot \widetilde{V}_j(Z_1, Z_2, 1)$) into its unique multilinear extension (recall the definition of [multilinear extension](../gkr_background/multilinear_extensions.md)).
 
 We see that the general pattern of creating a "structured" layerwise relationship is as follows:
 - First, write the relationship in terms of the binary indices of values between each layer. In our case, $V_i(z_1, z_2) = V_j(z_1, z_2, 0) \cdot V_j(z_1, z_2, 1)$. 
@@ -107,7 +107,7 @@ $$
 This layerwise relationship form-factor is called a "selector" in Remainder terminology and in general refers to an in-circuit version of an "if/else" statement where MLEs representing the values of layers can be broken into power-of-two-sized pieces.
 
 ## Why Structured Circuits?
-Compared to [canonic GKR](./canonical_gkr.md), structured circuits are good for two reasons -- verifier runtime and circuit description size. Note that every layerwise relationship which can be expressed as a structured layer (using $\widetilde{\eq}$) can be written as an equivalent series of $\widetilde{\add}$ and $\widetilde{\mul}$ gate layers. 
+Compared to [canonic GKR](./canonic_gkr.md), structured circuits are good for two reasons -- verifier runtime and circuit description size. Note that every layerwise relationship which can be expressed as a structured layer (using $\widetilde{\eq}$) can be written as an equivalent series of $\widetilde{\add}$ and $\widetilde{\mul}$ gate layers. 
 
 To see why structured layers are good for circuit description size, we compare the following layer-wise relationships which describe the same circuit wiring pattern, but with different verifier cost and circuit description complexities (let $Z = Z_1, ..., Z_n$ and $b = b_1, ..., b_n$ for shorthand). Firstly, the structured version, which computes an element-wise product between each pair of evaluations:
 
