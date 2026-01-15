@@ -13,7 +13,13 @@ In addition, we provide a concise "how-to" quickstart here. This quickstart cove
 - Proving and verifying
 
 ## Creating a Layered (GKR) Circuit
-See `frontend/examples/tutorial.rs` (TODO -- put link here) for code reference. To define a layered circuit, we must describe the circuit's inputs, intermediate layers and relationships between them, and output layers. We'll first take a look at the `build_circuit()` function. The first line is
+See [`frontend/examples/tutorial.rs`](https://github.com/worldcoin/Remainder_CE/blob/main/frontend/examples/tutorial.rs) for code reference. To run the test yourself, navigate to the `Remainder_CE` root directory and run the following command: 
+
+```bash
+cargo run --package frontend --example tutorial
+```
+
+To define a layered circuit, we must describe the circuit's inputs, intermediate layers and relationships between them, and output layers. We'll first take a look at the `build_circuit()` function. The first line is
 ```rust
 let mut builder = CircuitBuilder::<Fr>::new();
 ```
