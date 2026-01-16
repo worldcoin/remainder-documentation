@@ -68,8 +68,9 @@ Next, we create a pair of proving/verification configs. We won't elaborate on
 the specific configuration options here, but the idea is that they are effectively
 a group of global context variables which affect certain proving/verification
 options (e.g. trading off runtime vs. memory usage, whether to use certain
-optimizations, etc.). For now, we will stick with the "Hyrax compatible
-runtime-optimized default" option:
+optimizations, etc.). Note that in the quickstart, we hid the config + macro
+API with another wrapper for simplicity, but are exposing the options here. 
+For now, we will stick with the "Hyrax compatible runtime-optimized default" option:
 
 ```rust
 // Create GKR circuit prover + verifier configs which work with Hyrax
