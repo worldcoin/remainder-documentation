@@ -172,7 +172,10 @@
 <li>Proving and verifying</li>
 </ul>
 <h2 id="creating-a-layered-gkr-circuit"><a class="header" href="#creating-a-layered-gkr-circuit">Creating a Layered (GKR) Circuit</a></h2>
-<p>See <code>frontend/examples/tutorial.rs</code> (TODO -- put link here) for code reference. To define a layered circuit, we must describe the circuit's inputs, intermediate layers and relationships between them, and output layers. We'll first take a look at the <code>build_circuit()</code> function. The first line is</p>
+<p>See <a href="https://github.com/worldcoin/Remainder_CE/blob/main/frontend/examples/tutorial.rs"><code>frontend/examples/tutorial.rs</code></a> for code reference. To run the test yourself, navigate to the <code>Remainder_CE</code> root directory and run the following command:</p>
+<pre><code class="language-bash">cargo run --package frontend --example tutorial
+</code></pre>
+<p>To define a layered circuit, we must describe the circuit's inputs, intermediate layers and relationships between them, and output layers. We'll first take a look at the <code>build_circuit()</code> function. The first line is</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let mut builder = CircuitBuilder::&lt;Fr&gt;::new();

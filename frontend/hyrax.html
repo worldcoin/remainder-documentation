@@ -156,6 +156,223 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="hyrax-frontend-tutorial"><a class="header" href="#hyrax-frontend-tutorial">Hyrax Frontend Tutorial</a></h1>
+<p>This tutorial closely resembles the one for Remainder's GKR prover/verifier,
+i.e. the one written in the <a href="../quickstart.html">quickstart</a> section. The code
+for the Hyrax frontend tutorial is <a href="">here (TODO: link)</a>, and can be run from the <code>Remainder_CE</code>
+root directory via the following command:</p>
+<pre><code class="language-bash">cargo run --package frontend --example hyrax_tutorial
+</code></pre>
+<p>Note that although this tutorial is a code-only, standalone tutorial, we would
+very strongly encourage you to read through at least the <a href="../hyrax/hyrax.html">Hyrax introduction</a>
+section to get a better understanding of what the various code pieces represent
+and why Hyrax is one of several options for converting GKR into a fully zero-knowledge
+protocol.</p>
+<h2 id="setting-up-the-circuit"><a class="header" href="#setting-up-the-circuit">Setting up the circuit</a></h2>
+<p>This uses the exact same code/circuit as the one from the <a href="../quickstart.html">quickstart</a>,
+and we encourage you to check out that section to understand the structure of
+the circuit described here. Indeed, the <code>Circuit&lt;F&gt;</code> generation function within
+<code>frontend/examples/hyrax_tutorial.rs</code> is a copy/paste of the one in <code>frontend/examples/tutorial.rs</code>.</p>
+<p>As a quick reminder, the circuit we defined (see <code>build_circuit()</code>) has two
+input layers, one private/committed and one public. The private/committed input
+layer contains two sub-inputs, <code>"LHS"</code> and <code>"RHS"</code>, and the public input layer contains
+a single sub-input, <code>"Expected output"</code>. In the GKR case/tutorial, we used the (non-ZK)
+<a href="../gkr_theory/ligero_input.html">Ligero PCS</a> to commit to and open the committed
+input layer at a challenge point, and in the Hyrax case, the prover will be
+using the zero-knowledge <a href="../hyrax/hyrax_pcs.html">Hyrax PCS</a> to do the same.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let lhs_rhs_input_layer =
+    builder.add_input_layer("LHS RHS input layer", LayerVisibility::Committed);
+let expected_output_input_layer =
+    builder.add_input_layer("Expected output", LayerVisibility::Public);
+<span class="boring">}</span></code></pre></pre>
+<p>Recall that we create two copies of the <code>Circuit&lt;F&gt;</code>: one for the prover (to
+attach private and public input data to), and one for the verifier (no data
+attached):</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Create the base layered circuit description.
+let base_circuit = build_circuit();
+let mut prover_circuit = base_circuit.clone();
+let verifier_circuit = base_circuit.clone();
+<span class="boring">}</span></code></pre></pre>
+<p>Similarly to the GKR tutorial, we generate input data for the circuit and attach
+them to the prover circuit:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Generate circuit inputs.
+let lhs_data = vec![1, 2, 3, 4].into();
+let rhs_data = vec![5, 6, 7, 8].into();
+let expected_output_data = vec![5, 12, 21, 32].into();
+
+// Append circuit inputs to their respective input "shreds" in the prover's
+// view of the circuit.
+prover_circuit.set_input("LHS", lhs_data); // This is committed!
+prover_circuit.set_input("RHS", rhs_data); // This is committed!
+prover_circuit.set_input("Expected output", expected_output_data); // This is public!
+<span class="boring">}</span></code></pre></pre>
+<h2 id="setting-up-the-proving-environment"><a class="header" href="#setting-up-the-proving-environment">Setting up the proving environment</a></h2>
+<p>Next, we create a pair of proving/verification configs. We won't elaborate on
+the specific configuration options here, but the idea is that they are effectively
+a group of global context variables which affect certain proving/verification
+options (e.g. trading off runtime vs. memory usage, whether to use certain
+optimizations, etc.). Note that in the quickstart, we hid the config + macro
+API with another wrapper for simplicity, but are exposing the options here.
+For now, we will stick with the "Hyrax compatible runtime-optimized default" option:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Create GKR circuit prover + verifier configs which work with Hyrax
+let hyrax_circuit_prover_config =
+    GKRCircuitProverConfig::hyrax_compatible_runtime_optimized_default();
+let hyrax_circuit_verifier_config =
+    GKRCircuitVerifierConfig::new_from_prover_config(&amp;hyrax_circuit_prover_config, false);
+<span class="boring">}</span></code></pre></pre>
+<p>Similarly to how we needed to create a <code>ProvableCircuit&lt;F&gt;</code> in the GKR tutorial,
+we invoke a similar function here, <code>gen_hyrax_provable_circuit()</code>, to gather our
+previously attached circuit inputs and prepare the circuit for proving:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Create a version of the circuit description which the prover can use.
+// Note that in this case, we create a "Hyrax-provable" circuit rather than
+// a "GKR-provable" one.
+let mut hyrax_provable_circuit: HyraxProvableCircuit&lt;Bn256Point&gt; = prover_circuit
+    .gen_hyrax_provable_circuit()
+    .expect("Failed to generate provable circuit");
+<span class="boring">}</span></code></pre></pre>
+<p>Next, we prepare a couple of structs which are specific to Hyrax proving. First,
+we create a Pedersen committer, which creates and keeps track of the group generators
+to be used in proving (see our <a href="../hyrax/hyrax.html">Hyrax overview</a> and
+<a href="../hyrax/pedersen_commitments.html">Pedersen commitments</a> sections for more
+details here).</p>
+<p>Importantly, the public string used to instantiate the committer <em>must</em> be agreed
+upon between the prover and verifier. This ensures a "nothing-up-my-sleeve number"
+verification setting where a malicious prover cannot cheat by picking a set
+of generators for which they e.g. know a discrete log relationship between,
+which would allow them to break the soundness of the protocol:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// The Pedersen committer creates and keeps track of the shared generators
+// between the prover and verifier. Note that the generators are created
+// deterministically from the public string.
+let prover_pedersen_committer =
+    PedersenCommitter::new(512, "Hyrax tutorial Pedersen committer", None);
+<span class="boring">}</span></code></pre></pre>
+<p>Next, we set up the RNG required for generating blinding factors within the
+protocol -- note that the example used here is <em>insecure</em> for simplicity. In
+practice, please instantiate the blinding factor RNG with a
+<a href="https://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator">CSPRNG</a>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// WARNING: This is for tutorial purposes ONLY. NEVER use anything but a CSPRNG for generating blinding factors!
+let mut blinding_rng = thread_rng();
+<span class="boring">}</span></code></pre></pre>
+<p>Finally, we set up an inverse <a href="https://en.wikipedia.org/wiki/Vandermonde_matrix">Vandermonde matrix</a>,
+which helps us convert univariate polynomials from evaluation to coefficient
+form. This is helpful for the Hyrax verifier in the
+<a href="../gkr_theory/claims.html#interpolative-claim-aggregation">interpolative claim aggregation</a>
+case, since <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord">ℓ</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6887em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">⋆</span></span></span></span></span></span></span></span><span class="mclose">))</span></span></span></span> can only be easily evaluated by the verifier
+when the polynomial <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord">ℓ</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">))</span></span></span></span> is sent in Pedersen commitments to coefficients
+rather than evaluations:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// The Vandermonde inverse matrix allows us to convert from evaluations
+// to coefficients for interpolative claim aggregation. Note that the
+// coefficient form allows the verifier to directly check relationships
+// via the homomorphic properties of the curve.
+let mut vandermonde_converter = VandermondeInverse::new();
+<span class="boring">}</span></code></pre></pre>
+<h2 id="proving"><a class="header" href="#proving">Proving</a></h2>
+<p>We instantiate a prover <a href="../gkr_theory/fiat_shamir.html">transcript</a> over
+the protocol's elliptic curve's <em>base field</em> for Fiat-Shamir:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Finally, we instantiate a transcript over the base field. Note that
+// prover messages are elliptic curve points which can be encoded as base
+// field tuples, while verifier messages are scalar field elements of that
+// curve. Thanks to Hasse's theorem, this results in a negligible completeness
+// loss in the non-interactive case as we always attempt to coerce a base
+// field challenge into a scalar field element and panic if the base field
+// element sampled was larger than the scalar field modulus.
+let mut prover_transcript: ECTranscript&lt;Bn256Point, PoseidonSponge&lt;Fq&gt;&gt; =
+    ECTranscript::new("Hyrax tutorial prover transcript");
+<span class="boring">}</span></code></pre></pre>
+<p>We are finally ready to generate the Hyrax proof! Note that the
+<code>perform_function_under_prover_config!()</code> macro ensures (even within a
+multi-threaded environment) that the function passed in will <em>only</em> be called
+and be run in its entirety under the state set by <code>hyrax_circuit_prover_config</code>.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Use the `perform_function_under_prover_config!` macro to run the
+// Hyrax prover's `prove` function with the above arguments, under the
+// prover config passed in.
+let (proof, proof_config) = perform_function_under_prover_config!(
+    // This is a hack to get around the macro's syntax for struct methods
+    // rather than function calls.
+    |w, x, y, z| hyrax_provable_circuit.prove(w, x, y, z),
+    &amp;hyrax_circuit_prover_config,
+    &amp;prover_pedersen_committer,
+    &amp;mut blinding_rng,
+    &amp;mut vandermonde_converter,
+    &amp;mut prover_transcript
+);
+<span class="boring">}</span></code></pre></pre>
+<h2 id="verification"><a class="header" href="#verification">Verification</a></h2>
+<p>Similarly to the verification process in the GKR tutorial, we first collect
+verifier-known inputs (in this case, there are none) and create a (Hyrax) verifier-ready
+version of the circuit:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// We generate a "Hyrax-verifiable" circuit from the `Circuit` struct,
+// but do not attach any circuit inputs to it (these must come from
+// the proof itself).
+let hyrax_verifiable_circuit = verifier_circuit
+    .gen_hyrax_verifiable_circuit()
+    .expect("Failed to generate Hyrax verifiable circuit");
+<span class="boring">}</span></code></pre></pre>
+<p>The verifier creates its own Pedersen committer and derives the agreed-upon
+generators from scratch:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// The verifier can (and should) derive the elliptic curve generators on
+// its own from the public string and check the proof against these.
+let verifier_pedersen_committer =
+    PedersenCommitter::new(512, "Hyrax tutorial Pedersen committer", None);
+<span class="boring">}</span></code></pre></pre>
+<p>Finally, the verifier instantiates its own Fiat-Shamir transcript:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// The verifier instantiates its own transcript.
+let mut verifier_transcript: ECTranscript&lt;Bn256Point, PoseidonSponge&lt;Fq&gt;&gt; =
+    ECTranscript::new("Hyrax tutorial verifier transcript");
+<span class="boring">}</span></code></pre></pre>
+<p>And we commence verification using the <code>perform_function_under_verifier_config!()</code>
+macro, which is identical in behavior to the above <code>perform_function_under_prover_config!()</code>
+macro call, but with consistency against the <code>hyrax_circuit_verifier_config</code>
+rather than the prover one.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Finally, we verify the proof using the above committer + transcript, as
+// well as the Hyrax verifier config generated from the prover one earlier.
+perform_function_under_verifier_config!(
+    verify_hyrax_proof,
+    &amp;hyrax_circuit_verifier_config,
+    &amp;proof,
+    &amp;hyrax_verifiable_circuit,
+    &amp;verifier_pedersen_committer,
+    &amp;mut verifier_transcript,
+    &amp;proof_config
+);
+<span class="boring">}</span></code></pre></pre>
+<p>And that's it! You've now created your first Hyrax-provable/verifiable circuit
+and generated and verified a Hyrax zero-knowledge proof. Note that aside from
+the couple of additional structs we needed to supply to the prover/verifier
+(e.g. the Pedersen committer, the blinding factor RNG, the Vandermonde inverse
+matrix, and defining the curve whose scalar field is the one used in the circuit),
+the entire circuit definition + input data attachment process was identical to
+that of the GKR tutorial from earlier -- this is all by design, and in large part
+due to the fact that so many of the GKR prover/verifier operations can be so
+neatly wrapped (if done carefully and modular-ly) by Pedersen commitments!</p>
 
                     </main>
 
