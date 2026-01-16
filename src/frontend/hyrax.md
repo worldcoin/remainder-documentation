@@ -2,7 +2,7 @@
 
 This tutorial closely resembles the one for Remainder's GKR prover/verifier,
 i.e. the one written in the [quickstart](../quickstart.md) section. The code
-for the Hyrax frontend tutorial is [here (TODO: link)](), and can be run from the `Remainder_CE`
+for the Hyrax frontend tutorial is [here](https://github.com/worldcoin/Remainder_CE/blob/main/frontend/examples/hyrax_tutorial.rs), and can be run from the `Remainder_CE`
 root directory via the following command:
 
 ```bash
