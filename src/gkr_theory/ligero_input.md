@@ -77,10 +77,10 @@ We denote the left vector as $L \in \mathbb{F}^{2^{n / 2}}$ and the right vector
 The commitment phase of Ligero works as follows:
 
 Let $M_i$ be the $i$'th row of $M$, $1 \leq i \leq 2^{n / 2}$. Recall that $M_i \in \mathbb{F}^{2^{n / 2}}$ since $M$ is a square matrix.
-- First, the prover treats the values within $M_i$ as the (monomial basis, i.e. usual) coefficients of a degree-$2^{n / 2} - 1$ univariate polynomial. They compute $\tilde{M}_i = \text{Enc}(M_i)$ using a Reed-Solomon encoding function. Let $\rho$ be the code rate; we then have that $\tilde{M} \in \mathbb{F}^{2^{n / 2} \times \rho^{-1} 2^{n / 2}}$. 
+- First, the prover treats the values within $M_i$ as the (monomial basis, i.e. usual) coefficients of a degree-$2^{n / 2} - 1$ univariate polynomial. They compute $\widetilde{M}_i = \text{Enc}(M_i)$ using a Reed-Solomon encoding function. Let $\rho$ be the code rate; we then have that $\widetilde{M} \in \mathbb{F}^{2^{n / 2} \times \rho^{-1} 2^{n / 2}}$. 
 - The encoded matrix now looks like the following:
 $$
-\tilde{M} = 
+\widetilde{M} = 
 \begin{bmatrix}
 \text{ ------ } \text{Enc}(M_1) \text{ ------ } \\
 \text{ ------ } \text{Enc}(M_2) \text{ ------ } \\
@@ -89,31 +89,31 @@ $$
 \end{bmatrix}
 $$
 
-The prover commits to $\tilde{M}$ as follows:
+The prover commits to $\widetilde{M}$ as follows:
 - Using a cryptographic hash function $H: \mathbb{F}^* \mapsto \mathbb{F}$, the prover first computes a hash over each column:
 
 $$
-\com_j = H(\tilde{M}_{1, j}, ..., \tilde{M}_{\rho^{-1} 2^{n / 2}, j})
+\com_j = H(\widetilde{M}_{1, j}, ..., \widetilde{M}_{\rho^{-1} 2^{n / 2}, j})
 $$
 
-- Next, the prover takes the vector of column-wise commitments and computes a Merkle tree using those commitments as the leaves. In other words, the bottom layer of the tree is $[\com_1, ..., \com_{2^{n / 2}}]$, with pairs of leaves being hashed, and the root of the tree $\text{root}_{\tilde{M}} = \text{Merkleize}([\com_1, ..., \com_{2^{n / 2}}])$ is the commitment.
-- The (interactive) prover sends $\text{root}$ to the verifier. Note that with this commitment setup, the verifier is able to "open" any _column_ of $\tilde{M}$ and ensure that it is consistent with the commitment $\text{root}_{\tilde{M}}$. 
+- Next, the prover takes the vector of column-wise commitments and computes a Merkle tree using those commitments as the leaves. In other words, the bottom layer of the tree is $[\com_1, ..., \com_{2^{n / 2}}]$, with pairs of leaves being hashed, and the root of the tree $\text{root}_{\widetilde{M}} = \text{Merkleize}([\com_1, ..., \com_{2^{n / 2}}])$ is the commitment.
+- The (interactive) prover sends $\text{root}$ to the verifier. Note that with this commitment setup, the verifier is able to "open" any _column_ of $\widetilde{M}$ and ensure that it is consistent with the commitment $\text{root}_{\widetilde{M}}$. 
 
 ## Evaluation Phase
 The prover wishes to show that $L \cdot M \cdot R = c_d$. It does so by first computing $L \cdot M \in \mathbb{F}^{2^{n / 2}}$ and sends this to the (interactive) verifier (note that the prover is sending product of $L$ against the _unencoded_ $M$). Since the verifier doesn't (yet) trust this value, we'll denote its view of this prover message as $U \overset{?}{=} L \cdot M$. 
 
 The verifier asserts that $U \cdot R = c_d$. If the prover is honest and $U = L \cdot M$ then this proves that the evaluation was correct.
 
-The verifier then computes $\tilde{U} = \text{Enc}(U)$, with $\tilde{U} \in \mathbb{F}^{\rho^{-1} 2^{n / 2}}$. To ensure that the prover computed $U$ correctly, it will check random values in $\tilde{U}$ against $L \cdot \tilde{M}$. 
+The verifier then computes $\widetilde{U} = \text{Enc}(U)$, with $\widetilde{U} \in \mathbb{F}^{\rho^{-1} 2^{n / 2}}$. To ensure that the prover computed $U$ correctly, it will check random values in $\widetilde{U}$ against $L \cdot \widetilde{M}$. 
 - Note that because $\text{Enc}$ is a linear operation, we have that $\text{Enc}(L \cdot M) = L \cdot \text{Enc}(M)$, where $\text{Enc}(M)$ is the row-wise encoding as described earlier (check this for yourself -- use the intuition that Reed-Solomon encoding is just polynomial evaluation over a domain)
 
-The verifier picks a set of indices $j \in \mathcal{J}$ and "opens" those columns of $\tilde{M}$. For each $j$, the prover sends over $\tilde{M}_{\cdot, j}$, as well as a Merkle path for $\com_j$ against $\text{root}_{\tilde{M}}$. 
+The verifier picks a set of indices $j \in \mathcal{J}$ and "opens" those columns of $\widetilde{M}$. For each $j$, the prover sends over $\widetilde{M}_{\cdot, j}$, as well as a Merkle path for $\com_j$ against $\text{root}_{\widetilde{M}}$. 
 
-The verifier checks that $H(\tilde{M}_{\cdot, j}) = \com_j$, and verifies the Merkle path from $\com_j$ to the $\text{root}_{\tilde{M}}$ it received during the commit phase.
+The verifier checks that $H(\widetilde{M}_{\cdot, j}) = \com_j$, and verifies the Merkle path from $\com_j$ to the $\text{root}_{\widetilde{M}}$ it received during the commit phase.
 
-The verifier is now convinced that the columns which the prover sent over are columns of the $\tilde{M}$ which was committed to during the commitment phase. 
+The verifier is now convinced that the columns which the prover sent over are columns of the $\widetilde{M}$ which was committed to during the commitment phase. 
 
-Finally, the verifier checks that $L \cdot \tilde{M}_{\cdot, j} = \tilde{U}_j$. This last check ensures that the prover sent $\tilde{U}$ honestly -- if they attempted to cheat by sending $L \cdot M'$ for some $M' \neq M$, we have that each row of $\text{Enc}(M)$ would differ from each row of $\text{Enc}(M')$ in at least $(1 - \rho)$ proportion of coordinates (as mentioned earlier, we generally have $\rho \leq \frac{1}{2}$), and therefore WHP (using a result from [AER24](https://eprint.iacr.org/2024/1399.pdf)), that $\tilde{U}$ (the honest $L \cdot \text{Enc}(M)$) differs from $\tilde{U'}$ (the dishonest $L \cdot \text{Enc}(M')$) in at least $(1 - \rho)$ proportion of coordinates as well.
+Finally, the verifier checks that $L \cdot \widetilde{M}_{\cdot, j} = \widetilde{U}_j$. This last check ensures that the prover sent $\widetilde{U}$ honestly -- if they attempted to cheat by sending $L \cdot M'$ for some $M' \neq M$, we have that each row of $\text{Enc}(M)$ would differ from each row of $\text{Enc}(M')$ in at least $(1 - \rho)$ proportion of coordinates (as mentioned earlier, we generally have $\rho \leq \frac{1}{2}$), and therefore WHP (using a result from [AER24](https://eprint.iacr.org/2024/1399.pdf)), that $\widetilde{U}$ (the honest $L \cdot \text{Enc}(M)$) differs from $\tilde{U'}$ (the dishonest $L \cdot \text{Enc}(M')$) in at least $(1 - \rho)$ proportion of coordinates as well.
 
 With $\lvert \mathcal{J} \rvert$ queries, the verifier catches a cheating prover at least
 
@@ -127,8 +127,8 @@ proportion of the time. We set $\lvert \mathcal{J} \rvert$ such that the above p
 Assume that the prover is committing to a multilinear polynomial in $n$ variables. Let our code rate be $\rho^{-1}$, and assume that a Reed-Solomon encoding for a message with $2^{n / 2}$ coefficients to a codeword with $\lvert \mathcal{L} \rvert = \rho^{-1} 2^{n / 2}$ evaluations can be computed in time $O(\lvert \mathcal{L} \rvert \log_2 \lvert \mathcal{L} \rvert)$. Let $\mathcal{J}$ be the set of columns we query during the evaluation phase. 
 
 ### Prover Cost
-- During the commitment phase, the prover first computes the encoded matrix of coefficients $\tilde{M}$ by encoding each row of $M$. There are $2^{n / 2}$ rows and each row's encoding takes $O(\lvert \mathcal{L} \rvert \log_2 \lvert \mathcal{L} \rvert)$ time for a total runtime of $O(2^{n / 2} \lvert \mathcal{L} \rvert \log_2 \lvert \mathcal{L} \rvert)$.
-- Next, the prover computes hashes of the columns of $\tilde{M}$, and then constructs a Merkle tree comprised of those for the final commitment. This costs $O(\rho^{-1} 2^n + \rho^{-1}2^{n / 2})$ hashes.
+- During the commitment phase, the prover first computes the encoded matrix of coefficients $\widetilde{M}$ by encoding each row of $M$. There are $2^{n / 2}$ rows and each row's encoding takes $O(\lvert \mathcal{L} \rvert \log_2 \lvert \mathcal{L} \rvert)$ time for a total runtime of $O(2^{n / 2} \lvert \mathcal{L} \rvert \log_2 \lvert \mathcal{L} \rvert)$.
+- Next, the prover computes hashes of the columns of $\widetilde{M}$, and then constructs a Merkle tree comprised of those for the final commitment. This costs $O(\rho^{-1} 2^n + \rho^{-1}2^{n / 2})$ hashes.
 - During the evaluation phase, the prover first computes $L \cdot M$ and sends the result to the verifier. This takes $O(2^n)$ operations.
 - Next, the prover sends over $\lvert \mathcal{J} \rvert$ columns plus associated Merkle proofs to the verifier. The prover doesn't need to compute anything here, so this is free for the prover.
 - Assuming the cost of a single hash is $O(h)$, the total prover computation is 
@@ -139,15 +139,15 @@ $$
 ### Proof Size
 - The commitment is a single Merkle root, and is thus just one field element.
 - The evaluation proof consists of the following for each column $j \in \mathcal{J}$:
-    - A column of $\tilde{M}$ with $2^{n / 2}$ field elements
+    - A column of $\widetilde{M}$ with $2^{n / 2}$ field elements
     - A Merkle path with $\log_2\lvert \mathcal{L} \rvert$ field elements
 - Thus the total proof size is $1 + \lvert \mathcal{J} \rvert \cdot \big[2^{n / 2} + \log_2\lvert \mathcal{L} \rvert \big]$ field elements.
 
 ### Verifier Cost
 - During the commitment phase, the verifier receives a single Merkle root element and does nothing else.
-- During the evaluation phase, the verifier first receives the prover's claimed $U \overset{?}{=} L \cdot M$ and computes $\tilde{U} = \text{Enc}(U)$. The encoding step takes $O(\lvert \mathcal{L} \rvert \log_2 \lvert \mathcal{L} \rvert)$ field operations. 
+- During the evaluation phase, the verifier first receives the prover's claimed $U \overset{?}{=} L \cdot M$ and computes $\widetilde{U} = \text{Enc}(U)$. The encoding step takes $O(\lvert \mathcal{L} \rvert \log_2 \lvert \mathcal{L} \rvert)$ field operations. 
 - Next, the verifier computes $U \cdot R$ and checks this against the claimed evaluation value. This requires $O(2^{n / 2})$ field operations.
-- Next, the verifier receives $\lvert \mathcal{J} \rvert$ columns of $\tilde{M}$ from the prover. For each column, the verifier must
+- Next, the verifier receives $\lvert \mathcal{J} \rvert$ columns of $\widetilde{M}$ from the prover. For each column, the verifier must
     - Compute a hash over $2^{n / 2}$ elements to get the column hash value.
     - Check the Merkle proof over a path of length $\log_2 \lvert \mathcal{L} \rvert$ against the root received in the commit phase.
 - The verifier's runtime for the check phase is $O(\lvert \mathcal{J} \rvert \cdot \big[ 2^{n / 2} + \log_2 \lvert \mathcal{L} \rvert \big])$ hashes.

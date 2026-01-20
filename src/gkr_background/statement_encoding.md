@@ -9,7 +9,7 @@ These binary operations are usually referred to as "gates." In the following tut
 $$
     \add(z, x, y): \{0, 1\}^{s_i + s_j + s_k} \mapsto \{0, 1\} = 
 \begin{cases}
-    1 ,& \text{if } \val(x) + \val(y) = \val(z) \\
+    1 ,& \text{if } \val_j(x) + \val_k(y) = \val_i(z) \\
     0,              & \text{otherwise}
 \end{cases}
 $$
@@ -17,7 +17,7 @@ and $\mul$ gates:
 $$
     \mul(z, x, y): \{0, 1\}^{s_i + s_j + s_k} \mapsto \{0, 1\} = 
 \begin{cases}
-    1 ,& \text{if } \val(x) \cdot \val(y) = \val(z) \\
+    1 ,& \text{if } \val_j(x) \cdot \val_k(y) = \val_i(z) \\
     0,              & \text{otherwise}
 \end{cases}
 $$
