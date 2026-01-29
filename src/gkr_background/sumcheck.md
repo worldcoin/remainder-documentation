@@ -11,7 +11,7 @@ $$
 In this statement, $f$ is not necessarily multilinear, and $H \in \mathbb{F}$.
 
 
-In other words, the prover, $\mathcal{P},$ claims that the sum of the evaluations of a function $f: \mathbb{F}^n \to \mathbb{F}$ over the boolean hypercube of dimension $n$ is $H.$ Naively, the verifier $\mathcal{V}$ can verify this statement by evaluating this sum themselves in $O(2^n)$ time assuming oracle access to $f$ (being able to query evaluations of $f$ in $O(1)$ time), with perfect completeness (true claims are always identified by the verifier) and perfect soundness (false claims are always identified by the verifier).
+In other words, the prover, $\mathcal{P}$, claims that the sum of the evaluations of a function $f: \mathbb{F}^n \to \mathbb{F}$ over the boolean hypercube of dimension $n$ is $H.$ Naively, the verifier $\mathcal{V}$ can verify this statement by evaluating this sum themselves in $O(2^n)$ time assuming oracle access to $f$ (being able to query evaluations of $f$ in $O(1)$ time), with perfect completeness (true claims are always identified by the verifier) and perfect soundness (false claims are always identified by the verifier).
 
 Sumcheck relaxes the perfect soundness to provide a probabilistic protocol which verifies the claim in $O(n \cdot d)$ time with a soundness error of $\leq \dfrac{n \cdot d}{|\mathbb{F}|}$ where $d$ is the maximum degree of any variable $x_1, \dots, x_n$.
 

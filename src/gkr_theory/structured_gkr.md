@@ -118,7 +118,7 @@ $$
 And secondly, the multiplication gate version:
 
 $$
-\widetilde{V}_i(Z_1, ..., Z_n) = \sum_{x \in \{0, 1\}^n, y \in \{0, 1\}^n} \widetilde{\mul}(Z, x, y) \cdot \bigg[\widetilde{V}_j(x) \cdot \widetilde{V}_j(y)\bigg]
+\widetilde{V}_i(Z_1, ..., Z_n) = \sum_{x \in \{0, 1\}^n, y \in \{0, 1\}^n} \widetilde{\mul}_{i, j, j}(Z, x, y) \cdot \bigg[\widetilde{V}_j(x) \cdot \widetilde{V}_j(y)\bigg]
 $$
 
 We first consider the verifier runtime for both. Note that the sumcheck verifier performs $O(1)$ operations per round of sumcheck, plus the work necessary for the oracle query. In the structured relationship's case, there are $n$ rounds of sumcheck, and assuming that $b_1, ..., b_n$ get bound to $r_1, ..., r_n \in \mathbb{F}$, the oracle query which the verifier must evaluate is of the form
@@ -132,10 +132,10 @@ where $f_n$ is the $n$'th univariate polynomial which the prover sends during su
 Next, we consider the verifier runtime for the multiplication gate case: let $x_1, ..., x_n$ be bound to $u_1, ..., u_n \in \mathbb{F}$ and let $y_1, ..., y_n$ be bound to $v_1, ..., v_n \in \mathbb{F}$ during sumcheck. The oracle query is then
 
 $$
-f_n(r_n) \overset{?}{=} \widetilde{\mul}(Z_1, ..., Z_n, u_1, ..., u_n, v_1, ..., v_n) \cdot \bigg[\widetilde{V}_j(u_1, ..., u_n) \cdot \widetilde{V}_j(v_1, ..., v_n)\bigg]
+f_n(r_n) \overset{?}{=} \widetilde{\mul}_{i, j, j}(Z_1, ..., Z_n, u_1, ..., u_n, v_1, ..., v_n) \cdot \bigg[\widetilde{V}_j(u_1, ..., u_n) \cdot \widetilde{V}_j(v_1, ..., v_n)\bigg]
 $$
 
-Similarly to the structured case, the prover sends claimed values for $\widetilde{V}_j(u_1, ..., u_n)$ and $\widetilde{V}_j(v_1, ..., v_n)$, and so the verifier doesn't have to do any work here. However, the verifier must also evaluate $\widetilde{\mul}(Z_1, ..., Z_n, u_1, ..., u_n, v_1, ..., v_n)$ on its own. This requires time linear to the sparsity of the $\widetilde{\mul}$ polynomial, i.e. $O(2^{n - 1})$ in this example, since there are $2^{n - 1}$ nonzero multiplication gates (one for each pair of values in layer $i + 1$). 
+Similarly to the structured case, the prover sends claimed values for $\widetilde{V}_j(u_1, ..., u_n)$ and $\widetilde{V}_j(v_1, ..., v_n)$, and so the verifier doesn't have to do any work here. However, the verifier must also evaluate $\widetilde{\mul}_{i, j, j}(Z_1, ..., Z_n, u_1, ..., u_n, v_1, ..., v_n)$ on its own. This requires time linear to the sparsity of the $\widetilde{\mul}_{i, j, j}$ polynomial, i.e. $O(2^{n - 1})$ in this example, since there are $2^{n - 1}$ nonzero multiplication gates (one for each pair of values in layer $i + 1$). 
 
 A circuit description size comparison between the two can be seen in a very similar light. In particular, the representation of $\widetilde{\eq}$ requires just $O(n)$ words to store (assuming each word can hold an $n$-bit value), as we simply enumerate the indices between the $Z_i$'s and the $b_i$'s. On the other hand, storing the sparse representation of $\widetilde{\mul}$ required for linear-time proving requires storing all nonzero evaluations, i.e. $O(2^{n - 1})$ such indices in the above example (although one might argue that the representation is quite structured and can therefore be further compressed). 
 
