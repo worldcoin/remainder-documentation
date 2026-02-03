@@ -96,7 +96,7 @@ $$
 $$
 Note that the above is now a blinded Pedersen vector commitment to the vector-matrix product $L \cdot M$. The verifier can do the above in $O(2^{n / 2})$ group operations. Finally, the prover and verifier execute a proof-of-dot-product with the following:
 - The public vector is $R$
-- The committed vector is $\text{squashed\_comm}$
+- The committed vector is $\text{squashed\_com}$
 - The committed inner product value is $c_d \cdot g_1 + s_1 \cdot h$
 
 Note that unlike the simple protocol, this proof-of-dot-product is invoked over two vectors of length $2^{n / 2}$ rather than $2^n$. The final evaluation proof size is thus $O(2^{n / 2})$ and the final verifier cost is also $O(2^{n / 2})$, although the commitment size is now increased to $O(2^{n / 2})$ from $O(1)$ earlier. 
