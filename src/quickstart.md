@@ -1,11 +1,11 @@
 # Quickstart
-Hi there! Welcome to the official Remainder documentation/tutorial. For the code reference, see [this site (published soon!)](). Note that Remainder is specifically a GKR/Hyrax prover and that this tutorial assumes familiarity with basic concepts in zero-knowledge and interactive proofs. For a gentler introduction to the basics behind verifiable computation, interactive proofs, and zero-knowledge, see Chapter 1 of [Justin Thaler's wonderful manuscript](https://people.cs.georgetown.edu/jthaler/ProofsArgsAndZK.pdf).
+Hi there! Welcome to the official Remainder documentation/tutorial. For the code reference, see [this site](https://worldcoin.github/io/remainder_ce/). Note that Remainder is specifically a GKR/Hyrax prover and that this tutorial assumes familiarity with basic concepts in zero-knowledge and interactive proofs. For a gentler introduction to the basics behind verifiable computation, interactive proofs, and zero-knowledge, see Chapter 1 of [Justin Thaler's wonderful manuscript](https://people.cs.georgetown.edu/jthaler/ProofsArgsAndZK.pdf).
 
 The documentation is split into four primary parts:
 - [The first](./gkr_background/gkr_background.md) is an intuitive introduction to the "GKR" interactive proof scheme for layered circuits. The name "GKR" refers to Goldwasser, Kalai, and Rothblum, the co-authors of the [paper](https://dl.acm.org/doi/10.1145/2699436) which first introduced the notion of proving the correctness of layered circuits' outputs with respect to their inputs via sumcheck. If you are not familiar with GKR concepts, we strongly recommend you read this section before engaging with either of the next two sections or even the quickstart below.
 - [The second](./gkr_theory/theory_overview.md) follows from the first and dives a tad deeper into the specific methodology of layerwise relationships, prover claims, etc. and explains the various concepts behind GKR in a loosely mathematical fashion. 
 - [The third](./frontend/frontend_components.md) is a guide to Remainder's frontend where we explain how the theoretical concepts described in earlier sections can be used in practice. It contains a lot of examples with runnable Rust code, and it can be studied independently or in conjunction with the second section.
-- [The final](./hyrax/hyrax.md) is an introduction to the Hyrax [interactive proof protocol](https://eprint.iacr.org/2017/1132.pdf), a "wrapper" around the GKR protocol which offers computational zero-knowledge in exchange for the use of elliptic curves. 
+- [The final](./hyrax/hyrax.md) is an introduction to the Hyrax [interactive proof protocol](https://eprint.iacr.org/2017/1132.pdf), a "wrapper" around the GKR protocol which offers computational zero-knowledge using blinded Pedersen Commitments. 
 
 In addition, we provide a concise "how-to" quickstart here. This quickstart covers the basics of using Remainder as a GKR proof system library, including the following:
 - Circuit description generation
@@ -13,7 +13,7 @@ In addition, we provide a concise "how-to" quickstart here. This quickstart cove
 - Proving and verifying
 
 ## Creating a Layered (GKR) Circuit
-See [`frontend/examples/tutorial.rs`](https://github.com/worldcoin/Remainder_CE/blob/main/frontend/examples/tutorial.rs) for code reference. To run the test yourself, navigate to the `Remainder_CE` root directory and run the following command: 
+See [`frontend/examples/tutorial.rs`](https://github.com/worldcoin/Remainder_CE/blob/44a2526d0b54774eec44b7ea8739c5fa3dd66a9b/frontend/examples/tutorial.rs) for code reference. To run the test yourself, navigate to the `Remainder_CE` root directory and run the following command: 
 
 ```bash
 cargo run --package frontend --example tutorial
@@ -66,10 +66,10 @@ Finally, we create the layered circuit from its components:
 ```rust
 builder.build().expect("Failed to build circuit")
 ```
-This creates a `Circuit<Fr>` struct which contains the layered circuit description (see [`GKRCircuitDescription`](./gkr_background/encoding_layers.md#circuit-description)), the mapping between nodes and layers (see `CircuitMap`), and the state for circuit inputs which have been partially populated already. 
+This creates a `Circuit<Fr>` struct which contains the layered circuit description (see [`GKRCircuitDescription`](./gkr_background/encoding_layers.md#circuit-description)), the mapping between nodes and layers (see [`CircuitEvalMap`](https://worldcoin.github.io/remainder/circuit_layout/struct.CircuitEvalMap.html)), and the state for circuit inputs which have been partially populated already. 
 
 ## Populating Circuit Inputs
-First, we instantiate the circuit description which we created above (see the function `tutorial_test()`):
+First, we instantiate the circuit description which we created above (see the function `main()`):
 ```rust
 let base_circuit = build_circuit();
 let mut prover_circuit = base_circuit.clone();
@@ -128,8 +128,8 @@ verify_circuit_with_proof_config::<Fr, PoseidonSponge<Fr>>(
 
 This function uses the provided `proof_config` and executes the GKR verifier against the `verifiable_circuit`, i.e. the verifier-ready circuit description. The function crashes if the proof does not verify for any reason, although in this case it should pass. 
 
-Congratulations -- you have just
-- Created your first layered circuit description
-- Attached data to the circuit input layers
-- Proven the correctness of the circuit outputs against the inputs
-- Verified the resulting GKR proof
+Congratulations! You have just:
+- Created your first layered circuit description,
+- Attached data to the circuit input layers,
+- Proven the correctness of the circuit outputs against the inputs, and
+- Verified the resulting GKR proof!
