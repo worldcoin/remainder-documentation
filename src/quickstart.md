@@ -13,7 +13,7 @@ In addition, we provide a concise "how-to" quickstart here. This quickstart cove
 - Proving and verifying
 
 ## Creating a Layered (GKR) Circuit
-See [`frontend/examples/tutorial.rs`](https://github.com/worldcoin/Remainder_CE/blob/44a2526d0b54774eec44b7ea8739c5fa3dd66a9b/frontend/examples/tutorial.rs) for code reference. To run the test yourself, navigate to the `Remainder_CE` root directory and run the following command: 
+See [`frontend/examples/tutorial.rs`](https://github.com/worldcoin/Remainder_CE/blob/v1.0.0/frontend/examples/tutorial.rs) for code reference. To run the test yourself, navigate to the `Remainder_CE` root directory and run the following command: 
 
 ```bash
 cargo run --package frontend --example tutorial
@@ -66,7 +66,7 @@ Finally, we create the layered circuit from its components:
 ```rust
 builder.build().expect("Failed to build circuit")
 ```
-This creates a `Circuit<Fr>` struct which contains the layered circuit description (see [`GKRCircuitDescription`](./gkr_background/encoding_layers.md#circuit-description)), the mapping between nodes and layers (see [`CircuitEvalMap`](https://worldcoin.github.io/remainder/circuit_layout/struct.CircuitEvalMap.html)), and the state for circuit inputs which have been partially populated already. 
+This creates a `Circuit<Fr>` struct which contains the layered circuit description (see [`GKRCircuitDescription`](./gkr_background/encoding_layers.md#circuit-description)), the mapping between nodes and layers (see [`CircuitEvalMap`](https://worldcoin.github.io/remainder_ce/remainder/circuit_layout/struct.CircuitEvalMap.html)), and the state for circuit inputs which have been partially populated already. 
 
 ## Populating Circuit Inputs
 First, we instantiate the circuit description which we created above (see the function `main()`):

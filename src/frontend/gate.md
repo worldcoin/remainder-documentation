@@ -11,7 +11,7 @@ Let us define the following layerwise relationship, as a small GKR circuit:
 ![Diagram representing binary gate](../figures/binary.jpg)
 
 ### Code
-The way we would represent the above diagram as a GKR circuit in Remainder is below, which can also be found in our codebase at [`frontend/examples/binary_gate.rs`](https://github.com/worldcoin/Remainder_CE/blob/44a2526d0b54774eec44b7ea8739c5fa3dd66a9b/frontend/examples/binary_gate.rs):
+The way we would represent the above diagram as a GKR circuit in Remainder is below, which can also be found in our codebase at [`frontend/examples/binary_gate.rs`](https://github.com/worldcoin/Remainder_CE/blob/v1.0.0/frontend/examples/binary_gate.rs):
 
 ```rust
 fn build_example_binary_gate_circuit<F: Field>(
@@ -100,7 +100,7 @@ Let us define the following layerwise relationship, as a small GKR circuit:
 ![Diagram representing identity gate](../figures/id.jpg)
 
 ### Code
-The way we would represent the above diagram as a GKR circuit in Remainder is below, which can also be found in our codebase at [`frontend/examples/identity_gate.rs`](https://github.com/worldcoin/Remainder_CE/blob/44a2526d0b54774eec44b7ea8739c5fa3dd66a9b/frontend/examples/identity_gate.rs):
+The way we would represent the above diagram as a GKR circuit in Remainder is below, which can also be found in our codebase at [`frontend/examples/identity_gate.rs`](https://github.com/worldcoin/Remainder_CE/blob/v1.0.0/frontend/examples/identity_gate.rs):
 
 ```rust
 fn build_example_identity_gate_circuit<F: Field>(
@@ -180,7 +180,7 @@ Let us define the following layerwise relationship, as a small GKR circuit:
 ![Diagram representing dataparallel binary gate](../figures/dataparallel_binary.jpg)
 
 ### Code
-The way we would represent the above diagram as a GKR circuit in Remainder is below, which can also be found in our codebase at [`frontend/examples/binary_gate_dataparallel.rs`](https://github.com/worldcoin/Remainder_CE/blob/44a2526d0b54774eec44b7ea8739c5fa3dd66a9b/frontend/examples/binary_gate_dataparallel.rs):
+The way we would represent the above diagram as a GKR circuit in Remainder is below, which can also be found in our codebase at [`frontend/examples/binary_gate_dataparallel.rs`](https://github.com/worldcoin/Remainder_CE/blob/v1.0.0/frontend/examples/binary_gate_dataparallel.rs):
 
 
 ```rust
@@ -271,7 +271,7 @@ Let us define the following layerwise relationship, as a small GKR circuit:
 ![Diagram representing dataparallel identity gate](../figures/dataparallel_id.jpg)
 
 ### Code
-The way we would represent the above diagram as a GKR circuit in Remainder is below, which can also be found in our codebase at [`frontend/examples/identity_gate_dataparallel.rs`](https://github.com/worldcoin/Remainder_CE/blob/44a2526d0b54774eec44b7ea8739c5fa3dd66a9b/frontend/examples/identity_gate_dataparallel.rs):
+The way we would represent the above diagram as a GKR circuit in Remainder is below, which can also be found in our codebase at [`frontend/examples/identity_gate_dataparallel.rs`](https://github.com/worldcoin/Remainder_CE/blob/v1.0.0/frontend/examples/identity_gate_dataparallel.rs):
 
 ```rust
 fn build_example_identity_gate_circuit_dataparallel<F: Field>(

@@ -1,6 +1,6 @@
 ## Example 1: u8 range check
 The following example, building on the section where we discuss [LogUp Theory](https://worldcoin.github.io/remainder-documentation/gkr_theory/lookup.html), uses a lookup to check that the provided values are in the range $0 \dots 255$.
-See also [`frontend/examples/lookup.rs`](https://github.com/worldcoin/Remainder_CE/blob/44a2526d0b54774eec44b7ea8739c5fa3dd66a9b/frontend/examples/lookup.rs):
+See also [`frontend/examples/lookup.rs`](https://github.com/worldcoin/Remainder_CE/blob/v1.0.0/frontend/examples/lookup.rs):
 ```rust
 fn build_example_lookup_circuit<F: Field>(
     table_num_vars: usize,
