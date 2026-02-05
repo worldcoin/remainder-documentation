@@ -157,8 +157,8 @@
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h2 id="example-1-u8-range-check"><a class="header" href="#example-1-u8-range-check">Example 1: u8 range check</a></h2>
-<p>The following example, building on the above, uses a lookup to check that the provided values are in the range <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">255</span></span></span></span>.
-See also <code>remainder_frontend/examples/lookup.rs</code>:</p>
+<p>The following example, building on the section where we discuss <a href="https://worldcoin.github.io/remainder-documentation/gkr_theory/lookup.html">LogUp Theory</a>, uses a lookup to check that the provided values are in the range <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">255</span></span></span></span>.
+See also <a href="https://github.com/worldcoin/Remainder_CE/blob/v1.0.0/frontend/examples/lookup.rs"><code>frontend/examples/lookup.rs</code></a>:</p>
 <pre><pre class="playground"><code class="language-rust">fn build_example_lookup_circuit&lt;F: Field&gt;(
     table_num_vars: usize,
     witness_num_vars: usize,
