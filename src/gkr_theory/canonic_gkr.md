@@ -37,8 +37,6 @@ For example, let's say that the evaluations of $\widetilde{V}_j$ are $[0, 1, 2, 
 
 For all other tuples over binary values we have that $\text{id}(z, x) = 0$. 
 
-<!-- TODO(ryancao): Code example of the above -->
-
 ## Add Gate
 The concepts for addition and multiplication gates are very similar to that of identity gate above. For add gate, we have the binary wiring indicator predicate:
 $$
@@ -64,8 +62,6 @@ For example, let's say that the evaluations of $\widetilde{V}_j(x_0, x_1)$ are $
 - $(1, 1; 1, 1; 0, 0)$: similar reasoning to the above.
 
 For all other binary tuples we have that $\widetilde{\add}(z, x, y) = 0$, and our resulting MLE's evaluations should be as follows: $[a + h, b + g, c + f, d + e]$. 
-
-<!-- TODO(ryancao): Code example of the above -->
 
 ## Mul Gate
 Multiplication gate is nearly identical to addition gate. For mul gate, we have the binary wiring indicator predicate:

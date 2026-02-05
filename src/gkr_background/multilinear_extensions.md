@@ -1,6 +1,6 @@
 # Multilinear Extensions (MLEs)
 
-Let $f(x_1, x_2, \dots, x_n)$ be a function $\in \mathbb{F}^n \mapsto \mathbb{F}$. Its multilinear extension $\widetilde{f}(x_1, \dots, x_n)$ is defined such that $\widetilde{f}$ is linear in each $x_j$ and $x_j \in \mathbb{F}$, and where $\widetilde{f}(x) = f(x) \quad\!\!\!\forall\quad\!\!\!\!\! x \in \{0, 1\}^n$.
+Let $f(x_1, x_2, \dots, x_n)$ be a function $\in \mathbb{F}^n \mapsto \mathbb{F}$. Its multilinear extension $\widetilde{f}(x_1, \dots, x_n)$ is defined such that $\widetilde{f}$ is linear in each $x_j \in \mathbb{F}$, and where $\widetilde{f}(x) = f(x) \quad\!\!\!\forall\quad\!\!\!\!\! x \in \{0, 1\}^n$.
 
 ## Equality MLE
 In order to explicitly formulate $\widetilde{f}$ in terms of $f$, let us define the following indicator function: 

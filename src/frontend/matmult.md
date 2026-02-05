@@ -145,7 +145,7 @@ $$
 
 TODO: Add diagram.
 
-Here's the complete code for this example:
+Here's the complete code for this example, which can also be found in our repository at[`frontend/examples/matmult.rs`](https://github.com/worldcoin/Remainder_CE/blob/v1.0.0/frontend/examples/matmult.rs):
 
 ```rust
 fn main() {
