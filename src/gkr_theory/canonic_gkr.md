@@ -90,3 +90,18 @@ Then our "nonzero gate tuples" are as follows:
 - $(0, 1; 1, 1; 1, 0)$: similar reasoning to the above.
 
 For all other binary tuples we have that $\widetilde{\add}(z, x, y) = 0$, and our resulting MLE's evaluations should be as follows: $[a * f + b * e, c * h + d * g, 0, 0]$. Note here for $\widetilde{\mul}$ that we are able to add multiple products to each output value in the $i$'th layer, and that the same is true for both $\widetilde{\add}$ and $\widetilde{\text{id}}$. In other words, we actually have unlimited addition fan-in and degree-2 multiplication fan-in.
+
+## Costs
+The prover cost for sumcheck over matrix multiplication is as follows:
+- The prover must first compute the evaluations of $\widetilde{A}(r_X, Y)$ and $\widetilde{B}(Y, r_Z)$ for $Y \in \{0, 1\}^\ell$. It already has the evaluations of $\widetilde{A}(X, Y)$ and $\widetilde{B}(Y, Z)$, and thus this preprocessing step takes $O(ML) + O(LN) = O(L(M + N))$. 
+- Next, the prover must compute sumcheck messages for the above relationship. The degree of each sumcheck message is $d = 2$, and thus the prover sends $d + 1 = 3$ evaluations per round of sumcheck. Since we are sumchecking over $Y \in \{0, 1\}^\ell$, there are $\ell$ rounds of sumcheck and thus the prover cost is $d(d + 1) 2^j$ for the $j$'th round of sumcheck. The total prover sumcheck cost is thus
+$$
+d(d + 1) \sum_{j = 1}^\ell 2^j = d(d + 1)2^{\ell + 1}
+$$
+- The prover's total cost (preprocessing + sumcheck) is $O(L(M + N + d^2))$. Letting $d^2 = 4$ be a constant and allowing square matrices with $M = N = L$, the prover's total cost is $O(N^2)$, which is asymptotically optimal for matrix multiplication.
+
+The proof size for sumcheck over matrix multiplication is as follows: 
+- There are $\ell$ total sumcheck rounds, each with the prover sending over $3$ evaluations for a quadratic polynomial. The proof size is thus $3 \ell$ field elements, plus $2$ extra for the final claims on $\widetilde{A}$ and $\widetilde{B}$.
+
+The verifier cost for sumcheck over matrix multiplication is as follows:
+- The verifier receives $\ell$ sumcheck messages with $3$ evaluations each, and each round it must evaluate those quadratic polynomials at a random point. Its runtime is thus $O(\ell)$ with very small constants.
