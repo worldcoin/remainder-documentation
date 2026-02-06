@@ -192,7 +192,7 @@ $$
 
 The proof size is as follows:
 * For each of the $n$ rounds of sumcheck, the prover must send over a degree $d + 1$ univariate polynomial to the verifier. Additionally, the prover must send the original sum (although this is actually free in GKR since the verifier already has the prover-claimed sum implicitly through the prover's claim from a previous sumcheck's oracle query). 
-* Finally, the prover must send over each of its claimed values for the $\widetilde{V}_{j_{k, \ell}}(r_1, ..., r_n)$ at the end of sumcheck
+* Finally, the prover must send over each of its claimed values for the $\widetilde{V}_{j_{k, \ell}}(r_1, ..., r_n)$ at the end of sumcheck. There are at most $s \cdot d$ claims. 
 * The proof size is thus simply $O((d + 2) \cdot n + s \cdot d)$ field elements. 
 
 The verifier runtime is as follows:
@@ -204,4 +204,9 @@ $$
 * During the final oracle query, the verifier must check whether
 $$
 f_n(r_1, ..., r_n) \overset{?}{=} \widetilde{\eq}(Z_1, ..., Z_n; r_1, ..., r_n) \big[ \sum_{k = 1}^s \prod_{\ell = 1}^d \widetilde{V}_{j_{k, \ell}}(r_1, ..., r_n) \big]
+$$
+* The verifier can compute $\widetilde{\eq}(Z_1, ..., Z_n; r_1, ..., r_n)$ on its own in $O(n)$, and has access to each of the prover-claimed values for $\widetilde{V}_{j_{k, \ell}}(r_1, ..., r_n)$. It can thus compute the RHS of the above in $O(n + s \cdot d)$. 
+* The verifier's total runtime is thus
+$$
+O(n \cdot d + n + s \cdot d) = O((s + n) \cdot d)
 $$
