@@ -180,4 +180,4 @@ let [v1_l, v1_r]: [_; 2] = builder.add_split_node(&v1, 1).try_into().unwrap();
 let v2 = builder.add_sector(sel_expr!(&v1_l * &v1_l, &v1_r * F::from(2)));
 ```
 
-TODO: Selectors over many expressions and binary tree selectors.
+See `run_exampl_4` in `frontend/examples/sector.rs` for a full working example.
