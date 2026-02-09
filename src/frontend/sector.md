@@ -56,8 +56,9 @@ have equivalently written:
 let v4 = builder.add_sector( (&v1 * &v2) * (&v1 * &v2) );
 ```
 
-See `run_example_1a()` in `frontend/examples/sector.rs` for the full code of the preceeding
-examples.
+See `run_example_1a()` in
+[`frontend/examples/sector.rs`](https://github.com/worldcoin/Remainder_CE/blob/v1.0.0/frontend/examples/sector.rs)
+for the full code of the preceeding examples.
 
 **Efficiency Note**: *It's important to note that the two alternative ways of defining `v4`
 presented above result in _different_ circuits, even though they're _semantically equivalent_. The
@@ -76,7 +77,9 @@ i.e. equating the common MLE variables starting from the left.
 Viewing the MLEs as evaluation vectors, if $V_1 = [a, b, c, d]$ and $V_2 = [e, f]$,
 then $V_3 = [ a\cdot e, b\cdot e, c\cdot f, d \cdot f]$.
 
-See `run_example_1b()` in `frontend/examples/sector.rs` for a working example.
+See `run_example_1b()` in
+[`frontend/examples/sector.rs`](https://github.com/worldcoin/Remainder_CE/blob/v1.0.0/frontend/examples/sector.rs)
+for a working example.
 
 ## Example 2: Spliting MLEs
 
@@ -111,7 +114,8 @@ let [left, right]: [_; 2] = builder.add_split_node(&mle, /* k = */ 1).try_into()
 let sector = builder.add_sector(left * right);
 ```
 
-You can see a full working example in `run_example_2()` in `frontend/examples/sector.rs`.
+You can see a full working example in `run_example_2()` in
+[`frontend/examples/sector.rs`](https://github.com/worldcoin/Remainder_CE/blob/v1.0.0/frontend/examples/sector.rs).
 
 *Efficiency Note*: A Split node does _not_ get compiled into a GKR layer. It's a
 construct used only during circuit building to do all the necessary bookkeeping.
@@ -138,7 +142,9 @@ implementation of external traits for externals types: in this case `F` may be a
 outside the Remainder crate and `std::ops::Mul`, an external trait, cannot be implemented for it
 inside the Remainder crate.
 
-See `run_example_3()` in `frontend/examples/sector.rs` for a full working example.
+See `run_example_3()` in
+[`frontend/examples/sector.rs`](https://github.com/worldcoin/Remainder_CE/blob/v1.0.0/frontend/examples/sector.rs)
+for a full working example.
 
 *Note*: It is also possible to express this relation by adding a constant MLE $V_{\text{const}, 42}$
 (on zero variables) with evaluation table equal to $[42]$, and thus expressing
@@ -180,4 +186,6 @@ let [v1_l, v1_r]: [_; 2] = builder.add_split_node(&v1, 1).try_into().unwrap();
 let v2 = builder.add_sector(sel_expr!(&v1_l * &v1_l, &v1_r * F::from(2)));
 ```
 
-See `run_exampl_4` in `frontend/examples/sector.rs` for a full working example.
+See `run_example_4()` in
+[`frontend/examples/sector.rs`](https://github.com/worldcoin/Remainder_CE/blob/v1.0.0/frontend/examples/sector.rs)
+for a full working example.
