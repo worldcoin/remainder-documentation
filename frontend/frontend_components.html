@@ -161,12 +161,12 @@
 <h2 id="remainder-components-overview"><a class="header" href="#remainder-components-overview">Remainder Components Overview</a></h2>
 <p>The layer types which are supported in GKR are as follows:</p>
 <ul>
-<li><a href="./gate.html">"Gate"</a> layers, which define the arbitrary-wiring layerwise
-relationships described in the <a href="../gkr_theory/canonic_gkr.html">"canonic GKR"</a>
-section.</li>
 <li><a href="./structured.html">"Structured"</a> layers, which define the regular-wiring
 layerwise relationships described in the
 <a href="../gkr_theory/structured_gkr.html">"structured GKR"</a> section.</li>
+<li><a href="./gate.html">"Gate"</a> layers, which define the arbitrary-wiring layerwise
+relationships described in the <a href="../gkr_theory/canonic_gkr.html">"canonic GKR"</a>
+section.</li>
 <li><a href="./matmult.html">"Matmult"</a> layers, which define the matrix multiplication-like
 layerwise relationships described in the
 <a href="../gkr_theory/matmult_layer.html">"matmult"</a> section.</li>
@@ -179,7 +179,7 @@ layerwise relationships described in the
 <li>Circuit writers (that's you!) define the layer types and layer-wise
 relationships by defining <code>Node</code>s of the variety as described above.</li>
 <li>Circuit writers (still you!) also define the input layers and "shred"s within each input layer for the circuit.</li>
-<li>Additionally, each type of <code>Node</code> requires as input references to other <code>Node</code>s which act as the "source data" for that node's outputs.</li>
+<li>Additionally, each type of <code>Node</code> requires as input references to other <code>Node</code>s which act as he "source data" for that node's outputs. The data type used in Remainder for storing those references is a <a href="https://worldcoin.github.io/remainder_ce/frontend/layouter/builder/struct.NodeRef.html"><code>NodeRef&lt;F&gt;</code></a>. The circuit builder returns such references every time a new node is added to the circuit.</li>
 <li>Once all of these relationships have been defined, Remainder will compile the set of nodes + source relationships into a layered circuit which can be run and proven/verified. Note that there are a couple of compilation options here, including compiling into the shallowest possible circuit by "combining" layers which are topologically oblivious (i.e. any layerwise ordering is valid).</li>
 </ul>
 
@@ -191,7 +191,7 @@ relationships by defining <code>Node</code>s of the variety as described above.<
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../frontend/matmult.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../frontend/sector.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -205,7 +205,7 @@ relationships by defining <code>Node</code>s of the variety as described above.<
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../frontend/matmult.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../frontend/sector.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
