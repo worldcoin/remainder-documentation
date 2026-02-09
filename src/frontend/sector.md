@@ -45,7 +45,7 @@ the `NodeRef<F>` type is implemented. It is a wrapper around a weak pointer, and
 operands, and after the first occurance of `v3` has moved, the second one will fail with a compile
 error. To avoid unneseccary cloning, we provide an implementation of the `Mul` trait for borrowed
 operands as well (e.g.  `&NodeRef<F>`) to allow developers to use the succinct borrowed syntax
-we presented above when there is a need to reuse `NodeRef<F>`s.
+we presented above when there is a need to reuse `NodeRef<F>`s*.
 
 Expressions may be combined into a single Sector layer. For example, previously we expressed the
 relation $V_4(z_0, z_1) = (V_1(z_0, z_1) * V_2(z_0, z_1))^2$ using two layers, but we could
