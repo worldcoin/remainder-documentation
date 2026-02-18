@@ -1,5 +1,5 @@
 # Quickstart
-Hi there! Welcome to the official Remainder documentation/tutorial. For the code reference, see [this site](https://worldcoin.github.io/remainder_ce/). Note that Remainder is specifically a GKR/Hyrax prover and that this tutorial assumes familiarity with basic concepts in zero-knowledge and interactive proofs. For a gentler introduction to the basics behind verifiable computation, interactive proofs, and zero-knowledge, see Chapter 1 of [Justin Thaler's wonderful manuscript](https://people.cs.georgetown.edu/jthaler/ProofsArgsAndZK.pdf).
+Hi there! Welcome to the official Remainder documentation/tutorial. For the code reference, see [this site](https://worldcoin.github.io/Remainder_CE/). Note that Remainder is specifically a GKR/Hyrax prover and that this tutorial assumes familiarity with basic concepts in zero-knowledge and interactive proofs. For a gentler introduction to the basics behind verifiable computation, interactive proofs, and zero-knowledge, see Chapter 1 of [Justin Thaler's wonderful manuscript](https://people.cs.georgetown.edu/jthaler/ProofsArgsAndZK.pdf).
 
 The documentation is split into four primary parts:
 - [The first](./gkr_background/gkr_background.md) is an intuitive introduction to the "GKR" interactive proof scheme for layered circuits. The name "GKR" refers to Goldwasser, Kalai, and Rothblum, the co-authors of the [paper](https://dl.acm.org/doi/10.1145/2699436) which first introduced the notion of proving the correctness of layered circuits' outputs with respect to their inputs via sumcheck. If you are not familiar with GKR concepts, we strongly recommend you read this section before engaging with either of the next two sections or even the quickstart below.
@@ -66,7 +66,7 @@ Finally, we create the layered circuit from its components:
 ```rust
 builder.build().expect("Failed to build circuit")
 ```
-This creates a `Circuit<Fr>` struct which contains the layered circuit description (see [`GKRCircuitDescription`](./gkr_background/encoding_layers.md#circuit-description)), the mapping between nodes and layers (see [`CircuitEvalMap`](https://worldcoin.github.io/remainder_ce/remainder/circuit_layout/struct.CircuitEvalMap.html)), and the state for circuit inputs which have been partially populated already. 
+This creates a `Circuit<Fr>` struct which contains the layered circuit description (see [`GKRCircuitDescription`](./gkr_background/encoding_layers.md#circuit-description)), the mapping between nodes and layers (see [`CircuitEvalMap`](https://worldcoin.github.io/Remainder_CE/remainder/circuit_layout/struct.CircuitEvalMap.html)), and the state for circuit inputs which have been partially populated already. 
 
 ## Populating Circuit Inputs
 First, we instantiate the circuit description which we created above (see the function `main()`):
