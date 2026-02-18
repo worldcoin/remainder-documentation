@@ -161,3 +161,52 @@ $$
 $$
 
 These claims have no challenges in common, and can only be aggregated through [interpolative](./claims.md#interpolative-claim-aggregation) or [RLC claim aggregation](./claims.md#rlc-random-linear-combination-claim-aggregation), both of which are significantly more expensive than the above method.
+
+## Costs
+In general (note that this does not capture all possible structured layer cases, but should be enough to give some intuition on the prover/verifier/proof size costs for most structured layers), let us assume that our layerwise relationship can be expressed in the following manner -- 
+$$
+\widetilde{V}_i(Z_1, ..., Z_n) = \sum_{b_1, ..., b_n \in \{0, 1\}^n} \widetilde{\eq}(Z_1, ..., Z_n; b_1, ..., b_n) \big[ \sum_{k = 1}^s \prod_{\ell = 1}^d \widetilde{V}_{j_{k, \ell}}(b_1, ..., b_n) \big]
+$$
+In other words, we have a layerwise relationship over $n$ variables, where the values in $\widetilde{V}_i$ are a function of those in layers $\widetilde{V}_{j_{k, \ell}}$, where $j_{k, \ell} > i$, such that we have $s$ total summand "groups" of MLEs over $n$ variables of size up to $d$, i.e. the total polynomial degree in each of the $b_i$ is $d + 1$. 
+
+The prover costs are as follows:
+* For simplicity here, we assume that the prover has $O(1)$ access to any value in $\widetilde{\eq}(Z_1, ..., Z_n; b_1, ..., b_n)$ (note that these evaluations must be either precomputed in linear time, e.g. [Tha13](https://eprint.iacr.org/2013/351), or can be streamed in linear time in a clever way, e.g. [Rot24](https://eprint.iacr.org/2024/1103.pdf)).
+* Additionally, we assume that the prover has $O(1)$ access to any value in any $\widetilde{V}_{i_{k, \ell}}(b_1, ..., b_n)$, since the prover presumably knows all of the circuit values ahead of time. 
+* Finally, we assume that the prover can use the "bookkeeping table folding" trick from [Tha13](https://eprint.iacr.org/2013/351) to compute both $\widetilde{\eq}(Z_1, ..., Z_n; r_1, b_2, ..., b_n)$ from $\widetilde{\eq}(Z_1, ..., Z_n; b_1, b_2, ..., b_n)$ _and_ $\widetilde{V}_{i_{k, \ell}}(Z_1, ..., Z_n; r_1, b_2, ..., b_n)$ from $\widetilde{V}_{i_{k, \ell}}(Z_1, ..., Z_n; b_1, b_2, ..., b_n)$ in $O(2^n)$ field operations. 
+* We thus see that in the first round of sumcheck, the prover must do the following:
+    * Evaluate each of the terms in the summation for every $b_1, ..., b_n \in \{0, 1\}^n$ and sum them together. Each evaluation takes $O(sd)$ field operations, as there are $s$ summands and each requires $d$ multiplications. 
+    * Since there are $2^n$ values of $b_1, ..., b_n$, the above costs $O(s \cdot d \cdot 2^n)$ field operations. This is the total cost for the prover to compute the claimed sum for the first round.
+    * Next, the prover must evaluate the RHS of the sumchecked equation at $X = 0, ..., d + 1$ in the place of $b_1$ to compute the univariate sumcheck message. Each evaluation of $X$, similarly to the above, costs $O(s \cdot d \cdot 2^n)$ field operations. 
+    * The total cost for the prover to compute the claimed sum + univariate message in the first round is thus $O(s \cdot d \cdot 2^n + (d + 1) \cdot s \cdot d \cdot 2^n) = O(s \cdot d(d + 2) \cdot 2^n)$ field operations.
+* We can generalize the above to the $t$'th round of sumcheck (let $t = 0$ for the first round) by noting that rather than $n$ variables, there are $n - t$ variables which are being summed over in the outer sum. Since the other values $s, d$ remain constant, the prover's total cost is simply $O(s \cdot d(d + 1) \cdot 2^{n - t})$. 
+* Finally, as mentioned earlier, the prover can generate the necessary precomputed values from the $t$'th round from those of the $t - 1$'th round in $O((s \cdot d + 1) \cdot 2^{n - t})$, as there are $s \cdot d + 1$ MLEs (including the $\widetilde{\eq}$ polynomial) which need their bookkeeping tables to be "folded" in $O(2^{n - t})$. 
+
+* Putting it altogether, the prover's total cost across all sumcheck rounds is thus
+$$
+\sum_{t = 0}^{n - 1} O(s \cdot d(d + 2) \cdot 2^{n - t}) + O((s \cdot d + 1) \cdot 2^{n - t})
+$$
+* Since the above is a geometric series in $2^n$, we have that the prover's total cost across all rounds is simply
+$$
+O(s \cdot d(d + 2) \cdot 2^{n + 1})
+$$
+
+The proof size is as follows:
+* For each of the $n$ rounds of sumcheck, the prover must send over a degree $d + 1$ univariate polynomial to the verifier. Additionally, the prover must send the original sum (although this is actually free in GKR since the verifier already has the prover-claimed sum implicitly through the prover's claim from a previous sumcheck's oracle query). 
+* Finally, the prover must send over each of its claimed values for the $\widetilde{V}_{j_{k, \ell}}(r_1, ..., r_n)$ at the end of sumcheck. There are at most $s \cdot d$ claims. 
+* The proof size is thus simply $O((d + 2) \cdot n + s \cdot d)$ field elements. 
+
+The verifier runtime is as follows:
+* For each round of sumcheck, let the prover's univariate polynomial message be $f_t(X) \in \mathbb{F}^{<d + 2}[X]$. The verifier samples a random challenge $r_t \overset{\$}{\leftarrow} \mathbb{F}$ and checks whether
+$$
+f_{t - 1}(r_t) \overset{?}{=} f_t(0) + f_t(1)
+$$
+* Since the verifier can evaluate $f_t$ and $f_{t - 1}$ in $O(d + 2)$ and performs this check for each of the $n$ rounds of sumcheck, they can compute all the intermediate checks in $O(n \cdot (d + 2))$. 
+* During the final oracle query, the verifier must check whether
+$$
+f_n(r_1, ..., r_n) \overset{?}{=} \widetilde{\eq}(Z_1, ..., Z_n; r_1, ..., r_n) \big[ \sum_{k = 1}^s \prod_{\ell = 1}^d \widetilde{V}_{j_{k, \ell}}(r_1, ..., r_n) \big]
+$$
+* The verifier can compute $\widetilde{\eq}(Z_1, ..., Z_n; r_1, ..., r_n)$ on its own in $O(n)$, and has access to each of the prover-claimed values for $\widetilde{V}_{j_{k, \ell}}(r_1, ..., r_n)$. It can thus compute the RHS of the above in $O(n + s \cdot d)$. 
+* The verifier's total runtime is thus
+$$
+O(n \cdot d + n + s \cdot d) = O((s + n) \cdot d)
+$$
