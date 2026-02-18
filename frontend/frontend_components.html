@@ -179,7 +179,7 @@ layerwise relationships described in the
 <li>Circuit writers (that's you!) define the layer types and layer-wise
 relationships by defining <code>Node</code>s of the variety as described above.</li>
 <li>Circuit writers (still you!) also define the input layers and "shred"s within each input layer for the circuit.</li>
-<li>Additionally, each type of <code>Node</code> requires as input references to other <code>Node</code>s which act as he "source data" for that node's outputs. The data type used in Remainder for storing those references is a <a href="https://worldcoin.github.io/remainder_ce/frontend/layouter/builder/struct.NodeRef.html"><code>NodeRef&lt;F&gt;</code></a>. The circuit builder returns such references every time a new node is added to the circuit.</li>
+<li>Additionally, each type of <code>Node</code> requires as input references to other <code>Node</code>s which act as he "source data" for that node's outputs. The data type used in Remainder for storing those references is a <a href="https://worldcoin.github.io/Remainder_CE/frontend/layouter/builder/struct.NodeRef.html"><code>NodeRef&lt;F&gt;</code></a>. The circuit builder returns such references every time a new node is added to the circuit.</li>
 <li>Once all of these relationships have been defined, Remainder will compile the set of nodes + source relationships into a layered circuit which can be run and proven/verified. Note that there are a couple of compilation options here, including compiling into the shallowest possible circuit by "combining" layers which are topologically oblivious (i.e. any layerwise ordering is valid).</li>
 </ul>
 
